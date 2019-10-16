@@ -11,7 +11,7 @@
     <AssemblyName>vFrame.Lockstep.Core</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <LangVersion>4</LangVersion>
+    <LangVersion>6</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -53,6 +53,12 @@
     <Compile Include="Math\TSVector.cs" />
     <Compile Include="Math\TSVector2.cs" />
     <Compile Include="Math\TSVector4.cs" />
+    <Compile Include="PathFinding\IConnection.cs" />
+    <Compile Include="PathFinding\IGraph.cs" />
+    <Compile Include="PathFinding\IHeuristic.cs" />
+    <Compile Include="PathFinding\INode.cs" />
+    <Compile Include="PathFinding\IPath.cs" />
+    <Compile Include="PathFinding\IPathFinder.cs" />
     <Compile Include="Physics\Farseer\ChecksumExtractor.cs" />
     <Compile Include="Physics\Farseer\Collision\Collision.cs" />
     <Compile Include="Physics\Farseer\Collision\Distance.cs" />
@@ -158,6 +164,7 @@
     <Compile Include="Physics\PhyUtil.cs" />
     <Compile Include="Physics\PhyWorld.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TSTime.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

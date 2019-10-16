@@ -826,27 +826,23 @@ namespace vFrame.Lockstep.Core
             return value._serializedValue >> FRACTIONAL_PLACES;
         }
 
-#if false
         public static implicit operator FP(float value) {
             FP result;
             result._serializedValue = (long)(value * L_ONE);
             return result;
             //return new FP((long)(value * ONE));
         }
-#endif
 
         public static explicit operator float(FP value) {
             return (float)value._serializedValue / L_ONE;
         }
 
-#if false
         public static implicit operator FP(double value) {
             FP result;
             result._serializedValue = (long)(value * L_ONE);
             return result;
             //return new FP((long)(value * ONE));
         }
-#endif
 
         public static explicit operator double(FP value) {
             return (double)value._serializedValue / L_ONE;
