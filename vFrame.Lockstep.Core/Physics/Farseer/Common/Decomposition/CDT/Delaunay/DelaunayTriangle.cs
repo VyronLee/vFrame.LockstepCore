@@ -41,7 +41,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using FP = vFrame.Lockstep.Core.FP;
 
 namespace vFrame.Lockstep.Core.Physics2D
 {
@@ -321,18 +320,18 @@ namespace vFrame.Lockstep.Core.Physics2D
             if (i != -1) EdgeIsConstrained[i] = true;
         }
 
-        public FP Area()
+        public FixedPoint Area()
         {
-            FP b = Points[0].X - Points[1].X;
-            FP h = Points[2].Y - Points[1].Y;
+            FixedPoint b = Points[0].X - Points[1].X;
+            FixedPoint h = Points[2].Y - Points[1].Y;
 
-            return FP.Abs((b*h*FP.Half));
+            return FixedPoint.Abs((b*h*FixedPoint.Half));
         }
 
         public TriangulationPoint Centroid()
         {
-            FP cx = (Points[0].X + Points[1].X + Points[2].X)/3;
-            FP cy = (Points[0].Y + Points[1].Y + Points[2].Y)/3;
+            FixedPoint cx = (Points[0].X + Points[1].X + Points[2].X)/3;
+            FixedPoint cy = (Points[0].Y + Points[1].Y + Points[2].Y)/3;
             return new TriangulationPoint(cx, cy);
         }
 

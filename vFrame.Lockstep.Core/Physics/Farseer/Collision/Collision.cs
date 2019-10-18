@@ -1,23 +1,23 @@
 ﻿/*
 * Farseer Physics Engine:
 * Copyright (c) 2012 Ian Qvist
-* 
+*
 * Original source Box2D:
-* Copyright (c) 2006-2011 Erin Catto http://www.box2d.org 
-* 
-* This software is provided 'as-is', without any express or implied 
-* warranty.  In no event will the authors be held liable for any damages 
-* arising from the use of this software. 
-* Permission is granted to anyone to use this software for any purpose, 
-* including commercial applications, and to alter it and redistribute it 
-* freely, subject to the following restrictions: 
-* 1. The origin of this software must not be misrepresented; you must not 
-* claim that you wrote the original software. If you use this software 
-* in a product, an acknowledgment in the product documentation would be 
-* appreciated but is not required. 
-* 2. Altered source versions must be plainly marked as such, and must not be 
-* misrepresented as being the original software. 
-* 3. This notice may not be removed or altered from any source distribution. 
+* Copyright (c) 2006-2011 Erin Catto http://www.box2d.org
+*
+* This software is provided 'as-is', without any express or implied
+* warranty.  In no event will the authors be held liable for any damages
+* arising from the use of this software.
+* Permission is granted to anyone to use this software for any purpose,
+* including commercial applications, and to alter it and redistribute it
+* freely, subject to the following restrictions:
+* 1. The origin of this software must not be misrepresented; you must not
+* claim that you wrote the original software. If you use this software
+* in a product, an acknowledgment in the product documentation would be
+* appreciated but is not required.
+* 2. Altered source versions must be plainly marked as such, and must not be
+* misrepresented as being the original software.
+* 3. This notice may not be removed or altered from any source distribution.
 */
 
 using System;
@@ -106,12 +106,12 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <summary>
         /// The non-penetration impulse
         /// </summary>
-        public FP NormalImpulse;
+        public FixedPoint NormalImpulse;
 
         /// <summary>
         /// The friction impulse
         /// </summary>
-        public FP TangentImpulse;
+        public FixedPoint TangentImpulse;
     }
 
     public enum ManifoldType
@@ -209,7 +209,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// If you supply a max fraction of 1, the ray extends from p1 to p2.
         /// A max fraction of 0.5 makes the ray go from p1 and half way to p2.
         /// </summary>
-        public FP MaxFraction;
+        public FixedPoint MaxFraction;
 
         /// <summary>
         /// The starting point of the ray.
@@ -232,7 +232,7 @@ namespace vFrame.Lockstep.Core.Physics2D
     {
         public Fixture fixture;
         public int shapeIndex;
-        public FP fraction;
+        public FixedPoint fraction;
         public bool isZeroNormal;
     }
 
@@ -246,7 +246,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// If you supply a max fraction of 1, the ray extends from p1 to p2.
         /// A max fraction of 0.5 makes the ray go from p1 and half way to p2.
         /// </summary>
-        public FP MaxFraction;
+        public FixedPoint MaxFraction;
 
         /// <summary>
         /// The starting point of the ray.
@@ -266,7 +266,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <summary>
         /// radius
         /// </summary>
-        public FP Radius;
+        public FixedPoint Radius;
 
         /// <summary>
         /// 用来计算碰撞
@@ -277,7 +277,7 @@ namespace vFrame.Lockstep.Core.Physics2D
     }
 
     /// <summary>
-    /// Ray-cast output data. 
+    /// Ray-cast output data.
     /// </summary>
     public struct RayCastOutput
     {
@@ -285,7 +285,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// The ray hits at p1 + fraction * (p2 - p1), where p1 and p2 come from RayCastInput.
         /// Contains the actual fraction of the ray where it has the intersection point.
         /// </summary>
-        public FP Fraction;
+        public FixedPoint Fraction;
 
         /// <summary>
         /// The normal of the face of the shape the ray has hit.
@@ -319,18 +319,18 @@ namespace vFrame.Lockstep.Core.Physics2D
             UpperBound = max;
         }
 
-        public AABB(TSVector2 center, FP width, FP height)
+        public AABB(TSVector2 center, FixedPoint width, FixedPoint height)
         {
             LowerBound = center - new TSVector2(width / 2, height / 2);
             UpperBound = center + new TSVector2(width / 2, height / 2);
         }
 
-        public FP Width
+        public FixedPoint Width
         {
             get { return UpperBound.x - LowerBound.x; }
         }
 
-        public FP Height
+        public FixedPoint Height
         {
             get { return UpperBound.y - LowerBound.y; }
         }
@@ -340,7 +340,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         public TSVector2 Center
         {
-            get { return FP.Half * (LowerBound + UpperBound); }
+            get { return FixedPoint.Half * (LowerBound + UpperBound); }
         }
 
         /// <summary>
@@ -348,18 +348,18 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         public TSVector2 Extents
         {
-            get { return FP.Half * (UpperBound - LowerBound); }
+            get { return FixedPoint.Half * (UpperBound - LowerBound); }
         }
 
         /// <summary>
         /// Get the perimeter length
         /// </summary>
-        public FP Perimeter
+        public FixedPoint Perimeter
         {
             get
             {
-                FP wx = UpperBound.x - LowerBound.x;
-                FP wy = UpperBound.y - LowerBound.y;
+                FixedPoint wx = UpperBound.x - LowerBound.x;
+                FixedPoint wy = UpperBound.y - LowerBound.y;
                 return 2 * (wx + wy);
             }
         }
@@ -422,7 +422,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         public bool IsValid()
         {
             TSVector2 d = UpperBound - LowerBound;
-            bool valid = d.x >= FP.Zero && d.y >= FP.Zero;
+            bool valid = d.x >= FixedPoint.Zero && d.y >= FixedPoint.Zero;
             valid = valid && LowerBound.IsValid() && UpperBound.IsValid();
             return valid;
         }
@@ -490,10 +490,10 @@ namespace vFrame.Lockstep.Core.Physics2D
             TSVector2 d1 = b.LowerBound - a.UpperBound;
             TSVector2 d2 = a.LowerBound - b.UpperBound;
 
-            if (d1.x > FP.Zero || d1.y > FP.Zero)
+            if (d1.x > FixedPoint.Zero || d1.y > FixedPoint.Zero)
                 return false;
 
-            if (d2.x > FP.Zero || d2.y > FP.Zero)
+            if (d2.x > FixedPoint.Zero || d2.y > FixedPoint.Zero)
                 return false;
 
             return true;
@@ -511,8 +511,8 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             output = new RayCastOutput();
 
-            FP tmin = -Settings.MaxFP;
-            FP tmax = Settings.MaxFP;
+            FixedPoint tmin = -Settings.MaxFP;
+            FixedPoint tmax = Settings.MaxFP;
 
             TSVector2 p = input.Point1;
             TSVector2 d = input.Point2 - input.Point1;
@@ -522,10 +522,10 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             for (int i = 0; i < 2; ++i)
             {
-                FP absD_i = i == 0 ? absD.x : absD.y;
-                FP lowerBound_i = i == 0 ? LowerBound.x : LowerBound.y;
-                FP upperBound_i = i == 0 ? UpperBound.x : UpperBound.y;
-                FP p_i = i == 0 ? p.x : p.y;
+                FixedPoint absD_i = i == 0 ? absD.x : absD.y;
+                FixedPoint lowerBound_i = i == 0 ? LowerBound.x : LowerBound.y;
+                FixedPoint upperBound_i = i == 0 ? UpperBound.x : UpperBound.y;
+                FixedPoint p_i = i == 0 ? p.x : p.y;
 
                 if (absD_i < Settings.Epsilon)
                 {
@@ -537,19 +537,19 @@ namespace vFrame.Lockstep.Core.Physics2D
                 }
                 else
                 {
-                    FP d_i = i == 0 ? d.x : d.y;
+                    FixedPoint d_i = i == 0 ? d.x : d.y;
 
-                    FP inv_d = FP.One / d_i;
-                    FP t1 = (lowerBound_i - p_i) * inv_d;
-                    FP t2 = (upperBound_i - p_i) * inv_d;
+                    FixedPoint inv_d = FixedPoint.One / d_i;
+                    FixedPoint t1 = (lowerBound_i - p_i) * inv_d;
+                    FixedPoint t2 = (upperBound_i - p_i) * inv_d;
 
                     // Sign of the normal vector.
-                    FP s = -1;
+                    FixedPoint s = -1;
 
                     if (t1 > t2)
                     {
                         MathUtils.Swap(ref t1, ref t2);
-                        s = FP.One;
+                        s = FixedPoint.One;
                     }
 
                     // Push the min up
@@ -579,7 +579,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             // Does the ray start inside the box?
             // Does the ray intersect beyond the max fraction?
-            if (doInteriorCheck && (tmin < FP.Zero || input.MaxFraction < tmin))
+            if (doInteriorCheck && (tmin < FixedPoint.Zero || input.MaxFraction < tmin))
             {
                 return false;
             }
@@ -607,7 +607,7 @@ namespace vFrame.Lockstep.Core.Physics2D
     public struct EPAxis
     {
         public int Index;
-        public FP Separation;
+        public FixedPoint Separation;
         public EPAxisType Type;
     }
 
@@ -623,10 +623,10 @@ namespace vFrame.Lockstep.Core.Physics2D
         public TSVector2 normal;
 
         public TSVector2 sideNormal1;
-        public FP sideOffset1;
+        public FixedPoint sideOffset1;
 
         public TSVector2 sideNormal2;
-        public FP sideOffset2;
+        public FixedPoint sideOffset2;
     }
 
     public enum EPAxisType
@@ -721,8 +721,8 @@ namespace vFrame.Lockstep.Core.Physics2D
             TSVector2 pB = MathUtils.Mul(ref xfB, circleB.Position);
 
             TSVector2 d = pB - pA;
-            FP distSqr = TSVector2.Dot(d, d);
-            FP radius = circleA.Radius + circleB.Radius;
+            FixedPoint distSqr = TSVector2.Dot(d, d);
+            FixedPoint radius = circleA.Radius + circleB.Radius;
             if (distSqr > radius * radius)
             {
                 return;
@@ -759,15 +759,15 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             // Find the min separating edge.
             int normalIndex = 0;
-            FP separation = -Settings.MaxFP;
-            FP radius = polygonA.Radius + circleB.Radius;
+            FixedPoint separation = -Settings.MaxFP;
+            FixedPoint radius = polygonA.Radius + circleB.Radius;
             int vertexCount = polygonA.Vertices.Count;
 
             for (int i = 0; i < vertexCount; ++i)
             {
                 TSVector2 value1 = polygonA.Normals[i];
                 TSVector2 value2 = cLocal - polygonA.Vertices[i];
-                FP s = value1.x * value2.x + value1.y * value2.y;
+                FixedPoint s = value1.x * value2.x + value1.y * value2.y;
 
                 if (s > radius)
                 {
@@ -794,7 +794,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 manifold.PointCount = 1;
                 manifold.Type = ManifoldType.FaceA;
                 manifold.LocalNormal = polygonA.Normals[normalIndex];
-                manifold.LocalPoint = FP.Half * (v1 + v2);
+                manifold.LocalPoint = FixedPoint.Half * (v1 + v2);
 
                 ManifoldPoint p0 = manifold.Points[0];
 
@@ -807,12 +807,12 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
 
             // Compute barycentric coordinates
-            FP u1 = (cLocal.x - v1.x) * (v2.x - v1.x) + (cLocal.y - v1.y) * (v2.y - v1.y);
-            FP u2 = (cLocal.x - v2.x) * (v1.x - v2.x) + (cLocal.y - v2.y) * (v1.y - v2.y);
+            FixedPoint u1 = (cLocal.x - v1.x) * (v2.x - v1.x) + (cLocal.y - v1.y) * (v2.y - v1.y);
+            FixedPoint u2 = (cLocal.x - v2.x) * (v1.x - v2.x) + (cLocal.y - v2.y) * (v1.y - v2.y);
 
-            if (u1 <= FP.Zero)
+            if (u1 <= FixedPoint.Zero)
             {
-                FP r = (cLocal.x - v1.x) * (cLocal.x - v1.x) + (cLocal.y - v1.y) * (cLocal.y - v1.y);
+                FixedPoint r = (cLocal.x - v1.x) * (cLocal.x - v1.x) + (cLocal.y - v1.y) * (cLocal.y - v1.y);
                 if (r > radius * radius)
                 {
                     return;
@@ -821,9 +821,9 @@ namespace vFrame.Lockstep.Core.Physics2D
                 manifold.PointCount = 1;
                 manifold.Type = ManifoldType.FaceA;
                 manifold.LocalNormal = cLocal - v1;
-                FP factor = FP.One /
-                               (FP)
-                               FP.Sqrt(manifold.LocalNormal.x * manifold.LocalNormal.x +
+                FixedPoint factor = FixedPoint.One /
+                               (FixedPoint)
+                               FixedPoint.Sqrt(manifold.LocalNormal.x * manifold.LocalNormal.x +
                                          manifold.LocalNormal.y * manifold.LocalNormal.y);
                 manifold.LocalNormal.x = manifold.LocalNormal.x * factor;
                 manifold.LocalNormal.y = manifold.LocalNormal.y * factor;
@@ -836,9 +836,9 @@ namespace vFrame.Lockstep.Core.Physics2D
 
                 manifold.Points[0] = p0b;
             }
-            else if (u2 <= FP.Zero)
+            else if (u2 <= FixedPoint.Zero)
             {
-                FP r = (cLocal.x - v2.x) * (cLocal.x - v2.x) + (cLocal.y - v2.y) * (cLocal.y - v2.y);
+                FixedPoint r = (cLocal.x - v2.x) * (cLocal.x - v2.x) + (cLocal.y - v2.y) * (cLocal.y - v2.y);
                 if (r > radius * radius)
                 {
                     return;
@@ -847,9 +847,9 @@ namespace vFrame.Lockstep.Core.Physics2D
                 manifold.PointCount = 1;
                 manifold.Type = ManifoldType.FaceA;
                 manifold.LocalNormal = cLocal - v2;
-                FP factor = FP.One /
-                               (FP)
-                               FP.Sqrt(manifold.LocalNormal.x * manifold.LocalNormal.x +
+                FixedPoint factor = FixedPoint.One /
+                               (FixedPoint)
+                               FixedPoint.Sqrt(manifold.LocalNormal.x * manifold.LocalNormal.x +
                                          manifold.LocalNormal.y * manifold.LocalNormal.y);
                 manifold.LocalNormal.x = manifold.LocalNormal.x * factor;
                 manifold.LocalNormal.y = manifold.LocalNormal.y * factor;
@@ -864,10 +864,10 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
             else
             {
-                TSVector2 faceCenter = FP.Half * (v1 + v2);
+                TSVector2 faceCenter = FixedPoint.Half * (v1 + v2);
                 TSVector2 value1 = cLocal - faceCenter;
                 TSVector2 value2 = polygonA.Normals[vertIndex1];
-                FP separation2 = value1.x * value2.x + value1.y * value2.y;
+                FixedPoint separation2 = value1.x * value2.x + value1.y * value2.y;
                 if (separation2 > radius)
                 {
                     return;
@@ -898,15 +898,15 @@ namespace vFrame.Lockstep.Core.Physics2D
         public static void CollidePolygons(ref Manifold manifold, PolygonShape polyA, ref Transform transformA, PolygonShape polyB, ref Transform transformB)
         {
             manifold.PointCount = 0;
-            FP totalRadius = polyA.Radius + polyB.Radius;
+            FixedPoint totalRadius = polyA.Radius + polyB.Radius;
 
             int edgeA = 0;
-            FP separationA = FindMaxSeparation(out edgeA, polyA, ref transformA, polyB, ref transformB);
+            FixedPoint separationA = FindMaxSeparation(out edgeA, polyA, ref transformA, polyB, ref transformB);
             if (separationA > totalRadius)
                 return;
 
             int edgeB = 0;
-            FP separationB = FindMaxSeparation(out edgeB, polyB, ref transformB, polyA, ref transformA);
+            FixedPoint separationB = FindMaxSeparation(out edgeB, polyB, ref transformB, polyA, ref transformA);
             if (separationB > totalRadius)
                 return;
 
@@ -915,8 +915,8 @@ namespace vFrame.Lockstep.Core.Physics2D
             Transform xf1, xf2;
             int edge1; // reference edge
             bool flip;
-            FP k_relativeTol = 98 * FP.EN2;
-            FP k_absoluteTol = FP.EN3;
+            FixedPoint k_relativeTol = 98 * FixedPoint.EN2;
+            FixedPoint k_absoluteTol = FixedPoint.EN3;
 
             if (separationB > k_relativeTol * separationA + k_absoluteTol)
             {
@@ -954,22 +954,22 @@ namespace vFrame.Lockstep.Core.Physics2D
             localTangent.Normalize();
 
             TSVector2 localNormal = new TSVector2(localTangent.y, -localTangent.x);
-            TSVector2 planePoint = FP.Half * (v11 + v12);
+            TSVector2 planePoint = FixedPoint.Half * (v11 + v12);
 
             TSVector2 tangent = MathUtils.Mul(xf1.q, localTangent);
 
-            FP normalx = tangent.y;
-            FP normaly = -tangent.x;
+            FixedPoint normalx = tangent.y;
+            FixedPoint normaly = -tangent.x;
 
             v11 = MathUtils.Mul(ref xf1, v11);
             v12 = MathUtils.Mul(ref xf1, v12);
 
             // Face offset.
-            FP frontOffset = normalx * v11.x + normaly * v11.y;
+            FixedPoint frontOffset = normalx * v11.x + normaly * v11.y;
 
             // Side offsets, extended by polytope skin thickness.
-            FP sideOffset1 = -(tangent.x * v11.x + tangent.y * v11.y) + totalRadius;
-            FP sideOffset2 = tangent.x * v12.x + tangent.y * v12.y + totalRadius;
+            FixedPoint sideOffset1 = -(tangent.x * v11.x + tangent.y * v11.y) + totalRadius;
+            FixedPoint sideOffset2 = tangent.x * v12.x + tangent.y * v12.y + totalRadius;
 
             // Clip incident edge against extruded edge1 side edges.
             FixedArray2<ClipVertex> clipPoints1;
@@ -997,7 +997,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             for (int i = 0; i < Settings.MaxManifoldPoints; ++i)
             {
                 TSVector2 value = clipPoints2[i].V;
-                FP separation = normalx * value.x + normaly * value.y - frontOffset;
+                FixedPoint separation = normalx * value.x + normaly * value.y - frontOffset;
 
                 if (separation <= totalRadius)
                 {
@@ -1044,10 +1044,10 @@ namespace vFrame.Lockstep.Core.Physics2D
             TSVector2 e = B - A;
 
             // Barycentric coordinates
-            FP u = TSVector2.Dot(e, B - Q);
-            FP v = TSVector2.Dot(e, Q - A);
+            FixedPoint u = TSVector2.Dot(e, B - Q);
+            FixedPoint v = TSVector2.Dot(e, Q - A);
 
-            FP radius = edgeA.Radius + circleB.Radius;
+            FixedPoint radius = edgeA.Radius + circleB.Radius;
 
             ContactFeature cf;
             cf.IndexB = 0;
@@ -1056,11 +1056,11 @@ namespace vFrame.Lockstep.Core.Physics2D
             TSVector2 P, d;
 
             // Region A
-            if (v <= FP.Zero)
+            if (v <= FixedPoint.Zero)
             {
                 P = A;
                 d = Q - P;
-                FP dd;
+                FixedPoint dd;
                 TSVector2.Dot(ref d, ref d, out dd);
                 if (dd > radius * radius)
                 {
@@ -1073,10 +1073,10 @@ namespace vFrame.Lockstep.Core.Physics2D
                     TSVector2 A1 = edgeA.Vertex0;
                     TSVector2 B1 = A;
                     TSVector2 e1 = B1 - A1;
-                    FP u1 = TSVector2.Dot(e1, B1 - Q);
+                    FixedPoint u1 = TSVector2.Dot(e1, B1 - Q);
 
                     // Is the circle in Region AB of the previous edge?
-                    if (u1 > FP.Zero)
+                    if (u1 > FixedPoint.Zero)
                     {
                         return;
                     }
@@ -1097,11 +1097,11 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
 
             // Region B
-            if (u <= FP.Zero)
+            if (u <= FixedPoint.Zero)
             {
                 P = B;
                 d = Q - P;
-                FP dd;
+                FixedPoint dd;
                 TSVector2.Dot(ref d, ref d, out dd);
                 if (dd > radius * radius)
                 {
@@ -1114,10 +1114,10 @@ namespace vFrame.Lockstep.Core.Physics2D
                     TSVector2 B2 = edgeA.Vertex3;
                     TSVector2 A2 = B;
                     TSVector2 e2 = B2 - A2;
-                    FP v2 = TSVector2.Dot(e2, Q - A2);
+                    FixedPoint v2 = TSVector2.Dot(e2, Q - A2);
 
                     // Is the circle in Region AB of the next edge?
-                    if (v2 > FP.Zero)
+                    if (v2 > FixedPoint.Zero)
                     {
                         return;
                     }
@@ -1138,12 +1138,12 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
 
             // Region AB
-            FP den;
+            FixedPoint den;
             TSVector2.Dot(ref e, ref e, out den);
-            Debug.Assert(den > FP.Zero);
-            P = (FP.One / den) * (u * A + v * B);
+            Debug.Assert(den > FixedPoint.Zero);
+            P = (FixedPoint.One / den) * (u * A + v * B);
             d = Q - P;
-            FP dd2;
+            FixedPoint dd2;
             TSVector2.Dot(ref d, ref d, out dd2);
             if (dd2 > radius * radius)
             {
@@ -1151,7 +1151,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
 
             TSVector2 n = new TSVector2(-e.y, e.x);
-            if (TSVector2.Dot(n, Q - A) < FP.Zero)
+            if (TSVector2.Dot(n, Q - A) < FixedPoint.Zero)
             {
                 n = new TSVector2(-n.x, -n.y);
             }
@@ -1194,7 +1194,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             TSVector2 _normal0, _normal1, _normal2;
             TSVector2 _normal;
             TSVector2 _lowerLimit, _upperLimit;
-            FP _radius;
+            FixedPoint _radius;
             bool _front;
 
             public void Collide(ref Manifold manifold, EdgeShape edgeA, ref Transform xfA, PolygonShape polygonB, ref Transform xfB)
@@ -1224,8 +1224,8 @@ namespace vFrame.Lockstep.Core.Physics2D
                 TSVector2 edge1 = _v2 - _v1;
                 edge1.Normalize();
                 _normal1 = new TSVector2(edge1.y, -edge1.x);
-                FP offset1 = TSVector2.Dot(_normal1, _centroidB - _v1);
-                FP offset0 = FP.Zero, offset2 = FP.Zero;
+                FixedPoint offset1 = TSVector2.Dot(_normal1, _centroidB - _v1);
+                FixedPoint offset0 = FixedPoint.Zero, offset2 = FixedPoint.Zero;
                 bool convex1 = false, convex2 = false;
 
                 // Is there a preceding edge?
@@ -1234,7 +1234,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                     TSVector2 edge0 = _v1 - _v0;
                     edge0.Normalize();
                     _normal0 = new TSVector2(edge0.y, -edge0.x);
-                    convex1 = MathUtils.Cross(edge0, edge1) >= FP.Zero;
+                    convex1 = MathUtils.Cross(edge0, edge1) >= FixedPoint.Zero;
                     offset0 = TSVector2.Dot(_normal0, _centroidB - _v0);
                 }
 
@@ -1244,7 +1244,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                     TSVector2 edge2 = _v3 - _v2;
                     edge2.Normalize();
                     _normal2 = new TSVector2(edge2.y, -edge2.x);
-                    convex2 = MathUtils.Cross(edge1, edge2) > FP.Zero;
+                    convex2 = MathUtils.Cross(edge1, edge2) > FixedPoint.Zero;
                     offset2 = TSVector2.Dot(_normal2, _centroidB - _v2);
                 }
 
@@ -1253,7 +1253,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 {
                     if (convex1 && convex2)
                     {
-                        _front = offset0 >= FP.Zero || offset1 >= FP.Zero || offset2 >= FP.Zero;
+                        _front = offset0 >= FixedPoint.Zero || offset1 >= FixedPoint.Zero || offset2 >= FixedPoint.Zero;
                         if (_front)
                         {
                             _normal = _normal1;
@@ -1269,7 +1269,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                     }
                     else if (convex1)
                     {
-                        _front = offset0 >= FP.Zero || (offset1 >= FP.Zero && offset2 >= FP.Zero);
+                        _front = offset0 >= FixedPoint.Zero || (offset1 >= FixedPoint.Zero && offset2 >= FixedPoint.Zero);
                         if (_front)
                         {
                             _normal = _normal1;
@@ -1285,7 +1285,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                     }
                     else if (convex2)
                     {
-                        _front = offset2 >= FP.Zero || (offset0 >= FP.Zero && offset1 >= FP.Zero);
+                        _front = offset2 >= FixedPoint.Zero || (offset0 >= FixedPoint.Zero && offset1 >= FixedPoint.Zero);
                         if (_front)
                         {
                             _normal = _normal1;
@@ -1301,7 +1301,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                     }
                     else
                     {
-                        _front = offset0 >= FP.Zero && offset1 >= FP.Zero && offset2 >= FP.Zero;
+                        _front = offset0 >= FixedPoint.Zero && offset1 >= FixedPoint.Zero && offset2 >= FixedPoint.Zero;
                         if (_front)
                         {
                             _normal = _normal1;
@@ -1320,7 +1320,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 {
                     if (convex1)
                     {
-                        _front = offset0 >= FP.Zero || offset1 >= FP.Zero;
+                        _front = offset0 >= FixedPoint.Zero || offset1 >= FixedPoint.Zero;
                         if (_front)
                         {
                             _normal = _normal1;
@@ -1336,7 +1336,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                     }
                     else
                     {
-                        _front = offset0 >= FP.Zero && offset1 >= FP.Zero;
+                        _front = offset0 >= FixedPoint.Zero && offset1 >= FixedPoint.Zero;
                         if (_front)
                         {
                             _normal = _normal1;
@@ -1355,7 +1355,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 {
                     if (convex2)
                     {
-                        _front = offset1 >= FP.Zero || offset2 >= FP.Zero;
+                        _front = offset1 >= FixedPoint.Zero || offset2 >= FixedPoint.Zero;
                         if (_front)
                         {
                             _normal = _normal1;
@@ -1371,7 +1371,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                     }
                     else
                     {
-                        _front = offset1 >= FP.Zero && offset2 >= FP.Zero;
+                        _front = offset1 >= FixedPoint.Zero && offset2 >= FixedPoint.Zero;
                         if (_front)
                         {
                             _normal = _normal1;
@@ -1388,7 +1388,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 }
                 else
                 {
-                    _front = offset1 >= FP.Zero;
+                    _front = offset1 >= FixedPoint.Zero;
                     if (_front)
                     {
                         _normal = _normal1;
@@ -1435,8 +1435,8 @@ namespace vFrame.Lockstep.Core.Physics2D
                 }
 
                 // Use hysteresis for jitter reduction.
-                FP k_relativeTol = 98 * FP.EN2;// 0.98f;
-                FP k_absoluteTol = FP.EN3;//0.001f;
+                FixedPoint k_relativeTol = 98 * FixedPoint.EN2;// 0.98f;
+                FixedPoint k_absoluteTol = FixedPoint.EN3;//0.001f;
 
                 EPAxis primaryAxis;
                 if (polygonAxis.Type == EPAxisType.Unknown)
@@ -1460,10 +1460,10 @@ namespace vFrame.Lockstep.Core.Physics2D
 
                     // Search for the polygon normal that is most anti-parallel to the edge normal.
                     int bestIndex = 0;
-                    FP bestValue = TSVector2.Dot(_normal, _polygonB.Normals[0]);
+                    FixedPoint bestValue = TSVector2.Dot(_normal, _polygonB.Normals[0]);
                     for (int i = 1; i < _polygonB.Count; ++i)
                     {
-                        FP value = TSVector2.Dot(_normal, _polygonB.Normals[i]);
+                        FixedPoint value = TSVector2.Dot(_normal, _polygonB.Normals[i]);
                         if (value < bestValue)
                         {
                             bestValue = value;
@@ -1574,7 +1574,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 int pointCount = 0;
                 for (int i = 0; i < Settings.MaxManifoldPoints; ++i)
                 {
-                    FP separation = TSVector2.Dot(rf.normal, clipPoints2[i].V - rf.v1);
+                    FixedPoint separation = TSVector2.Dot(rf.normal, clipPoints2[i].V - rf.v1);
 
                     if (separation <= _radius)
                     {
@@ -1611,7 +1611,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
                 for (int i = 0; i < _polygonB.Count; ++i)
                 {
-                    FP s = TSVector2.Dot(_normal, _polygonB.Vertices[i] - _v1);
+                    FixedPoint s = TSVector2.Dot(_normal, _polygonB.Vertices[i] - _v1);
                     if (s < axis.Separation)
                     {
                         axis.Separation = s;
@@ -1634,9 +1634,9 @@ namespace vFrame.Lockstep.Core.Physics2D
                 {
                     TSVector2 n = -_polygonB.Normals[i];
 
-                    FP s1 = TSVector2.Dot(n, _polygonB.Vertices[i] - _v1);
-                    FP s2 = TSVector2.Dot(n, _polygonB.Vertices[i] - _v2);
-                    FP s = TSMath.Min(s1, s2);
+                    FixedPoint s1 = TSVector2.Dot(n, _polygonB.Vertices[i] - _v1);
+                    FixedPoint s2 = TSVector2.Dot(n, _polygonB.Vertices[i] - _v2);
+                    FixedPoint s = TSMath.Min(s1, s2);
 
                     if (s > _radius)
                     {
@@ -1648,7 +1648,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                     }
 
                     // Adjacency
-                    if (TSVector2.Dot(n, perp) >= FP.Zero)
+                    if (TSVector2.Dot(n, perp) >= FixedPoint.Zero)
                     {
                         if (TSVector2.Dot(n - _upperLimit, _normal) < -Settings.AngularSlop)
                         {
@@ -1684,7 +1684,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="offset">The offset.</param>
         /// <param name="vertexIndexA">The vertex index A.</param>
         /// <returns></returns>
-        private static int ClipSegmentToLine(out FixedArray2<ClipVertex> vOut, ref FixedArray2<ClipVertex> vIn, TSVector2 normal, FP offset, int vertexIndexA)
+        private static int ClipSegmentToLine(out FixedArray2<ClipVertex> vOut, ref FixedArray2<ClipVertex> vIn, TSVector2 normal, FixedPoint offset, int vertexIndexA)
         {
             vOut = new FixedArray2<ClipVertex>();
 
@@ -1695,18 +1695,18 @@ namespace vFrame.Lockstep.Core.Physics2D
             int numOut = 0;
 
             // Calculate the distance of end points to the line
-            FP distance0 = normal.x * v0.V.x + normal.y * v0.V.y - offset;
-            FP distance1 = normal.x * v1.V.x + normal.y * v1.V.y - offset;
+            FixedPoint distance0 = normal.x * v0.V.x + normal.y * v0.V.y - offset;
+            FixedPoint distance1 = normal.x * v1.V.x + normal.y * v1.V.y - offset;
 
             // If the points are behind the plane
-            if (distance0 <= FP.Zero) vOut[numOut++] = v0;
-            if (distance1 <= FP.Zero) vOut[numOut++] = v1;
+            if (distance0 <= FixedPoint.Zero) vOut[numOut++] = v0;
+            if (distance1 <= FixedPoint.Zero) vOut[numOut++] = v1;
 
             // If the points are on different sides of the plane
-            if (distance0 * distance1 < FP.Zero)
+            if (distance0 * distance1 < FixedPoint.Zero)
             {
                 // Find intersection point of edge and plane
-                FP interp = distance0 / (distance0 - distance1);
+                FixedPoint interp = distance0 / (distance0 - distance1);
 
                 ClipVertex cv = vOut[numOut];
 
@@ -1736,7 +1736,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="poly2">The poly2.</param>
         /// <param name="xf2">The XF2.</param>
         /// <returns></returns>
-        private static FP EdgeSeparation(PolygonShape poly1, ref Transform xf1, int edge1, PolygonShape poly2, ref Transform xf2)
+        private static FixedPoint EdgeSeparation(PolygonShape poly1, ref Transform xf1, int edge1, PolygonShape poly2, ref Transform xf2)
         {
             List<TSVector2> vertices1 = poly1.Vertices;
             List<TSVector2> normals1 = poly1.Normals;
@@ -1752,11 +1752,11 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             // Find support vertex on poly2 for -normal.
             int index = 0;
-            FP minDot = Settings.MaxFP;
+            FixedPoint minDot = Settings.MaxFP;
 
             for (int i = 0; i < count2; ++i)
             {
-                FP dot = TSVector2.Dot(vertices2[i], normal1);
+                FixedPoint dot = TSVector2.Dot(vertices2[i], normal1);
                 if (dot < minDot)
                 {
                     minDot = dot;
@@ -1766,7 +1766,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             TSVector2 v1 = MathUtils.Mul(ref xf1, vertices1[edge1]);
             TSVector2 v2 = MathUtils.Mul(ref xf2, vertices2[index]);
-            FP separation = TSVector2.Dot(v2 - v1, normal1World);
+            FixedPoint separation = TSVector2.Dot(v2 - v1, normal1World);
             return separation;
         }
 
@@ -1779,7 +1779,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="poly2">The poly2.</param>
         /// <param name="xf2">The XF2.</param>
         /// <returns></returns>
-        private static FP FindMaxSeparation(out int edgeIndex, PolygonShape poly1, ref Transform xf1, PolygonShape poly2, ref Transform xf2)
+        private static FixedPoint FindMaxSeparation(out int edgeIndex, PolygonShape poly1, ref Transform xf1, PolygonShape poly2, ref Transform xf2)
         {
             int count1 = poly1.Vertices.Count;
             List<TSVector2> normals1 = poly1.Normals;
@@ -1790,10 +1790,10 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             // Find edge normal on poly1 that has the largest projection onto d.
             int edge = 0;
-            FP maxDot = -Settings.MaxFP;
+            FixedPoint maxDot = -Settings.MaxFP;
             for (int i = 0; i < count1; ++i)
             {
-                FP dot = TSVector2.Dot(normals1[i], dLocal1);
+                FixedPoint dot = TSVector2.Dot(normals1[i], dLocal1);
                 if (dot > maxDot)
                 {
                     maxDot = dot;
@@ -1802,19 +1802,19 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
 
             // Get the separation for the edge normal.
-            FP s = EdgeSeparation(poly1, ref  xf1, edge, poly2, ref xf2);
+            FixedPoint s = EdgeSeparation(poly1, ref  xf1, edge, poly2, ref xf2);
 
             // Check the separation for the previous edge normal.
             int prevEdge = edge - 1 >= 0 ? edge - 1 : count1 - 1;
-            FP sPrev = EdgeSeparation(poly1, ref  xf1, prevEdge, poly2, ref xf2);
+            FixedPoint sPrev = EdgeSeparation(poly1, ref  xf1, prevEdge, poly2, ref xf2);
 
             // Check the separation for the next edge normal.
             int nextEdge = edge + 1 < count1 ? edge + 1 : 0;
-            FP sNext = EdgeSeparation(poly1, ref xf1, nextEdge, poly2, ref xf2);
+            FixedPoint sNext = EdgeSeparation(poly1, ref xf1, nextEdge, poly2, ref xf2);
 
             // Find the best edge and the search direction.
             int bestEdge;
-            FP bestSeparation;
+            FixedPoint bestSeparation;
             int increment;
             if (sPrev > s && sPrev > sNext)
             {
@@ -1876,10 +1876,10 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             // Find the incident edge on poly2.
             int index = 0;
-            FP minDot = Settings.MaxFP;
+            FixedPoint minDot = Settings.MaxFP;
             for (int i = 0; i < count2; ++i)
             {
-                FP dot = TSVector2.Dot(normal1, normals2[i]);
+                FixedPoint dot = TSVector2.Dot(normal1, normals2[i]);
                 if (dot < minDot)
                 {
                     minDot = dot;

@@ -52,8 +52,8 @@ namespace vFrame.Lockstep.Core {
 
         #region Public Fields
 
-        public FP x;
-        public FP y;
+        public FixedPoint x;
+        public FixedPoint y;
 
         #endregion Public Fields
 
@@ -89,7 +89,7 @@ namespace vFrame.Lockstep.Core {
 
         public static TSVector2 FromFloat(float x, float y)
         {
-            return new TSVector2(FP.FromFloat(x), FP.FromFloat(y));
+            return new TSVector2(FixedPoint.FromFloat(x), FixedPoint.FromFloat(y));
         }
 
         #endregion Properties
@@ -105,7 +105,7 @@ namespace vFrame.Lockstep.Core {
         /// <param name="y">
         /// A <see cref="System.Single"/>
         /// </param>
-        public TSVector2(FP x, FP y)
+        public TSVector2(FixedPoint x, FixedPoint y)
         {
             this.x = x;
             this.y = y;
@@ -117,13 +117,13 @@ namespace vFrame.Lockstep.Core {
         /// <param name="value">
         /// A <see cref="System.Single"/>
         /// </param>
-        public TSVector2(FP value)
+        public TSVector2(FixedPoint value)
         {
             x = value;
             y = value;
         }
 
-        public void Set(FP x, FP y) {
+        public void Set(FixedPoint x, FixedPoint y) {
             this.x = x;
             this.y = y;
         }
@@ -134,7 +134,7 @@ namespace vFrame.Lockstep.Core {
 
         public static void Reflect(ref TSVector2 vector, ref TSVector2 normal, out TSVector2 result)
         {
-            FP dot = Dot(vector, normal);
+            FixedPoint dot = Dot(vector, normal);
             result.x = vector.x - ((2*dot)*normal.x);
             result.y = vector.y - ((2*dot)*normal.y);
         }
@@ -159,22 +159,22 @@ namespace vFrame.Lockstep.Core {
             result.y = value1.y + value2.y;
         }
 
-        public static TSVector2 Barycentric(TSVector2 value1, TSVector2 value2, TSVector2 value3, FP amount1, FP amount2)
+        public static TSVector2 Barycentric(TSVector2 value1, TSVector2 value2, TSVector2 value3, FixedPoint amount1, FixedPoint amount2)
         {
             return new TSVector2(
                 TSMath.Barycentric(value1.x, value2.x, value3.x, amount1, amount2),
                 TSMath.Barycentric(value1.y, value2.y, value3.y, amount1, amount2));
         }
 
-        public static void Barycentric(ref TSVector2 value1, ref TSVector2 value2, ref TSVector2 value3, FP amount1,
-                                       FP amount2, out TSVector2 result)
+        public static void Barycentric(ref TSVector2 value1, ref TSVector2 value2, ref TSVector2 value3, FixedPoint amount1,
+                                       FixedPoint amount2, out TSVector2 result)
         {
             result = new TSVector2(
                 TSMath.Barycentric(value1.x, value2.x, value3.x, amount1, amount2),
                 TSMath.Barycentric(value1.y, value2.y, value3.y, amount1, amount2));
         }
 
-        public static TSVector2 CatmullRom(TSVector2 value1, TSVector2 value2, TSVector2 value3, TSVector2 value4, FP amount)
+        public static TSVector2 CatmullRom(TSVector2 value1, TSVector2 value2, TSVector2 value3, TSVector2 value4, FixedPoint amount)
         {
             return new TSVector2(
                 TSMath.CatmullRom(value1.x, value2.x, value3.x, value4.x, amount),
@@ -182,7 +182,7 @@ namespace vFrame.Lockstep.Core {
         }
 
         public static void CatmullRom(ref TSVector2 value1, ref TSVector2 value2, ref TSVector2 value3, ref TSVector2 value4,
-                                      FP amount, out TSVector2 result)
+                                      FixedPoint amount, out TSVector2 result)
         {
             result = new TSVector2(
                 TSMath.CatmullRom(value1.x, value2.x, value3.x, value4.x, amount),
@@ -215,28 +215,28 @@ namespace vFrame.Lockstep.Core {
         /// <returns>
         /// A <see cref="System.Single"/>
         /// </returns>
-        public static FP Distance(TSVector2 value1, TSVector2 value2)
+        public static FixedPoint Distance(TSVector2 value1, TSVector2 value2)
         {
-            FP result;
+            FixedPoint result;
             DistanceSquared(ref value1, ref value2, out result);
-            return (FP) FP.Sqrt(result);
+            return (FixedPoint) FixedPoint.Sqrt(result);
         }
 
 
-        public static void Distance(ref TSVector2 value1, ref TSVector2 value2, out FP result)
+        public static void Distance(ref TSVector2 value1, ref TSVector2 value2, out FixedPoint result)
         {
             DistanceSquared(ref value1, ref value2, out result);
-            result = (FP) FP.Sqrt(result);
+            result = (FixedPoint) FixedPoint.Sqrt(result);
         }
 
-        public static FP DistanceSquared(TSVector2 value1, TSVector2 value2)
+        public static FixedPoint DistanceSquared(TSVector2 value1, TSVector2 value2)
         {
-            FP result;
+            FixedPoint result;
             DistanceSquared(ref value1, ref value2, out result);
             return result;
         }
 
-        public static void DistanceSquared(ref TSVector2 value1, ref TSVector2 value2, out FP result)
+        public static void DistanceSquared(ref TSVector2 value1, ref TSVector2 value2, out FixedPoint result)
         {
             result = (value1.x - value2.x)*(value1.x - value2.x) + (value1.y - value2.y)*(value1.y - value2.y);
         }
@@ -266,27 +266,27 @@ namespace vFrame.Lockstep.Core {
             result.y = value1.y/value2.y;
         }
 
-        public static TSVector2 Divide(TSVector2 value1, FP divider)
+        public static TSVector2 Divide(TSVector2 value1, FixedPoint divider)
         {
-            FP factor = 1/divider;
+            FixedPoint factor = 1/divider;
             value1.x *= factor;
             value1.y *= factor;
             return value1;
         }
 
-        public static void Divide(ref TSVector2 value1, FP divider, out TSVector2 result)
+        public static void Divide(ref TSVector2 value1, FixedPoint divider, out TSVector2 result)
         {
-            FP factor = 1/divider;
+            FixedPoint factor = 1/divider;
             result.x = value1.x*factor;
             result.y = value1.y*factor;
         }
 
-        public static FP Dot(TSVector2 value1, TSVector2 value2)
+        public static FixedPoint Dot(TSVector2 value1, TSVector2 value2)
         {
             return value1.x*value2.x + value1.y*value2.y;
         }
 
-        public static void Dot(ref TSVector2 value1, ref TSVector2 value2, out FP result)
+        public static void Dot(ref TSVector2 value1, ref TSVector2 value2, out FixedPoint result)
         {
             result = value1.x*value2.x + value1.y*value2.y;
         }
@@ -306,7 +306,7 @@ namespace vFrame.Lockstep.Core {
             return (int) (x + y);
         }
 
-        public static TSVector2 Hermite(TSVector2 value1, TSVector2 tangent1, TSVector2 value2, TSVector2 tangent2, FP amount)
+        public static TSVector2 Hermite(TSVector2 value1, TSVector2 tangent1, TSVector2 value2, TSVector2 tangent2, FixedPoint amount)
         {
             TSVector2 result = new TSVector2();
             Hermite(ref value1, ref tangent1, ref value2, ref tangent2, amount, out result);
@@ -314,37 +314,37 @@ namespace vFrame.Lockstep.Core {
         }
 
         public static void Hermite(ref TSVector2 value1, ref TSVector2 tangent1, ref TSVector2 value2, ref TSVector2 tangent2,
-                                   FP amount, out TSVector2 result)
+                                   FixedPoint amount, out TSVector2 result)
         {
             result.x = TSMath.Hermite(value1.x, tangent1.x, value2.x, tangent2.x, amount);
             result.y = TSMath.Hermite(value1.y, tangent1.y, value2.y, tangent2.y, amount);
         }
 
-        public FP magnitude {
+        public FixedPoint magnitude {
             get {
-                return FP.Sqrt(sqrtMagnitude);
+                return FixedPoint.Sqrt(sqrtMagnitude);
             }
         }
 
-        public FP sqrtMagnitude
+        public FixedPoint sqrtMagnitude
         {
             get
             {
-                FP result = x * x + y * y;
+                FixedPoint result = x * x + y * y;
                 return result;
             }
         }
 
-        public FP LengthSquared()
+        public FixedPoint LengthSquared()
         {
             return sqrtMagnitude;
         }
 
-        public static TSVector2 ClampMagnitude(TSVector2 vector, FP maxLength) {
+        public static TSVector2 ClampMagnitude(TSVector2 vector, FixedPoint maxLength) {
             return Normalize(vector) * maxLength;
         }
         
-        public static TSVector2 Lerp(TSVector2 value1, TSVector2 value2, FP amount) {
+        public static TSVector2 Lerp(TSVector2 value1, TSVector2 value2, FixedPoint amount) {
             amount = TSMath.Clamp(amount, 0, 1);
 
             return new TSVector2(
@@ -352,14 +352,14 @@ namespace vFrame.Lockstep.Core {
                 TSMath.Lerp(value1.y, value2.y, amount));
         }
 
-        public static TSVector2 LerpUnclamped(TSVector2 value1, TSVector2 value2, FP amount)
+        public static TSVector2 LerpUnclamped(TSVector2 value1, TSVector2 value2, FixedPoint amount)
         {
             return new TSVector2(
                 TSMath.Lerp(value1.x, value2.x, amount),
                 TSMath.Lerp(value1.y, value2.y, amount));
         }
 
-        public static void LerpUnclamped(ref TSVector2 value1, ref TSVector2 value2, FP amount, out TSVector2 result)
+        public static void LerpUnclamped(ref TSVector2 value1, ref TSVector2 value2, FixedPoint amount, out TSVector2 result)
         {
             result = new TSVector2(
                 TSMath.Lerp(value1.x, value2.x, amount),
@@ -412,14 +412,14 @@ namespace vFrame.Lockstep.Core {
             return value1;
         }
 
-        public static TSVector2 Multiply(TSVector2 value1, FP scaleFactor)
+        public static TSVector2 Multiply(TSVector2 value1, FixedPoint scaleFactor)
         {
             value1.x *= scaleFactor;
             value1.y *= scaleFactor;
             return value1;
         }
 
-        public static void Multiply(ref TSVector2 value1, FP scaleFactor, out TSVector2 result)
+        public static void Multiply(ref TSVector2 value1, FixedPoint scaleFactor, out TSVector2 result)
         {
             result.x = value1.x*scaleFactor;
             result.y = value1.y*scaleFactor;
@@ -466,21 +466,21 @@ namespace vFrame.Lockstep.Core {
 
         public static void Normalize(ref TSVector2 value, out TSVector2 result)
         {
-            FP factor;
+            FixedPoint factor;
             DistanceSquared(ref value, ref zeroVector, out factor);
-            factor = FP.One/(FP) FP.Sqrt(factor);
+            factor = FixedPoint.One/(FixedPoint) FixedPoint.Sqrt(factor);
             result.x = value.x*factor;
             result.y = value.y*factor;
         }
 
-        public static TSVector2 SmoothStep(TSVector2 value1, TSVector2 value2, FP amount)
+        public static TSVector2 SmoothStep(TSVector2 value1, TSVector2 value2, FixedPoint amount)
         {
             return new TSVector2(
                 TSMath.SmoothStep(value1.x, value2.x, amount),
                 TSMath.SmoothStep(value1.y, value2.y, amount));
         }
 
-        public static void SmoothStep(ref TSVector2 value1, ref TSVector2 value2, FP amount, out TSVector2 result)
+        public static void SmoothStep(ref TSVector2 value1, ref TSVector2 value2, FixedPoint amount, out TSVector2 result)
         {
             result = new TSVector2(
                 TSMath.SmoothStep(value1.x, value2.x, amount),
@@ -500,8 +500,8 @@ namespace vFrame.Lockstep.Core {
             result.y = value1.y - value2.y;
         }
 
-        public static FP Angle(TSVector2 a, TSVector2 b) {
-            return FP.Acos(a.normalized * b.normalized) * FP.Rad2Deg;
+        public static FixedPoint Angle(TSVector2 a, TSVector2 b) {
+            return FixedPoint.Acos(a.normalized * b.normalized) * FixedPoint.Rad2Deg;
         }
 
         public TSVector ToTSVector() {
@@ -552,13 +552,13 @@ namespace vFrame.Lockstep.Core {
         }
 
 
-        public static FP operator *(TSVector2 value1, TSVector2 value2)
+        public static FixedPoint operator *(TSVector2 value1, TSVector2 value2)
         {
             return TSVector2.Dot(value1, value2);
         }
 
 
-        public static TSVector2 operator *(TSVector2 value, FP scaleFactor)
+        public static TSVector2 operator *(TSVector2 value, FixedPoint scaleFactor)
         {
             value.x *= scaleFactor;
             value.y *= scaleFactor;
@@ -566,7 +566,7 @@ namespace vFrame.Lockstep.Core {
         }
 
 
-        public static TSVector2 operator *(FP scaleFactor, TSVector2 value)
+        public static TSVector2 operator *(FixedPoint scaleFactor, TSVector2 value)
         {
             value.x *= scaleFactor;
             value.y *= scaleFactor;
@@ -582,9 +582,9 @@ namespace vFrame.Lockstep.Core {
         }
 
 
-        public static TSVector2 operator /(TSVector2 value1, FP divider)
+        public static TSVector2 operator /(TSVector2 value1, FixedPoint divider)
         {
-            FP factor = 1/divider;
+            FixedPoint factor = 1/divider;
             value1.x *= factor;
             value1.y *= factor;
             return value1;

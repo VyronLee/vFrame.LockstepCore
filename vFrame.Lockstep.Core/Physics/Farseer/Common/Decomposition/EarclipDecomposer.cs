@@ -45,7 +45,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="vertices">The vertices.</param>
         /// <param name="tolerance">The tolerance.</param>
         // TS - public static List<Vertices> ConvexPartition(Vertices vertices, FP tolerance = 0.001f)
-        public static List<Vertices> ConvexPartition(Vertices vertices, FP tolerance)
+        public static List<Vertices> ConvexPartition(Vertices vertices, FixedPoint tolerance)
         {
             Debug.Assert(vertices.Count > 3);
             Debug.Assert(!vertices.IsCounterClockWise());
@@ -71,7 +71,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <remarks>
         /// Only works on simple polygons.
         /// </remarks>
-        private static List<Vertices> TriangulatePolygon(Vertices vertices, FP tolerance)
+        private static List<Vertices> TriangulatePolygon(Vertices vertices, FixedPoint tolerance)
         {
             //FPE note: Check is needed as invalid triangles can be returned in recursive calls.
             if (vertices.Count < 3)
@@ -104,8 +104,8 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             Vertices[] buffer = new Vertices[vertices.Count - 2];
             int bufferSize = 0;
-            FP[] xrem = new FP[vertices.Count];
-            FP[] yrem = new FP[vertices.Count];
+            FixedPoint[] xrem = new FixedPoint[vertices.Count];
+            FixedPoint[] yrem = new FixedPoint[vertices.Count];
             for (int i = 0; i < vertices.Count; ++i)
             {
                 xrem[i] = vertices[i].x;
@@ -118,7 +118,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             {
                 // Find an ear
                 int earIndex = -1;
-                FP earMaxMinCross = -10;
+                FixedPoint earMaxMinCross = -10;
                 for (int i = 0; i < vNum; ++i)
                 {
                     if (IsEar(i, xrem, yrem, vNum))
@@ -132,20 +132,20 @@ namespace vFrame.Lockstep.Core.Physics2D
                         d1.Normalize();
                         d2.Normalize();
                         d3.Normalize();
-                        FP cross12;
+                        FixedPoint cross12;
                         MathUtils.Cross(ref d1, ref d2, out cross12);
-                        cross12 = FP.Abs(cross12);
+                        cross12 = FixedPoint.Abs(cross12);
 
-                        FP cross23;
+                        FixedPoint cross23;
                         MathUtils.Cross(ref d2, ref d3, out cross23);
-                        cross23 = FP.Abs(cross23);
+                        cross23 = FixedPoint.Abs(cross23);
 
-                        FP cross31;
+                        FixedPoint cross31;
                         MathUtils.Cross(ref d3, ref d1, out cross31);
-                        cross31 = FP.Abs(cross31);
+                        cross31 = FixedPoint.Abs(cross31);
 
                         //Find the maximum minimum angle
-                        FP minCross = TSMath.Min(cross12, TSMath.Min(cross23, cross31));
+                        FixedPoint minCross = TSMath.Min(cross12, TSMath.Min(cross23, cross31));
                         if (minCross > earMaxMinCross)
                         {
                             earIndex = i;
@@ -172,8 +172,8 @@ namespace vFrame.Lockstep.Core.Physics2D
                 // - remove the ear tip from the list
 
                 --vNum;
-                FP[] newx = new FP[vNum];
-                FP[] newy = new FP[vNum];
+                FixedPoint[] newx = new FixedPoint[vNum];
+                FixedPoint[] newy = new FixedPoint[vNum];
                 int currDest = 0;
                 for (int i = 0; i < vNum; ++i)
                 {
@@ -223,7 +223,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="poutA">The pout A.</param>
         /// <param name="poutB">The pout B.</param>
         /// <param name="tolerance"></param>
-        private static bool ResolvePinchPoint(Vertices pin, out Vertices poutA, out Vertices poutB, FP tolerance)
+        private static bool ResolvePinchPoint(Vertices pin, out Vertices poutA, out Vertices poutB, FixedPoint tolerance)
         {
             poutA = new Vertices();
             poutB = new Vertices();
@@ -240,7 +240,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 {
                     //Don't worry about pinch points where the points
                     //are actually just dupe neighbors
-                    if (FP.Abs(pin[i].x - pin[j].x) < tolerance && FP.Abs(pin[i].y - pin[j].y) < tolerance && j != i + 1)
+                    if (FixedPoint.Abs(pin[i].x - pin[j].x) < tolerance && FixedPoint.Abs(pin[i].y - pin[j].y) < tolerance && j != i + 1)
                     {
                         pinchIndexA = i;
                         pinchIndexB = j;
@@ -299,9 +299,9 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <returns>
         /// 	<c>true</c> if the specified i is ear; otherwise, <c>false</c>.
         /// </returns>
-        private static bool IsEar(int i, FP[] xv, FP[] yv, int xvLength)
+        private static bool IsEar(int i, FixedPoint[] xv, FixedPoint[] yv, int xvLength)
         {
-            FP dx0, dy0, dx1, dy1;
+            FixedPoint dx0, dy0, dx1, dy1;
             if (i >= xvLength || i < 0 || xvLength < 3)
             {
                 return false;
@@ -332,7 +332,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 dy1 = yv[i + 1] - yv[i];
             }
 
-            FP cross = dx0 * dy1 - dx1 * dy0;
+            FixedPoint cross = dx0 * dy1 - dx1 * dy0;
 
             if (cross > 0)
                 return false;
@@ -352,9 +352,9 @@ namespace vFrame.Lockstep.Core.Physics2D
         private class Triangle : Vertices
         {
             //Constructor automatically fixes orientation to ccw
-            public Triangle(FP x1, FP y1, FP x2, FP y2, FP x3, FP y3)
+            public Triangle(FixedPoint x1, FixedPoint y1, FixedPoint x2, FixedPoint y2, FixedPoint x3, FixedPoint y3)
             {
-                FP cross = (x2 - x1) * (y3 - y1) - (x3 - x1) * (y2 - y1);
+                FixedPoint cross = (x2 - x1) * (y3 - y1) - (x3 - x1) * (y2 - y1);
                 if (cross > 0)
                 {
                     Add(new TSVector2(x1, y1));
@@ -369,7 +369,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 }
             }
 
-            public bool IsInside(FP x, FP y)
+            public bool IsInside(FixedPoint x, FixedPoint y)
             {
                 TSVector2 a = this[0];
                 TSVector2 b = this[1];
@@ -380,21 +380,21 @@ namespace vFrame.Lockstep.Core.Physics2D
                 if (y < a.y && y < b.y && y < c.y) return false;
                 if (y > a.y && y > b.y && y > c.y) return false;
 
-                FP vx2 = x - a.x;
-                FP vy2 = y - a.y;
-                FP vx1 = b.x - a.x;
-                FP vy1 = b.y - a.y;
-                FP vx0 = c.x - a.x;
-                FP vy0 = c.y - a.y;
+                FixedPoint vx2 = x - a.x;
+                FixedPoint vy2 = y - a.y;
+                FixedPoint vx1 = b.x - a.x;
+                FixedPoint vy1 = b.y - a.y;
+                FixedPoint vx0 = c.x - a.x;
+                FixedPoint vy0 = c.y - a.y;
 
-                FP dot00 = vx0 * vx0 + vy0 * vy0;
-                FP dot01 = vx0 * vx1 + vy0 * vy1;
-                FP dot02 = vx0 * vx2 + vy0 * vy2;
-                FP dot11 = vx1 * vx1 + vy1 * vy1;
-                FP dot12 = vx1 * vx2 + vy1 * vy2;
-                FP invDenom = FP.One / (dot00 * dot11 - dot01 * dot01);
-                FP u = (dot11 * dot02 - dot01 * dot12) * invDenom;
-                FP v = (dot00 * dot12 - dot01 * dot02) * invDenom;
+                FixedPoint dot00 = vx0 * vx0 + vy0 * vy0;
+                FixedPoint dot01 = vx0 * vx1 + vy0 * vy1;
+                FixedPoint dot02 = vx0 * vx2 + vy0 * vy2;
+                FixedPoint dot11 = vx1 * vx1 + vy1 * vy1;
+                FixedPoint dot12 = vx1 * vx2 + vy1 * vy2;
+                FixedPoint invDenom = FixedPoint.One / (dot00 * dot11 - dot01 * dot01);
+                FixedPoint u = (dot11 * dot02 - dot01 * dot12) * invDenom;
+                FixedPoint v = (dot00 * dot12 - dot01 * dot02) * invDenom;
 
                 return ((u > 0) && (v > 0) && (u + v < 1));
             }

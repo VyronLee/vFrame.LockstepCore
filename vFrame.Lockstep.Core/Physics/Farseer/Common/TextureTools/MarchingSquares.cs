@@ -46,7 +46,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="lerpCount"></param>
         /// <param name="combine"></param>
         /// <returns></returns>
-        public static List<Vertices> DetectSquares(AABB domain, FP cellWidth, FP cellHeight, sbyte[,] f,
+        public static List<Vertices> DetectSquares(AABB domain, FixedPoint cellWidth, FixedPoint cellHeight, sbyte[,] f,
                                                    int lerpCount, bool combine)
         {
             CxFastList<GeomPoly> ret = new CxFastList<GeomPoly>();
@@ -85,15 +85,15 @@ namespace vFrame.Lockstep.Core.Physics2D
             //generate sub-polys and combine to scan lines
             for (int y = 0; y < yn; y++)
             {
-                FP y0 = y * cellHeight + domain.LowerBound.y;
-                FP y1;
+                FixedPoint y0 = y * cellHeight + domain.LowerBound.y;
+                FixedPoint y1;
                 if (y == yn - 1) y1 = domain.UpperBound.y;
                 else y1 = y0 + cellHeight;
                 GeomPoly pre = null;
                 for (int x = 0; x < xn; x++)
                 {
-                    FP x0 = x * cellWidth + domain.LowerBound.x;
-                    FP x1;
+                    FixedPoint x0 = x * cellWidth + domain.LowerBound.x;
+                    FixedPoint x1;
                     if (x == xn - 1) x1 = domain.UpperBound.x;
                     else x1 = x0 + cellWidth;
 
@@ -165,8 +165,8 @@ namespace vFrame.Lockstep.Core.Physics2D
                         continue;
                     }
 
-                    FP ax = x * cellWidth + domain.LowerBound.x;
-                    FP ay = y * cellHeight + domain.LowerBound.y;
+                    FixedPoint ax = x * cellWidth + domain.LowerBound.x;
+                    FixedPoint ay = y * cellHeight + domain.LowerBound.y;
 
                     CxFastList<TSVector2> bp = p.GeomP.Points;
                     CxFastList<TSVector2> ap = u.GeomP.Points;
@@ -274,12 +274,12 @@ namespace vFrame.Lockstep.Core.Physics2D
                                               0x6D, 0xB5, 0x55
                                           };
 
-        private static FP Lerp(FP x0, FP x1, FP v0, FP v1)
+        private static FixedPoint Lerp(FixedPoint x0, FixedPoint x1, FixedPoint v0, FixedPoint v1)
         {
-            FP dv = v0 - v1;
-            FP t;
+            FixedPoint dv = v0 - v1;
+            FixedPoint t;
             if (dv * dv < Settings.Epsilon)
-                t = 5*FP.EN1;
+                t = 5*FixedPoint.EN1;
             else t = v0 / dv;
             return x0 + t * (x1 - x0);
         }
@@ -288,9 +288,9 @@ namespace vFrame.Lockstep.Core.Physics2D
 
         /** Recursive linear interpolation for use in marching squares **/
 
-        private static FP Xlerp(FP x0, FP x1, FP y, FP v0, FP v1, sbyte[,] f, int c)
+        private static FixedPoint Xlerp(FixedPoint x0, FixedPoint x1, FixedPoint y, FixedPoint v0, FixedPoint v1, sbyte[,] f, int c)
         {
-            FP xm = Lerp(x0, x1, v0, v1);
+            FixedPoint xm = Lerp(x0, x1, v0, v1);
             if (c == 0)
                 return xm;
 
@@ -304,9 +304,9 @@ namespace vFrame.Lockstep.Core.Physics2D
 
         /** Recursive linear interpolation for use in marching squares **/
 
-        private static FP Ylerp(FP y0, FP y1, FP x, FP v0, FP v1, sbyte[,] f, int c)
+        private static FixedPoint Ylerp(FixedPoint y0, FixedPoint y1, FixedPoint x, FixedPoint v0, FixedPoint v1, sbyte[,] f, int c)
         {
-            FP ym = Lerp(y0, y1, v0, v1);
+            FixedPoint ym = Lerp(y0, y1, v0, v1);
             if (c == 0)
                 return ym;
 
@@ -320,18 +320,18 @@ namespace vFrame.Lockstep.Core.Physics2D
 
         /** Square value for use in marching squares **/
 
-        private static FP Square(FP x)
+        private static FixedPoint Square(FixedPoint x)
         {
             return x * x;
         }
 
-        private static FP VecDsq(TSVector2 a, TSVector2 b)
+        private static FixedPoint VecDsq(TSVector2 a, TSVector2 b)
         {
             TSVector2 d = a - b;
             return d.x * d.x + d.y * d.y;
         }
 
-        private static FP VecCross(TSVector2 a, TSVector2 b)
+        private static FixedPoint VecCross(TSVector2 a, TSVector2 b)
         {
             return a.x * b.y - a.y * b.x;
         }
@@ -346,8 +346,8 @@ namespace vFrame.Lockstep.Core.Physics2D
             coordinates of 'ax' 'ay' in the marching squares mesh.
         **/
 
-        private static int MarchSquare(sbyte[,] f, sbyte[,] fs, ref GeomPoly poly, int ax, int ay, FP x0, FP y0,
-                                       FP x1, FP y1, int bin)
+        private static int MarchSquare(sbyte[,] f, sbyte[,] fs, ref GeomPoly poly, int ax, int ay, FixedPoint x0, FixedPoint y0,
+                                       FixedPoint x1, FixedPoint y1, int bin)
         {
             //key lookup
             int key = 0;
@@ -422,7 +422,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                         //vec_new(u); vec_sub(a.p.p, a0.p.p, u);
                         TSVector2 v = b - a;
                         //vec_new(v); vec_sub(b.p.p, a.p.p, v);
-                        FP dot = VecCross(u, v);
+                        FixedPoint dot = VecCross(u, v);
                         if (dot * dot < Settings.Epsilon)
                         {
                             ap.Erase(prea, ai);
@@ -458,7 +458,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                     //vec_new(u); vec_sub(a1.p, a0.p, u);
                     TSVector2 vv = a2 - a1;
                     //vec_new(v); vec_sub(a2.p, a1.p, v);
-                    FP dot1 = VecCross(uu, vv);
+                    FixedPoint dot1 = VecCross(uu, vv);
                     if (dot1 * dot1 < Settings.Epsilon)
                     {
                         ap.Erase(preb, preb.Next());

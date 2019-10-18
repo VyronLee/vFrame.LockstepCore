@@ -28,12 +28,12 @@ namespace vFrame.Lockstep.Core.Physics2D
 {
     public static class MathUtils
     {
-        public static FP Cross(ref TSVector2 a, ref TSVector2 b)
+        public static FixedPoint Cross(ref TSVector2 a, ref TSVector2 b)
         {
             return a.x * b.y - a.y * b.x;
         }
 
-        public static FP Cross(TSVector2 a, TSVector2 b)
+        public static FixedPoint Cross(TSVector2 a, TSVector2 b)
         {
             return Cross(ref a, ref b);
         }
@@ -44,19 +44,19 @@ namespace vFrame.Lockstep.Core.Physics2D
             return new TSVector(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x);
         }
 
-        public static TSVector2 Cross(TSVector2 a, FP s)
+        public static TSVector2 Cross(TSVector2 a, FixedPoint s)
         {
             return new TSVector2(s * a.y, -s * a.x);
         }
 
-        public static TSVector2 Cross(FP s, TSVector2 a)
+        public static TSVector2 Cross(FixedPoint s, TSVector2 a)
         {
             return new TSVector2(-s * a.y, s * a.x);
         }
 
         public static TSVector2 Abs(TSVector2 v)
         {
-            return new TSVector2(FP.Abs(v.x), FP.Abs(v.y));
+            return new TSVector2(FixedPoint.Abs(v.x), FixedPoint.Abs(v.y));
         }
 
         public static TSVector2 Mul(ref Mat22 A, TSVector2 v)
@@ -76,8 +76,8 @@ namespace vFrame.Lockstep.Core.Physics2D
 
         public static TSVector2 Mul(ref Transform T, ref TSVector2 v)
         {
-            FP x = (T.q.c * v.x - T.q.s * v.y) + T.p.x;
-            FP y = (T.q.s * v.x + T.q.c * v.y) + T.p.y;
+            FixedPoint x = (T.q.c * v.x - T.q.s * v.y) + T.p.x;
+            FixedPoint y = (T.q.s * v.x + T.q.c * v.y) + T.p.y;
 
             return new TSVector2(x, y);
         }
@@ -99,10 +99,10 @@ namespace vFrame.Lockstep.Core.Physics2D
 
         public static TSVector2 MulT(ref Transform T, ref TSVector2 v)
         {
-            FP px = v.x - T.p.x;
-            FP py = v.y - T.p.y;
-            FP x = (T.q.c * px + T.q.s * py);
-            FP y = (-T.q.s * px + T.q.c * py);
+            FixedPoint px = v.x - T.p.x;
+            FixedPoint py = v.y - T.p.y;
+            FixedPoint x = (T.q.c * px + T.q.s * py);
+            FixedPoint y = (-T.q.s * px + T.q.c * py);
 
             return new TSVector2(x, y);
         }
@@ -170,10 +170,10 @@ namespace vFrame.Lockstep.Core.Physics2D
 
         public static TSVector2 MulT(Transform T, TSVector2 v)
         {
-            FP px = v.x - T.p.x;
-            FP py = v.y - T.p.y;
-            FP x = (T.q.c * px + T.q.s * py);
-            FP y = (-T.q.s * px + T.q.c * py);
+            FixedPoint px = v.x - T.p.x;
+            FixedPoint py = v.y - T.p.y;
+            FixedPoint x = (T.q.c * px + T.q.s * py);
+            FixedPoint y = (-T.q.s * px + T.q.c * py);
 
             return new TSVector2(x, y);
         }
@@ -227,15 +227,15 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <returns>
         /// 	<c>true</c> if the specified x is valid; otherwise, <c>false</c>.
         /// </returns>
-        public static bool IsValid(FP x)
+        public static bool IsValid(FixedPoint x)
         {
-            if (FP.IsNaN(x))
+            if (FixedPoint.IsNaN(x))
             {
                 // NaN.
                 return false;
             }
 
-            return !FP.IsInfinity(x);
+            return !FixedPoint.IsInfinity(x);
         }
 
         public static bool IsValid(this TSVector2 x)
@@ -248,14 +248,14 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="x">The x.</param>
         /// <returns></returns>
-        public static FP InvSqrt(FP x)
+        public static FixedPoint InvSqrt(FixedPoint x)
         {
             FPConverter convert = new FPConverter();
             convert.x = x;
-            FP xhalf = FP.Half * x;
+            FixedPoint xhalf = FixedPoint.Half * x;
             convert.i = 0x5f3759df - (convert.i >> 1);
             x = convert.x;
-            x = x * (15*FP.EN1 - xhalf * x * x);
+            x = x * (15*FixedPoint.EN1 - xhalf * x * x);
             return x;
         }
 
@@ -264,7 +264,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             return Math.Max(low, Math.Min(a, high));
         }
 
-        public static FP Clamp(FP a, FP low, FP high)
+        public static FixedPoint Clamp(FixedPoint a, FixedPoint low, FixedPoint high)
         {
             return TSMath.Max(low, TSMath.Min(a, high));
         }
@@ -274,7 +274,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             return TSVector2.Max(low, TSVector2.Min(a, high));
         }
 
-        public static void Cross(ref TSVector2 a, ref TSVector2 b, out FP c)
+        public static void Cross(ref TSVector2 a, ref TSVector2 b, out FixedPoint c)
         {
             c = a.x * b.y - a.y * b.x;
         }
@@ -284,26 +284,26 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// The angle is from vector 1 to vector 2, positive anticlockwise
         /// The result is between -pi -> pi
         /// </summary>
-        public static FP VectorAngle(ref TSVector2 p1, ref TSVector2 p2)
+        public static FixedPoint VectorAngle(ref TSVector2 p1, ref TSVector2 p2)
         {
-            FP theta1 = FP.Atan2(p1.y, p1.x);
-            FP theta2 = FP.Atan2(p2.y, p2.x);
-            FP dtheta = theta2 - theta1;
-            while (dtheta > FP.Pi)
-                dtheta -= (2 * FP.Pi);
-            while (dtheta < -FP.Pi)
-                dtheta += (2 * FP.Pi);
+            FixedPoint theta1 = FixedPoint.Atan2(p1.y, p1.x);
+            FixedPoint theta2 = FixedPoint.Atan2(p2.y, p2.x);
+            FixedPoint dtheta = theta2 - theta1;
+            while (dtheta > FixedPoint.Pi)
+                dtheta -= (2 * FixedPoint.Pi);
+            while (dtheta < -FixedPoint.Pi)
+                dtheta += (2 * FixedPoint.Pi);
 
             return (dtheta);
         }
 
         /// Perform the dot product on two vectors.
-        public static FP Dot(TSVector a, TSVector b)
+        public static FixedPoint Dot(TSVector a, TSVector b)
         {
             return a.x * b.x + a.y * b.y + a.z * b.z;
         }
 
-        public static FP VectorAngle(TSVector2 p1, TSVector2 p2)
+        public static FixedPoint VectorAngle(TSVector2 p1, TSVector2 p2)
         {
             return VectorAngle(ref p1, ref p2);
         }
@@ -313,7 +313,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <returns>Positive number if point is left, negative if point is right, 
         /// and 0 if points are collinear.</returns>
-        public static FP Area(TSVector2 a, TSVector2 b, TSVector2 c)
+        public static FixedPoint Area(TSVector2 a, TSVector2 b, TSVector2 c)
         {
             return Area(ref a, ref b, ref c);
         }
@@ -323,7 +323,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <returns>Positive number if point is left, negative if point is right, 
         /// and 0 if points are collinear.</returns>
-        public static FP Area(ref TSVector2 a, ref TSVector2 b, ref TSVector2 c)
+        public static FixedPoint Area(ref TSVector2 a, ref TSVector2 b, ref TSVector2 c)
         {
             return a.x * (b.y - c.y) + b.x * (c.y - a.y) + c.x * (a.y - b.y);
         }
@@ -337,19 +337,19 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="tolerance">The tolerance</param>
         /// <returns></returns>
         // TS - public static bool IsCollinear(ref Vector2 a, ref Vector2 b, ref Vector2 c, FP tolerance = 0)
-        public static bool IsCollinear(ref TSVector2 a, ref TSVector2 b, ref TSVector2 c, FP tolerance)
+        public static bool IsCollinear(ref TSVector2 a, ref TSVector2 b, ref TSVector2 c, FixedPoint tolerance)
         {
             return FPInRange(Area(ref a, ref b, ref c), -tolerance, tolerance);
         }
 
-        public static void Cross(FP s, ref TSVector2 a, out TSVector2 b)
+        public static void Cross(FixedPoint s, ref TSVector2 a, out TSVector2 b)
         {
             b = new TSVector2(-s * a.y, s * a.x);
         }
 
-        public static bool FPEquals(FP value1, FP value2)
+        public static bool FPEquals(FixedPoint value1, FixedPoint value2)
         {
-            return FP.Abs(value1 - value2) <= Settings.Epsilon;
+            return FixedPoint.Abs(value1 - value2) <= Settings.Epsilon;
         }
 
         /// <summary>
@@ -360,7 +360,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="value2">The second FPing point Value.</param>
         /// <param name="delta">The FPing point tolerance.</param>
         /// <returns>True if the values are "equal", false otherwise.</returns>
-        public static bool FPEquals(FP value1, FP value2, FP delta)
+        public static bool FPEquals(FixedPoint value1, FixedPoint value2, FixedPoint delta)
         {
             return FPInRange(value1, value2 - delta, value2 + delta);
         }
@@ -374,7 +374,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="max">The maximum Value.</param>
         /// <returns>True if the Value is within the range specified,
         /// false otherwise.</returns>
-        public static bool FPInRange(FP value, FP min, FP max)
+        public static bool FPInRange(FixedPoint value, FixedPoint min, FixedPoint max)
         {
             return (value >= min && value <= max);
         }
@@ -385,7 +385,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         private struct FPConverter
         {
             [FieldOffset(0)]
-            public FP x;
+            public FixedPoint x;
             [FieldOffset(0)]
             public int i;
         }
@@ -428,7 +428,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="a12">The a12.</param>
         /// <param name="a21">The a21.</param>
         /// <param name="a22">The a22.</param>
-        public Mat22(FP a11, FP a12, FP a21, FP a22)
+        public Mat22(FixedPoint a11, FixedPoint a12, FixedPoint a21, FixedPoint a22)
         {
             ex = new TSVector2(a11, a21);
             ey = new TSVector2(a12, a22);
@@ -438,11 +438,11 @@ namespace vFrame.Lockstep.Core.Physics2D
         {
             get
             {
-                FP a = ex.x, b = ey.x, c = ex.y, d = ey.y;
-                FP det = a * d - b * c;
-                if (det != FP.Zero)
+                FixedPoint a = ex.x, b = ey.x, c = ex.y, d = ey.y;
+                FixedPoint det = a * d - b * c;
+                if (det != FixedPoint.Zero)
                 {
-                    det = FP.One / det;
+                    det = FixedPoint.One / det;
                 }
 
                 Mat22 result = new Mat22();
@@ -472,10 +472,10 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         public void SetIdentity()
         {
-            ex.x = FP.One;
-            ey.x = FP.Zero;
-            ex.y = FP.Zero;
-            ey.y = FP.One;
+            ex.x = FixedPoint.One;
+            ey.x = FixedPoint.Zero;
+            ex.y = FixedPoint.Zero;
+            ey.y = FixedPoint.One;
         }
 
         /// <summary>
@@ -483,10 +483,10 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         public void SetZero()
         {
-            ex.x = FP.Zero;
-            ey.x = FP.Zero;
-            ex.y = FP.Zero;
-            ey.y = FP.Zero;
+            ex.x = FixedPoint.Zero;
+            ey.x = FixedPoint.Zero;
+            ex.y = FixedPoint.Zero;
+            ey.y = FixedPoint.Zero;
         }
 
         /// <summary>
@@ -497,11 +497,11 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <returns></returns>
         public TSVector2 Solve(TSVector2 b)
         {
-            FP a11 = ex.x, a12 = ey.x, a21 = ex.y, a22 = ey.y;
-            FP det = a11 * a22 - a12 * a21;
-            if (det != FP.Zero)
+            FixedPoint a11 = ex.x, a12 = ey.x, a21 = ex.y, a22 = ey.y;
+            FixedPoint det = a11 * a22 - a12 * a21;
+            if (det != FixedPoint.Zero)
             {
-                det = FP.One / det;
+                det = FixedPoint.One / det;
             }
 
             return new TSVector2(det * (a22 * b.x - a12 * b.y), det * (a11 * b.y - a21 * b.x));
@@ -552,10 +552,10 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <returns></returns>
         public TSVector Solve33(TSVector b)
         {
-            FP det = TSVector.Dot(ex, TSVector.Cross(ey, ez));
-            if (det != FP.Zero)
+            FixedPoint det = TSVector.Dot(ex, TSVector.Cross(ey, ez));
+            if (det != FixedPoint.Zero)
             {
-                det = FP.One / det;
+                det = FixedPoint.One / det;
             }
 
             return new TSVector(det * TSVector.Dot(b, TSVector.Cross(ey, ez)), det * TSVector.Dot(ex, TSVector.Cross(b, ez)), det * TSVector.Dot(ex, TSVector.Cross(ey, b)));
@@ -570,12 +570,12 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <returns></returns>
         public TSVector2 Solve22(TSVector2 b)
         {
-            FP a11 = ex.x, a12 = ey.x, a21 = ex.y, a22 = ey.y;
-            FP det = a11 * a22 - a12 * a21;
+            FixedPoint a11 = ex.x, a12 = ey.x, a21 = ex.y, a22 = ey.y;
+            FixedPoint det = a11 * a22 - a12 * a21;
 
-            if (det != FP.Zero)
+            if (det != FixedPoint.Zero)
             {
-                det = FP.One / det;
+                det = FixedPoint.One / det;
             }
 
             return new TSVector2(det * (a22 * b.x - a12 * b.y), det * (a11 * b.y - a21 * b.x));
@@ -585,31 +585,31 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Returns the zero matrix if singular.
         public void GetInverse22(ref Mat33 M)
         {
-            FP a = ex.x, b = ey.x, c = ex.y, d = ey.y;
-            FP det = a * d - b * c;
-            if (det != FP.Zero)
+            FixedPoint a = ex.x, b = ey.x, c = ex.y, d = ey.y;
+            FixedPoint det = a * d - b * c;
+            if (det != FixedPoint.Zero)
             {
-                det = FP.One / det;
+                det = FixedPoint.One / det;
             }
 
-            M.ex.x = det * d; M.ey.x = -det * b; M.ex.z = FP.Zero;
-            M.ex.y = -det * c; M.ey.y = det * a; M.ey.z = FP.Zero;
-            M.ez.x = FP.Zero; M.ez.y = FP.Zero; M.ez.z = FP.Zero;
+            M.ex.x = det * d; M.ey.x = -det * b; M.ex.z = FixedPoint.Zero;
+            M.ex.y = -det * c; M.ey.y = det * a; M.ey.z = FixedPoint.Zero;
+            M.ez.x = FixedPoint.Zero; M.ez.y = FixedPoint.Zero; M.ez.z = FixedPoint.Zero;
         }
 
         /// Get the symmetric inverse of this matrix as a 3-by-3.
         /// Returns the zero matrix if singular.
         public void GetSymInverse33(ref Mat33 M)
         {
-            FP det = MathUtils.Dot(ex, MathUtils.Cross(ey, ez));
-            if (det != FP.Zero)
+            FixedPoint det = MathUtils.Dot(ex, MathUtils.Cross(ey, ez));
+            if (det != FixedPoint.Zero)
             {
-                det = FP.One / det;
+                det = FixedPoint.One / det;
             }
 
-            FP a11 = ex.x, a12 = ey.x, a13 = ez.x;
-            FP a22 = ey.y, a23 = ez.y;
-            FP a33 = ez.z;
+            FixedPoint a11 = ex.x, a12 = ey.x, a13 = ez.x;
+            FixedPoint a22 = ey.y, a23 = ez.y;
+            FixedPoint a33 = ez.z;
 
             M.ex.x = det * (a22 * a33 - a23 * a23);
             M.ex.y = det * (a13 * a23 - a12 * a33);
@@ -631,28 +631,28 @@ namespace vFrame.Lockstep.Core.Physics2D
     public struct Rot
     {
         /// Sine and cosine
-        public FP s, c;
+        public FixedPoint s, c;
 
         /// <summary>
         /// Initialize from an angle in radians
         /// </summary>
         /// <param name="angle">Angle in radians</param>
-        public Rot(FP angle)
+        public Rot(FixedPoint angle)
         {
             // TODO_ERIN optimize
-            s = FP.Sin(angle);
-            c = FP.Cos(angle);
+            s = FixedPoint.Sin(angle);
+            c = FixedPoint.Cos(angle);
         }
 
         /// <summary>
         /// Set using an angle in radians.
         /// </summary>
         /// <param name="angle"></param>
-        public void Set(FP angle)
+        public void Set(FixedPoint angle)
         {
             // TODO_ERIN optimize
-            s = FP.Sin(angle);
-            c = FP.Cos(angle);
+            s = FixedPoint.Sin(angle);
+            c = FixedPoint.Cos(angle);
         }
 
         /// <summary>
@@ -671,16 +671,16 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         public void SetIdentity()
         {
-            s = FP.Zero;
-            c = FP.One;
+            s = FixedPoint.Zero;
+            c = FixedPoint.One;
         }
 
         /// <summary>
         /// Get the angle in radians
         /// </summary>
-        public FP GetAngle()
+        public FixedPoint GetAngle()
         {
-            return FP.Atan2(s, c);
+            return FixedPoint.Atan2(s, c);
         }
 
         /// <summary>
@@ -734,7 +734,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="position">The position.</param>
         /// <param name="angle">The angle.</param>
-        public void Set(TSVector2 position, FP angle)
+        public void Set(TSVector2 position, FixedPoint angle)
         {
             p = position;
             q.Set(angle);
@@ -758,15 +758,15 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <summary>
         /// World angles
         /// </summary>
-        public FP A;
+        public FixedPoint A;
 
-        public FP A0;
+        public FixedPoint A0;
 
         /// <summary>
         /// Fraction of the current time step in the range [0,1]
         /// c0 and a0 are the positions at alpha0.
         /// </summary>
-        public FP Alpha0;
+        public FixedPoint Alpha0;
 
         /// <summary>
         /// Center world positions
@@ -785,12 +785,12 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="xfb">The transform.</param>
         /// <param name="beta">beta is a factor in [0,1], where 0 indicates alpha0.</param>
-        public void GetTransform(out Transform xfb, FP beta)
+        public void GetTransform(out Transform xfb, FixedPoint beta)
         {
             xfb = new Transform();
-            xfb.p.x = (FP.One - beta) * C0.x + beta * C.x;
-            xfb.p.y = (FP.One - beta) * C0.y + beta * C.y;
-            FP angle = (FP.One - beta) * A0 + beta * A;
+            xfb.p.x = (FixedPoint.One - beta) * C0.x + beta * C.x;
+            xfb.p.y = (FixedPoint.One - beta) * C0.y + beta * C.y;
+            FixedPoint angle = (FixedPoint.One - beta) * A0 + beta * A;
             xfb.q.Set(angle);
 
             // Shift to origin
@@ -801,10 +801,10 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Advance the sweep forward, yielding a new initial state.
         /// </summary>
         /// <param name="alpha">new initial time..</param>
-        public void Advance(FP alpha)
+        public void Advance(FixedPoint alpha)
         {
-            Debug.Assert(Alpha0 < FP.One);
-            FP beta = (alpha - Alpha0) / (FP.One - Alpha0);
+            Debug.Assert(Alpha0 < FixedPoint.One);
+            FixedPoint beta = (alpha - Alpha0) / (FixedPoint.One - Alpha0);
             C0 += beta * (C - C0);
             A0 += beta * (A - A0);
             Alpha0 = alpha;
@@ -815,7 +815,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         public void Normalize()
         {
-            FP d = FP.PiTimes2 * FP.Floor((A0 / FP.PiTimes2));
+            FixedPoint d = FixedPoint.PiTimes2 * FixedPoint.Floor((A0 / FixedPoint.PiTimes2));
             A0 -= d;
             A -= d;
         }

@@ -49,12 +49,12 @@ namespace vFrame.Lockstep.Core.Physics2D
             return body;
         }
 
-        public static Body CreateRectangle(World world, FP width, FP height, object userData = null)
+        public static Body CreateRectangle(World world, FixedPoint width, FixedPoint height, object userData = null)
         {
             return CreateRectangle(world, width, height, TSVector2.zero, userData);
         }
 
-        public static Body CreateRectangle(World world, FP width, FP height, TSVector2 position, object userData = null)
+        public static Body CreateRectangle(World world, FixedPoint width, FixedPoint height, TSVector2 position, object userData = null)
         {
             if (width <= 0)
                 throw new ArgumentOutOfRangeException("width", "Width must be more than 0 meters");
@@ -72,19 +72,19 @@ namespace vFrame.Lockstep.Core.Physics2D
             return newBody;
         }
 
-        public static Body CreateCircle(World world, FP radius, object userData = null)
+        public static Body CreateCircle(World world, FixedPoint radius, object userData = null)
         {
             return CreateCircle(world, radius, TSVector2.zero, userData);
         }
 
-        public static Body CreateCircle(World world, FP radius, TSVector2 position, object userData = null)
+        public static Body CreateCircle(World world, FixedPoint radius, TSVector2 position, object userData = null)
         {
             Body body = CreateBody(world, position);
             FixtureFactory.AttachCircle(radius, body, userData);
             return body;
         }
 
-        public static Body CreateEllipse(World world, FP xRadius, FP yRadius, int edges, 
+        public static Body CreateEllipse(World world, FixedPoint xRadius, FixedPoint yRadius, int edges, 
                                          TSVector2 position, object userData = null)
         {
             Body body = CreateBody(world, position);

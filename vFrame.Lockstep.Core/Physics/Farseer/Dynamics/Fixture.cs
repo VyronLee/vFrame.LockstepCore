@@ -88,8 +88,8 @@ namespace vFrame.Lockstep.Core.Physics2D
         [ThreadStatic]
         internal static int _fixtureIdCounter;
         private bool _isSensor;
-        private FP _friction;
-        private FP _restitution;
+        private FixedPoint _friction;
+        private FixedPoint _restitution;
 
         //internal Category _collidesWith;
         internal Category _collisionCategories;
@@ -108,7 +108,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             _collisionGroup = 0;
             
             //Fixture defaults
-            Friction = 2 * FP.EN1;
+            Friction = 2 * FixedPoint.EN1;
             Restitution = 0;
         }
 
@@ -228,12 +228,12 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// existing contacts.
         /// </summary>
         /// <value>The friction.</value>
-        public FP Friction
+        public FixedPoint Friction
         {
             get { return _friction; }
             set
             {
-                Debug.Assert(!FP.IsNaN(value));
+                Debug.Assert(!FixedPoint.IsNaN(value));
 
                 _friction = value;
             }
@@ -244,12 +244,12 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// existing contacts.
         /// </summary>
         /// <value>The restitution.</value>
-        public FP Restitution
+        public FixedPoint Restitution
         {
             get { return _restitution; }
             set
             {
-                Debug.Assert(!FP.IsNaN(value));
+                Debug.Assert(!FixedPoint.IsNaN(value));
 
                 _restitution = value;
             }

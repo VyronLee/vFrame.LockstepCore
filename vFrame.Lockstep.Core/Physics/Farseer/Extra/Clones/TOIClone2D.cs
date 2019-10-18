@@ -6,7 +6,7 @@
         public DistanceProxy ProxyB = new DistanceProxy();
         public Sweep SweepA;
         public Sweep SweepB;
-        public FP TMax;
+        public FixedPoint TMax;
 
         public void Clone(TOIInput input) {
             this.ProxyA.Radius = input.ProxyA.Radius;

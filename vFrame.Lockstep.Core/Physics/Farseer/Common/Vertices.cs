@@ -111,14 +111,14 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// If the area is less than 0, it indicates that the polygon is clockwise winded.
         /// </summary>
         /// <returns>The signed area</returns>
-        public FP GetSignedArea()
+        public FixedPoint GetSignedArea()
         {
             //The simplest polygon which can exist in the Euclidean plane has 3 sides.
             if (Count < 3)
                 return 0;
 
             int i;
-            FP area = 0;
+            FixedPoint area = 0;
 
             for (i = 0; i < Count; i++)
             {
@@ -138,9 +138,9 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Gets the area.
         /// </summary>
         /// <returns></returns>
-        public FP GetArea()
+        public FixedPoint GetArea()
         {
-            FP area = GetSignedArea();
+            FixedPoint area = GetSignedArea();
             return (area < 0 ? -area : area);
         }
 
@@ -152,12 +152,12 @@ namespace vFrame.Lockstep.Core.Physics2D
         {
             //The simplest polygon which can exist in the Euclidean plane has 3 sides.
             if (Count < 3)
-                return new TSVector2(FP.NaN, FP.NaN);
+                return new TSVector2(FixedPoint.NaN, FixedPoint.NaN);
 
             // Same algorithm is used by Box2D
             TSVector2 c = TSVector2.zero;
-            FP area = FP.Zero;
-            FP inv3 = FP.One / 3;
+            FixedPoint area = FixedPoint.Zero;
+            FixedPoint inv3 = FixedPoint.One / 3;
 
             for (int i = 0; i < Count; ++i)
             {
@@ -165,7 +165,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 TSVector2 current = this[i];
                 TSVector2 next = (i + 1 < Count ? this[i + 1] : this[0]);
 
-                FP triangleArea = FP.Half * (current.x * next.y - current.y * next.x);
+                FixedPoint triangleArea = FixedPoint.Half * (current.x * next.y - current.y * next.x);
                 area += triangleArea;
 
                 // Area weighted centroid
@@ -173,7 +173,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
 
             // Centroid
-            c *= FP.One / area;
+            c *= FixedPoint.One / area;
             return c;
         }
 
@@ -183,8 +183,8 @@ namespace vFrame.Lockstep.Core.Physics2D
         public AABB GetAABB()
         {
             AABB aabb;
-            TSVector2 lowerBound = new TSVector2(FP.MaxValue, FP.MaxValue);
-            TSVector2 upperBound = new TSVector2(FP.MinValue, FP.MinValue);
+            TSVector2 lowerBound = new TSVector2(FixedPoint.MaxValue, FixedPoint.MaxValue);
+            TSVector2 upperBound = new TSVector2(FixedPoint.MinValue, FixedPoint.MinValue);
 
             for (int i = 0; i < Count; ++i)
             {
@@ -278,12 +278,12 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// will cause problems with collisions. Use Body.Rotation instead.
         /// </summary>
         /// <param name="value">The amount to rotate by in radians.</param>
-        public void Rotate(FP value)
+        public void Rotate(FixedPoint value)
         {
             Debug.Assert(!AttachedToBody, "Rotating vertices that are used by a Body can result in unstable behavior.");
 
-            FP num1 = FP.Cos(value);
-            FP num2 = FP.Sin(value);
+            FixedPoint num1 = FixedPoint.Cos(value);
+            FixedPoint num2 = FixedPoint.Sin(value);
 
             for (int i = 0; i < Count; i++)
             {
@@ -335,9 +335,9 @@ namespace vFrame.Lockstep.Core.Physics2D
 
                     TSVector2 r = this[j] - this[i];
 
-                    FP s = edge.x * r.y - edge.y * r.x;
+                    FixedPoint s = edge.x * r.y - edge.y * r.x;
 
-                    if (s <= FP.Zero)
+                    if (s <= FixedPoint.Zero)
                         return false;
                 }
             }
@@ -354,7 +354,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             if (Count < 3)
                 return false;
 
-            return (GetSignedArea() > FP.Zero);
+            return (GetSignedArea() > FixedPoint.Zero);
         }
 
         /// <summary>
@@ -443,10 +443,10 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="axis">The axis.</param>
         /// <param name="min">The min.</param>
         /// <param name="max">The max.</param>
-        public void ProjectToAxis(ref TSVector2 axis, out FP min, out FP max)
+        public void ProjectToAxis(ref TSVector2 axis, out FixedPoint min, out FixedPoint max)
         {
             // To project a point on an axis use the dot product
-            FP dotProduct = TSVector2.Dot(axis, this[0]);
+            FixedPoint dotProduct = TSVector2.Dot(axis, this[0]);
             min = dotProduct;
             max = dotProduct;
 
@@ -489,22 +489,22 @@ namespace vFrame.Lockstep.Core.Physics2D
 
                 // Test if a point is directly on the edge
                 TSVector2 edge = p2 - p1;
-                FP area = MathUtils.Area(ref p1, ref p2, ref point);
-                if (area == FP.Zero && TSVector2.Dot(point - p1, edge) >= FP.Zero && TSVector2.Dot(point - p2, edge) <= FP.Zero)
+                FixedPoint area = MathUtils.Area(ref p1, ref p2, ref point);
+                if (area == FixedPoint.Zero && TSVector2.Dot(point - p1, edge) >= FixedPoint.Zero && TSVector2.Dot(point - p2, edge) <= FixedPoint.Zero)
                 {
                     return 0;
                 }
                 // Test edge for intersection with ray from point
                 if (p1.y <= point.y)
                 {
-                    if (p2.y > point.y && area > FP.Zero)
+                    if (p2.y > point.y && area > FixedPoint.Zero)
                     {
                         ++wn;
                     }
                 }
                 else
                 {
-                    if (p2.y <= point.y && area < FP.Zero)
+                    if (p2.y <= point.y && area < FixedPoint.Zero)
                     {
                         --wn;
                     }
@@ -520,7 +520,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         public bool PointInPolygonAngle(ref TSVector2 point)
         {
-            FP angle = 0;
+            FixedPoint angle = 0;
 
             // Iterate through polygon's edges
             for (int i = 0; i < Count; i++)
@@ -532,7 +532,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 angle += MathUtils.VectorAngle(ref p1, ref p2);
             }
 
-            if (FP.Abs(angle) < FP.Pi)
+            if (FixedPoint.Abs(angle) < FixedPoint.Pi)
             {
                 return false;
             }
@@ -595,12 +595,12 @@ namespace vFrame.Lockstep.Core.Physics2D
                 B = b;
             }
 
-            public FP? IntersectsWithRay(TSVector2 origin, TSVector2 direction) {
-                FP largestDistance = TSMath.Max(A.Position.x - origin.x, B.Position.x - origin.x) * 2;
+            public FixedPoint? IntersectsWithRay(TSVector2 origin, TSVector2 direction) {
+                FixedPoint largestDistance = TSMath.Max(A.Position.x - origin.x, B.Position.x - origin.x) * 2;
                 LineSegment raySegment = new LineSegment(new Vertex(origin, 0), new Vertex(origin + (direction * largestDistance), 0));
 
                 TSVector2? intersection = FindIntersection(this, raySegment);
-                FP? value = null;
+                FixedPoint? value = null;
 
                 if (intersection != null)
                     value = TSVector2.Distance(origin, intersection.Value);
@@ -609,24 +609,24 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
 
             public static TSVector2? FindIntersection(LineSegment a, LineSegment b) {
-                FP x1 = a.A.Position.x;
-                FP y1 = a.A.Position.y;
-                FP x2 = a.B.Position.x;
-                FP y2 = a.B.Position.y;
-                FP x3 = b.A.Position.x;
-                FP y3 = b.A.Position.y;
-                FP x4 = b.B.Position.x;
-                FP y4 = b.B.Position.y;
+                FixedPoint x1 = a.A.Position.x;
+                FixedPoint y1 = a.A.Position.y;
+                FixedPoint x2 = a.B.Position.x;
+                FixedPoint y2 = a.B.Position.y;
+                FixedPoint x3 = b.A.Position.x;
+                FixedPoint y3 = b.A.Position.y;
+                FixedPoint x4 = b.B.Position.x;
+                FixedPoint y4 = b.B.Position.y;
 
-                FP denom = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
+                FixedPoint denom = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
 
-                FP uaNum = (x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3);
-                FP ubNum = (x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3);
+                FixedPoint uaNum = (x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3);
+                FixedPoint ubNum = (x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3);
 
-                FP ua = uaNum / denom;
-                FP ub = ubNum / denom;
+                FixedPoint ua = uaNum / denom;
+                FixedPoint ub = ubNum / denom;
 
-                if (TSMath.Clamp(ua, FP.Zero, FP.One) != ua || TSMath.Clamp(ub, FP.Zero, FP.One) != ub)
+                if (TSMath.Clamp(ua, FixedPoint.Zero, FixedPoint.One) != ua || TSMath.Clamp(ub, FixedPoint.Zero, FixedPoint.One) != ub)
                     return null;
 
                 return a.A.Position + (a.B.Position - a.A.Position) * ua;
@@ -675,7 +675,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             static bool checkPointToSegment(Vertex sA, Vertex sB, Vertex point) {
                 if ((sA.Position.y < point.Position.y && sB.Position.y >= point.Position.y) ||
                     (sB.Position.y < point.Position.y && sA.Position.y >= point.Position.y)) {
-                    FP x =
+                    FixedPoint x =
                         sA.Position.x +
                         (point.Position.y - sA.Position.y) /
                         (sB.Position.y - sA.Position.y) *
@@ -920,10 +920,10 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             //now we try to find the closest intersection point heading to the right from
             //our hole vertex.
-            FP? closestPoint = null;
+            FixedPoint? closestPoint = null;
             LineSegment closestSegment = new LineSegment();
             foreach (LineSegment segment in segmentsToTest) {
-                FP? intersection = segment.IntersectsWithRay(rightMostHoleVertex.Position, TSVector2.right);
+                FixedPoint? intersection = segment.IntersectsWithRay(rightMostHoleVertex.Position, TSVector2.right);
                 if (intersection != null) {
                     if (closestPoint == null || closestPoint.Value > intersection.Value) {
                         closestPoint = intersection;
@@ -955,11 +955,11 @@ namespace vFrame.Lockstep.Core.Physics2D
             //if there are any interior reflex vertices, find the one that, when connected
             //to our rightMostHoleVertex, forms the line closest to Vector2.UnitX
             if (interiorReflexVertices.Count > 0) {
-                FP closestDot = -1;
+                FixedPoint closestDot = -1;
                 foreach (Vertex v in interiorReflexVertices) {
                     //compute the dot product of the vector against the UnitX
                     TSVector2 d = TSVector2.Normalize(v.Position - rightMostHoleVertex.Position);
-                    FP dot = TSVector2.Dot(TSVector2.right, d);
+                    FixedPoint dot = TSVector2.Dot(TSVector2.right, d);
 
                     //if this line is the closest we've found
                     if (dot > closestDot) {
@@ -1231,7 +1231,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             TSVector2 d2 = TSVector2.Normalize(n.Position - c.Position);
             TSVector2 n2 = new TSVector2(-d2.y, d2.x);
 
-            return (TSVector2.Dot(d1, n2) <= FP.Zero);
+            return (TSVector2.Dot(d1, n2) <= FixedPoint.Zero);
         }
 
         #endregion

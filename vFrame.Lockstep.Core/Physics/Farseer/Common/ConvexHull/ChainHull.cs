@@ -35,7 +35,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             // Get the indices of points with min x-coord and min|max y-coord
             const int minmin = 0;
-            FP xmin = pointSet[0].x;
+            FixedPoint xmin = pointSet[0].x;
             for (i = 1; i < pointSet.Count; i++)
             {
                 if (pointSet[i].x != xmin)
@@ -66,7 +66,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             // Get the indices of points with max x-coord and min|max y-coord
             int maxmax = pointSet.Count - 1;
-            FP xmax = pointSet[pointSet.Count - 1].x;
+            FixedPoint xmax = pointSet[pointSet.Count - 1].x;
             for (i = pointSet.Count - 2; i >= 0; i--)
             {
                 if (pointSet[i].x != xmax)

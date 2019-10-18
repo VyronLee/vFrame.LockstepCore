@@ -31,7 +31,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             //Start by placing first 3 vertices in convex CCW order
             int startIndex = 3;
-            FP k = MathUtils.Area(vertices[0], vertices[1], vertices[2]);
+            FixedPoint k = MathUtils.Area(vertices[0], vertices[1], vertices[2]);
             if (k == 0)
             {
                 //Vertices are collinear.

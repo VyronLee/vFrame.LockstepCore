@@ -20,7 +20,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         public List<TSVector2> ControlPoints;
 
-        private FP _deltaT;
+        private FixedPoint _deltaT;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Path"/> class.
@@ -136,9 +136,9 @@ namespace vFrame.Lockstep.Core.Physics2D
         {
             Vertices verts = new Vertices();
 
-            FP timeStep = FP.One / divisions;
+            FixedPoint timeStep = FixedPoint.One / divisions;
 
-            for (FP i = 0; i < FP.One; i += timeStep)
+            for (FixedPoint i = 0; i < FixedPoint.One; i += timeStep)
             {
                 verts.Add(GetPosition(i));
             }
@@ -146,7 +146,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             return verts;
         }
 
-        public TSVector2 GetPosition(FP time)
+        public TSVector2 GetPosition(FixedPoint time)
         {
             TSVector2 temp;
 
@@ -157,7 +157,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             {
                 Add(ControlPoints[0]);
 
-                _deltaT = FP.One / (ControlPoints.Count - 1);
+                _deltaT = FixedPoint.One / (ControlPoints.Count - 1);
 
                 int p = (int)(time / _deltaT);
 
@@ -176,7 +176,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 else if (p3 >= ControlPoints.Count - 1) p3 = p3 - (ControlPoints.Count - 1);
 
                 // relative time
-                FP lt = (time - _deltaT * p) / _deltaT;
+                FixedPoint lt = (time - _deltaT * p) / _deltaT;
 
                 temp = TSVector2.CatmullRom(ControlPoints[p0], ControlPoints[p1], ControlPoints[p2], ControlPoints[p3], lt);
 
@@ -201,7 +201,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 else if (p3 >= ControlPoints.Count - 1) p3 = ControlPoints.Count - 1;
 
                 // relative time
-                FP lt = (time - _deltaT * p) / _deltaT;
+                FixedPoint lt = (time - _deltaT * p) / _deltaT;
 
                 temp = TSVector2.CatmullRom(ControlPoints[p0], ControlPoints[p1], ControlPoints[p2], ControlPoints[p3], lt);
             }
@@ -214,9 +214,9 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="time">The time</param>
         /// <returns>The normal.</returns>
-        public TSVector2 GetPositionNormal(FP time)
+        public TSVector2 GetPositionNormal(FixedPoint time)
         {
-            FP offsetTime = time + FP.EN4;//0.0001f;
+            FixedPoint offsetTime = time + FixedPoint.EN4;//0.0001f;
 
             TSVector2 a = GetPosition(time);
             TSVector2 b = GetPosition(offsetTime);
@@ -239,25 +239,25 @@ output = new Vector2();
         public void Add(TSVector2 point)
         {
             ControlPoints.Add(point);
-            _deltaT = FP.One / (ControlPoints.Count - 1);
+            _deltaT = FixedPoint.One / (ControlPoints.Count - 1);
         }
 
         public void Remove(TSVector2 point)
         {
             ControlPoints.Remove(point);
-            _deltaT = FP.One / (ControlPoints.Count - 1);
+            _deltaT = FixedPoint.One / (ControlPoints.Count - 1);
         }
 
         public void RemoveAt(int index)
         {
             ControlPoints.RemoveAt(index);
-            _deltaT = FP.One / (ControlPoints.Count - 1);
+            _deltaT = FixedPoint.One / (ControlPoints.Count - 1);
         }
 
-        public FP GetLength()
+        public FixedPoint GetLength()
         {
             List<TSVector2> verts = GetVertices(ControlPoints.Count * 25);
-            FP length = 0;
+            FixedPoint length = 0;
 
             for (int i = 1; i < verts.Count; i++)
             {
@@ -274,22 +274,22 @@ output = new Vector2();
         {
             List<TSVector> verts = new List<TSVector>();
 
-            FP length = GetLength();
+            FixedPoint length = GetLength();
 
-            FP deltaLength = length / divisions + FP.EN3;//0.001f;
-            FP t = 0;
+            FixedPoint deltaLength = length / divisions + FixedPoint.EN3;//0.001f;
+            FixedPoint t = 0;
 
             // we always start at the first control point
             TSVector2 start = ControlPoints[0];
             TSVector2 end = GetPosition(t);
 
             // increment t until we are at half the distance
-            while (deltaLength * FP.Half >= TSVector2.Distance(start, end))
+            while (deltaLength * FixedPoint.Half >= TSVector2.Distance(start, end))
             {
                 end = GetPosition(t);
-                t += FP.EN4;// 0.0001f;
+                t += FixedPoint.EN4;// 0.0001f;
 
-                if (t >= FP.One)
+                if (t >= FixedPoint.One)
                     break;
             }
 
@@ -299,7 +299,7 @@ output = new Vector2();
             for (int i = 1; i < divisions; i++)
             {
                 TSVector2 normal = GetPositionNormal(t);
-                FP angle = FP.Atan2(normal.y, normal.x);
+                FixedPoint angle = FixedPoint.Atan2(normal.y, normal.x);
 
                 verts.Add(new TSVector(end.x, end.y, angle));
 
@@ -307,12 +307,12 @@ output = new Vector2();
                 while (deltaLength >= TSVector2.Distance(start, end))
                 {
                     end = GetPosition(t);
-                    t += FP.EN5;// 0.00001f;
+                    t += FixedPoint.EN5;// 0.00001f;
 
-                    if (t >= FP.One)
+                    if (t >= FixedPoint.One)
                         break;
                 }
-                if (t >= FP.One)
+                if (t >= FixedPoint.One)
                     break;
 
                 start = end;

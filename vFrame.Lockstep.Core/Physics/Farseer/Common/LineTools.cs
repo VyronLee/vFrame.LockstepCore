@@ -7,7 +7,7 @@ namespace vFrame.Lockstep.Core.Physics2D
     /// </summary>
     public static class LineTools
     {
-        public static FP DistanceBetweenPointAndLineSegment(ref TSVector2 point, ref TSVector2 start, ref TSVector2 end)
+        public static FixedPoint DistanceBetweenPointAndLineSegment(ref TSVector2 point, ref TSVector2 start, ref TSVector2 end)
         {
             if (start == end)
                 return TSVector2.Distance(point, start);
@@ -15,13 +15,13 @@ namespace vFrame.Lockstep.Core.Physics2D
             TSVector2 v = TSVector2.Subtract(end, start);
             TSVector2 w = TSVector2.Subtract(point, start);
 
-            FP c1 = TSVector2.Dot(w, v);
+            FixedPoint c1 = TSVector2.Dot(w, v);
             if (c1 <= 0) return TSVector2.Distance(point, start);
 
-            FP c2 = TSVector2.Dot(v, v);
+            FixedPoint c2 = TSVector2.Dot(v, v);
             if (c2 <= c1) return TSVector2.Distance(point, end);
 
-            FP b = c1 / c2;
+            FixedPoint b = c1 / c2;
             TSVector2 pointOnLine = TSVector2.Add(start, TSVector2.Multiply(v, b));
             return TSVector2.Distance(point, pointOnLine);
         }
@@ -42,14 +42,14 @@ namespace vFrame.Lockstep.Core.Physics2D
             if (a0 == b0 || a0 == b1 || a1 == b0 || a1 == b1)
                 return false;
 
-            FP x1 = a0.x;
-            FP y1 = a0.y;
-            FP x2 = a1.x;
-            FP y2 = a1.y;
-            FP x3 = b0.x;
-            FP y3 = b0.y;
-            FP x4 = b1.x;
-            FP y4 = b1.y;
+            FixedPoint x1 = a0.x;
+            FixedPoint y1 = a0.y;
+            FixedPoint x2 = a1.x;
+            FixedPoint y2 = a1.y;
+            FixedPoint x3 = b0.x;
+            FixedPoint y3 = b0.y;
+            FixedPoint x4 = b1.x;
+            FixedPoint y4 = b1.y;
 
             //AABB early exit
             if (TSMath.Max(x1, x2) < TSMath.Min(x3, x4) || TSMath.Max(x3, x4) < TSMath.Min(x1, x2))
@@ -58,10 +58,10 @@ namespace vFrame.Lockstep.Core.Physics2D
             if (TSMath.Max(y1, y2) < TSMath.Min(y3, y4) || TSMath.Max(y3, y4) < TSMath.Min(y1, y2))
                 return false;
 
-            FP ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3));
-            FP ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3));
-            FP denom = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
-            if (FP.Abs(denom) < Settings.Epsilon)
+            FixedPoint ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3));
+            FixedPoint ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3));
+            FixedPoint denom = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
+            if (FixedPoint.Abs(denom) < Settings.Epsilon)
             {
                 //Lines are too close to parallel to call
                 return false;
@@ -83,13 +83,13 @@ namespace vFrame.Lockstep.Core.Physics2D
         public static TSVector2 LineIntersect(TSVector2 p1, TSVector2 p2, TSVector2 q1, TSVector2 q2)
         {
             TSVector2 i = TSVector2.zero;
-            FP a1 = p2.y - p1.y;
-            FP b1 = p1.x - p2.x;
-            FP c1 = a1 * p1.x + b1 * p1.y;
-            FP a2 = q2.y - q1.y;
-            FP b2 = q1.x - q2.x;
-            FP c2 = a2 * q1.x + b2 * q1.y;
-            FP det = a1 * b2 - a2 * b1;
+            FixedPoint a1 = p2.y - p1.y;
+            FixedPoint b1 = p1.x - p2.x;
+            FixedPoint c1 = a1 * p1.x + b1 * p1.y;
+            FixedPoint a2 = q2.y - q1.y;
+            FixedPoint b2 = q1.x - q2.x;
+            FixedPoint c2 = a2 * q1.x + b2 * q1.y;
+            FixedPoint det = a1 * b2 - a2 * b1;
 
             if (!MathUtils.FPEquals(det, 0))
             {
@@ -131,39 +131,39 @@ namespace vFrame.Lockstep.Core.Physics2D
             // these are reused later.
             // each lettered sub-calculation is used twice, except
             // for b and d, which are used 3 times
-            FP a = point4.y - point3.y;
-            FP b = point2.x - point1.x;
-            FP c = point4.x - point3.x;
-            FP d = point2.y - point1.y;
+            FixedPoint a = point4.y - point3.y;
+            FixedPoint b = point2.x - point1.x;
+            FixedPoint c = point4.x - point3.x;
+            FixedPoint d = point2.y - point1.y;
 
             // denominator to solution of linear system
-            FP denom = (a * b) - (c * d);
+            FixedPoint denom = (a * b) - (c * d);
 
             // if denominator is 0, then lines are parallel
             if (!(denom >= -Settings.Epsilon && denom <= Settings.Epsilon))
             {
-                FP e = point1.y - point3.y;
-                FP f = point1.x - point3.x;
-                FP oneOverDenom = FP.One / denom;
+                FixedPoint e = point1.y - point3.y;
+                FixedPoint f = point1.x - point3.x;
+                FixedPoint oneOverDenom = FixedPoint.One / denom;
 
                 // numerator of first equation
-                FP ua = (c * e) - (a * f);
+                FixedPoint ua = (c * e) - (a * f);
                 ua *= oneOverDenom;
 
                 // check if intersection point of the two lines is on line segment 1
-                if (!firstIsSegment || ua >= FP.Zero && ua <= FP.One)
+                if (!firstIsSegment || ua >= FixedPoint.Zero && ua <= FixedPoint.One)
                 {
                     // numerator of second equation
-                    FP ub = (b * e) - (d * f);
+                    FixedPoint ub = (b * e) - (d * f);
                     ub *= oneOverDenom;
 
                     // check if intersection point of the two lines is on line segment 2
                     // means the line segments intersect, since we know it is on
                     // segment 1 as well.
-                    if (!secondIsSegment || ub >= FP.Zero && ub <= FP.One)
+                    if (!secondIsSegment || ub >= FixedPoint.Zero && ub <= FixedPoint.One)
                     {
                         // check if they are coincident (no collision in this case)
-                        if (ua != FP.Zero || ub != FP.Zero)
+                        if (ua != FixedPoint.Zero || ub != FixedPoint.Zero)
                         {
                             //There is an intersection
                             point.x = point1.x + ua * b;

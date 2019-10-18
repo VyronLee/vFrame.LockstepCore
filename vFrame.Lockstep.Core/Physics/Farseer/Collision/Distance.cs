@@ -33,7 +33,7 @@ namespace vFrame.Lockstep.Core.Physics2D
     /// </summary>
     public class DistanceProxy
     {
-        internal FP Radius;
+        internal FixedPoint Radius;
         internal Vertices Vertices = new Vertices();
 
         // GJK using Voronoi regions (Christer Ericson) and Barycentric coordinates.
@@ -105,10 +105,10 @@ namespace vFrame.Lockstep.Core.Physics2D
         public int GetSupport(TSVector2 direction)
         {
             int bestIndex = 0;
-            FP bestValue = TSVector2.Dot(Vertices[0], direction);
+            FixedPoint bestValue = TSVector2.Dot(Vertices[0], direction);
             for (int i = 1; i < Vertices.Count; ++i)
             {
-                FP value = TSVector2.Dot(Vertices[i], direction);
+                FixedPoint value = TSVector2.Dot(Vertices[i], direction);
                 if (value > bestValue)
                 {
                     bestIndex = i;
@@ -127,10 +127,10 @@ namespace vFrame.Lockstep.Core.Physics2D
         public TSVector2 GetSupportVertex(TSVector2 direction)
         {
             int bestIndex = 0;
-            FP bestValue = TSVector2.Dot(Vertices[0], direction);
+            FixedPoint bestValue = TSVector2.Dot(Vertices[0], direction);
             for (int i = 1; i < Vertices.Count; ++i)
             {
-                FP value = TSVector2.Dot(Vertices[i], direction);
+                FixedPoint value = TSVector2.Dot(Vertices[i], direction);
                 if (value > bestValue)
                 {
                     bestIndex = i;
@@ -163,7 +163,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         public FixedArray3<byte> IndexB;
 
-        public FP Metric;
+        public FixedPoint Metric;
     }
 
     /// <summary>
@@ -184,7 +184,7 @@ namespace vFrame.Lockstep.Core.Physics2D
     /// </summary>
     public struct DistanceOutput
     {
-        public FP Distance;
+        public FixedPoint Distance;
 
         /// <summary>
         /// Number of GJK iterations used
@@ -207,7 +207,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <summary>
         /// Barycentric coordinate for closest point 
         /// </summary>
-        public FP A;
+        public FixedPoint A;
 
         /// <summary>
         /// wA index
@@ -256,7 +256,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 v.WA = MathUtils.Mul(ref transformA, wALocal);
                 v.WB = MathUtils.Mul(ref transformB, wBLocal);
                 v.W = v.WB - v.WA;
-                v.A = FP.Zero;
+                v.A = FixedPoint.Zero;
                 V[i] = v;
             }
 
@@ -264,9 +264,9 @@ namespace vFrame.Lockstep.Core.Physics2D
             // old metric then flush the simplex.
             if (Count > 1)
             {
-                FP metric1 = cache.Metric;
-                FP metric2 = GetMetric();
-                if (metric2 < FP.Half * metric1 || 2 * metric1 < metric2 || metric2 < Settings.Epsilon)
+                FixedPoint metric1 = cache.Metric;
+                FixedPoint metric2 = GetMetric();
+                if (metric2 < FixedPoint.Half * metric1 || 2 * metric1 < metric2 || metric2 < Settings.Epsilon)
                 {
                     // Reset the simplex.
                     Count = 0;
@@ -284,7 +284,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 v.WA = MathUtils.Mul(ref transformA, wALocal);
                 v.WB = MathUtils.Mul(ref transformB, wBLocal);
                 v.W = v.WB - v.WA;
-                v.A = FP.One;
+                v.A = FixedPoint.One;
                 V[0] = v;
                 Count = 1;
             }
@@ -311,8 +311,8 @@ namespace vFrame.Lockstep.Core.Physics2D
                 case 2:
                     {
                         TSVector2 e12 = V[1].W - V[0].W;
-                        FP sgn = MathUtils.Cross(e12, -V[0].W);
-                        if (sgn > FP.Zero)
+                        FixedPoint sgn = MathUtils.Cross(e12, -V[0].W);
+                        if (sgn > FixedPoint.Zero)
                         {
                             // Origin is left of e12.
                             return new TSVector2(-e12.y, e12.x);
@@ -383,15 +383,15 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
         }
 
-        internal FP GetMetric()
+        internal FixedPoint GetMetric()
         {
             switch (Count)
             {
                 case 0:
                     Debug.Assert(false);
-                    return FP.Zero;
+                    return FixedPoint.Zero;
                 case 1:
-                    return FP.Zero;
+                    return FixedPoint.Zero;
 
                 case 2:
                     return (V[0].W - V[1].W).magnitude;
@@ -401,7 +401,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
                 default:
                     Debug.Assert(false);
-                    return FP.Zero;
+                    return FixedPoint.Zero;
             }
         }
 
@@ -436,24 +436,24 @@ namespace vFrame.Lockstep.Core.Physics2D
             TSVector2 e12 = w2 - w1;
 
             // w1 region
-            FP d12_2 = -TSVector2.Dot(w1, e12);
-            if (d12_2 <= FP.Zero)
+            FixedPoint d12_2 = -TSVector2.Dot(w1, e12);
+            if (d12_2 <= FixedPoint.Zero)
             {
                 // a2 <= 0, so we clamp it to 0
                 SimplexVertex v0 = V[0];
-                v0.A = FP.One;
+                v0.A = FixedPoint.One;
                 V[0] = v0;
                 Count = 1;
                 return;
             }
 
             // w2 region
-            FP d12_1 = TSVector2.Dot(w2, e12);
-            if (d12_1 <= FP.Zero)
+            FixedPoint d12_1 = TSVector2.Dot(w2, e12);
+            if (d12_1 <= FixedPoint.Zero)
             {
                 // a1 <= 0, so we clamp it to 0
                 SimplexVertex v1 = V[1];
-                v1.A = FP.One;
+                v1.A = FixedPoint.One;
                 V[1] = v1;
                 Count = 1;
                 V[0] = V[1];
@@ -461,7 +461,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
 
             // Must be in e12 region.
-            FP inv_d12 = FP.One / (d12_1 + d12_2);
+            FixedPoint inv_d12 = FixedPoint.One / (d12_1 + d12_2);
             SimplexVertex v0_2 = V[0];
             SimplexVertex v1_2 = V[1];
             v0_2.A = d12_1 * inv_d12;
@@ -487,52 +487,52 @@ namespace vFrame.Lockstep.Core.Physics2D
             // [w1.e12 w2.e12][a2] = [0]
             // a3 = 0
             TSVector2 e12 = w2 - w1;
-            FP w1e12 = TSVector2.Dot(w1, e12);
-            FP w2e12 = TSVector2.Dot(w2, e12);
-            FP d12_1 = w2e12;
-            FP d12_2 = -w1e12;
+            FixedPoint w1e12 = TSVector2.Dot(w1, e12);
+            FixedPoint w2e12 = TSVector2.Dot(w2, e12);
+            FixedPoint d12_1 = w2e12;
+            FixedPoint d12_2 = -w1e12;
 
             // Edge13
             // [1      1     ][a1] = [1]
             // [w1.e13 w3.e13][a3] = [0]
             // a2 = 0
             TSVector2 e13 = w3 - w1;
-            FP w1e13 = TSVector2.Dot(w1, e13);
-            FP w3e13 = TSVector2.Dot(w3, e13);
-            FP d13_1 = w3e13;
-            FP d13_2 = -w1e13;
+            FixedPoint w1e13 = TSVector2.Dot(w1, e13);
+            FixedPoint w3e13 = TSVector2.Dot(w3, e13);
+            FixedPoint d13_1 = w3e13;
+            FixedPoint d13_2 = -w1e13;
 
             // Edge23
             // [1      1     ][a2] = [1]
             // [w2.e23 w3.e23][a3] = [0]
             // a1 = 0
             TSVector2 e23 = w3 - w2;
-            FP w2e23 = TSVector2.Dot(w2, e23);
-            FP w3e23 = TSVector2.Dot(w3, e23);
-            FP d23_1 = w3e23;
-            FP d23_2 = -w2e23;
+            FixedPoint w2e23 = TSVector2.Dot(w2, e23);
+            FixedPoint w3e23 = TSVector2.Dot(w3, e23);
+            FixedPoint d23_1 = w3e23;
+            FixedPoint d23_2 = -w2e23;
 
             // Triangle123
-            FP n123 = MathUtils.Cross(e12, e13);
+            FixedPoint n123 = MathUtils.Cross(e12, e13);
 
-            FP d123_1 = n123 * MathUtils.Cross(w2, w3);
-            FP d123_2 = n123 * MathUtils.Cross(w3, w1);
-            FP d123_3 = n123 * MathUtils.Cross(w1, w2);
+            FixedPoint d123_1 = n123 * MathUtils.Cross(w2, w3);
+            FixedPoint d123_2 = n123 * MathUtils.Cross(w3, w1);
+            FixedPoint d123_3 = n123 * MathUtils.Cross(w1, w2);
 
             // w1 region
-            if (d12_2 <= FP.Zero && d13_2 <= FP.Zero)
+            if (d12_2 <= FixedPoint.Zero && d13_2 <= FixedPoint.Zero)
             {
                 SimplexVertex v0_1 = V[0];
-                v0_1.A = FP.One;
+                v0_1.A = FixedPoint.One;
                 V[0] = v0_1;
                 Count = 1;
                 return;
             }
 
             // e12
-            if (d12_1 > FP.Zero && d12_2 > FP.Zero && d123_3 <= FP.Zero)
+            if (d12_1 > FixedPoint.Zero && d12_2 > FixedPoint.Zero && d123_3 <= FixedPoint.Zero)
             {
-                FP inv_d12 = FP.One / (d12_1 + d12_2);
+                FixedPoint inv_d12 = FixedPoint.One / (d12_1 + d12_2);
                 SimplexVertex v0_2 = V[0];
                 SimplexVertex v1_2 = V[1];
                 v0_2.A = d12_1 * inv_d12;
@@ -544,9 +544,9 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
 
             // e13
-            if (d13_1 > FP.Zero && d13_2 > FP.Zero && d123_2 <= FP.Zero)
+            if (d13_1 > FixedPoint.Zero && d13_2 > FixedPoint.Zero && d123_2 <= FixedPoint.Zero)
             {
-                FP inv_d13 = FP.One / (d13_1 + d13_2);
+                FixedPoint inv_d13 = FixedPoint.One / (d13_1 + d13_2);
                 SimplexVertex v0_3 = V[0];
                 SimplexVertex v2_3 = V[2];
                 v0_3.A = d13_1 * inv_d13;
@@ -559,10 +559,10 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
 
             // w2 region
-            if (d12_1 <= FP.Zero && d23_2 <= FP.Zero)
+            if (d12_1 <= FixedPoint.Zero && d23_2 <= FixedPoint.Zero)
             {
                 SimplexVertex v1_4 = V[1];
-                v1_4.A = FP.One;
+                v1_4.A = FixedPoint.One;
                 V[1] = v1_4;
                 Count = 1;
                 V[0] = V[1];
@@ -570,10 +570,10 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
 
             // w3 region
-            if (d13_1 <= FP.Zero && d23_1 <= FP.Zero)
+            if (d13_1 <= FixedPoint.Zero && d23_1 <= FixedPoint.Zero)
             {
                 SimplexVertex v2_5 = V[2];
-                v2_5.A = FP.One;
+                v2_5.A = FixedPoint.One;
                 V[2] = v2_5;
                 Count = 1;
                 V[0] = V[2];
@@ -581,9 +581,9 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
 
             // e23
-            if (d23_1 > FP.Zero && d23_2 > FP.Zero && d123_1 <= FP.Zero)
+            if (d23_1 > FixedPoint.Zero && d23_2 > FixedPoint.Zero && d123_1 <= FixedPoint.Zero)
             {
-                FP inv_d23 = FP.One / (d23_1 + d23_2);
+                FixedPoint inv_d23 = FixedPoint.One / (d23_1 + d23_2);
                 SimplexVertex v1_6 = V[1];
                 SimplexVertex v2_6 = V[2];
                 v1_6.A = d23_1 * inv_d23;
@@ -596,7 +596,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
 
             // Must be in triangle123
-            FP inv_d123 = FP.One / (d123_1 + d123_2 + d123_3);
+            FixedPoint inv_d123 = FixedPoint.One / (d123_1 + d123_2 + d123_3);
             SimplexVertex v0_7 = V[0];
             SimplexVertex v1_7 = V[1];
             SimplexVertex v2_7 = V[2];
@@ -765,8 +765,8 @@ namespace vFrame.Lockstep.Core.Physics2D
             // Apply radii if requested.
             if (input.UseRadii)
             {
-                FP rA = input.ProxyA.Radius;
-                FP rB = input.ProxyB.Radius;
+                FixedPoint rA = input.ProxyA.Radius;
+                FixedPoint rB = input.ProxyB.Radius;
 
                 if (output.Distance > rA + rB && output.Distance > Settings.Epsilon)
                 {
@@ -782,10 +782,10 @@ namespace vFrame.Lockstep.Core.Physics2D
                 {
                     // Shapes are overlapped when radii are considered.
                     // Move the witness points to the middle.
-                    TSVector2 p = FP.Half * (output.PointA + output.PointB);
+                    TSVector2 p = FixedPoint.Half * (output.PointA + output.PointB);
                     output.PointA = p;
                     output.PointB = p;
-                    output.Distance = FP.Zero;
+                    output.Distance = FixedPoint.Zero;
                 }
             }
         }

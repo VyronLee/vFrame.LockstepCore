@@ -1,14 +1,12 @@
-﻿using FP = vFrame.Lockstep.Core.FP;
-
-namespace vFrame.Lockstep.Core.Physics2D
+﻿namespace vFrame.Lockstep.Core.Physics2D
 {
     internal class Point
     {
         // Pointers to next and previous points in Monontone Mountain
         public Point Next, Prev;
-        public FP X, Y;
+        public FixedPoint X, Y;
 
-        public Point(FP x, FP y)
+        public Point(FixedPoint x, FixedPoint y)
         {
             X = x;
             Y = y;
@@ -26,22 +24,22 @@ namespace vFrame.Lockstep.Core.Physics2D
             return new Point(p1.X + p2.X, p1.Y + p2.Y);
         }
 
-        public static Point operator -(Point p1, FP f)
+        public static Point operator -(Point p1, FixedPoint f)
         {
             return new Point(p1.X - f, p1.Y - f);
         }
 
-        public static Point operator +(Point p1, FP f)
+        public static Point operator +(Point p1, FixedPoint f)
         {
             return new Point(p1.X + f, p1.Y + f);
         }
 
-        public FP Cross(Point p)
+        public FixedPoint Cross(Point p)
         {
             return X * p.Y - Y * p.X;
         }
 
-        public FP Dot(Point p)
+        public FixedPoint Dot(Point p)
         {
             return X * p.X + Y * p.Y;
         }
@@ -51,12 +49,12 @@ namespace vFrame.Lockstep.Core.Physics2D
             return p.X != X || p.Y != Y;
         }
 
-        public FP Orient2D(Point pb, Point pc)
+        public FixedPoint Orient2D(Point pb, Point pc)
         {
-            FP acx = X - pc.X;
-            FP bcx = pb.X - pc.X;
-            FP acy = Y - pc.Y;
-            FP bcy = pb.Y - pc.Y;
+            FixedPoint acx = X - pc.X;
+            FixedPoint bcx = pb.X - pc.X;
+            FixedPoint acy = Y - pc.Y;
+            FixedPoint bcy = pb.Y - pc.Y;
             return acx * bcy - acy * bcx;
         }
     }

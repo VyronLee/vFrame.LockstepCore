@@ -39,7 +39,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="sheer">The sheer to use if you get bad results, try using a higher value.</param>
         /// <returns>A list of triangles</returns>
         // TS - public static List<Vertices> ConvexPartition(Vertices vertices, FP sheer = 0.001f)
-        public static List<Vertices> ConvexPartition(Vertices vertices, FP sheer)
+        public static List<Vertices> ConvexPartition(Vertices vertices, FixedPoint sheer)
         {
             Debug.Assert(vertices.Count > 3);
 
@@ -76,7 +76,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="sheer">The sheer to use if you get bad results, try using a higher value.</param>
         /// <returns>A list of trapezoids</returns>
         // TS - public static List<Vertices> ConvexPartitionTrapezoid(Vertices vertices, FP sheer = 0.001f)
-        public static List<Vertices> ConvexPartitionTrapezoid(Vertices vertices, FP sheer)
+        public static List<Vertices> ConvexPartitionTrapezoid(Vertices vertices, FixedPoint sheer)
         {
             List<Point> compatList = new List<Point>(vertices.Count);
 

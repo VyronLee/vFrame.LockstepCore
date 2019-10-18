@@ -37,7 +37,6 @@
 
 using System;
 using System.Text;
-using FP = vFrame.Lockstep.Core.FP;
 
 namespace vFrame.Lockstep.Core.Physics2D
 {
@@ -87,7 +86,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// MM:  This seems to be used by LocateNode to guess a position in the implicit linked list of AdvancingFrontNodes near x
         ///      Removed an overload that depended on this being exact
         /// </summary>
-        private AdvancingFrontNode FindSearchNode(FP x)
+        private AdvancingFrontNode FindSearchNode(FixedPoint x)
         {
             // TODO: implement BST index 
             return Search;
@@ -101,7 +100,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             return LocateNode(point.X);
         }
 
-        private AdvancingFrontNode LocateNode(FP x)
+        private AdvancingFrontNode LocateNode(FixedPoint x)
         {
             AdvancingFrontNode node = FindSearchNode(x);
             if (x < node.Value)
@@ -130,9 +129,9 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         public AdvancingFrontNode LocatePoint(TriangulationPoint point)
         {
-            FP px = point.X;
+            FixedPoint px = point.X;
             AdvancingFrontNode node = FindSearchNode(px);
-            FP nx = node.Point.X;
+            FixedPoint nx = node.Point.X;
 
             if (px == nx)
             {

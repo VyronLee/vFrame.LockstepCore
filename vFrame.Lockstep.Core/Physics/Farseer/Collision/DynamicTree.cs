@@ -116,19 +116,19 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <summary>
         /// Get the ratio of the sum of the node areas to the root area.
         /// </summary>
-        public FP AreaRatio
+        public FixedPoint AreaRatio
         {
             get
             {
                 if (_root == NullNode)
                 {
-                    return FP.Zero;
+                    return FixedPoint.Zero;
                 }
 
                 TreeNode<T> root = _nodes[_root];
-                FP rootArea = root.AABB.Perimeter;
+                FixedPoint rootArea = root.AABB.Perimeter;
 
-                FP totalArea = FP.Zero;
+                FixedPoint totalArea = FixedPoint.Zero;
                 for (int i = 0; i < _nodeCapacity; ++i)
                 {
                     TreeNode<T> node = _nodes[i];
@@ -242,7 +242,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             // Predict AABB displacement.
             TSVector2 d = Settings.AABBMultiplier * displacement;
 
-            if (d.x < FP.Zero)
+            if (d.x < FixedPoint.Zero)
             {
                 b.LowerBound.x += d.x;
             }
@@ -251,7 +251,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 b.UpperBound.x += d.x;
             }
 
-            if (d.y < FP.Zero)
+            if (d.y < FixedPoint.Zero)
             {
                 b.LowerBound.y += d.y;
             }
@@ -338,12 +338,12 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="callback">A callback class that is called for each proxy that is hit by the ray.</param>
         /// <param name="input">The ray-cast input data. The ray extends from p1 to p1 + maxFraction * (p2 - p1).</param>
-        public void RayCast(Func<RayCastInput, int, int, FP> callback, ref RayCastInput input, int layerMask)
+        public void RayCast(Func<RayCastInput, int, int, FixedPoint> callback, ref RayCastInput input, int layerMask)
         {
             TSVector2 p1 = input.Point1;
             TSVector2 p2 = input.Point2;
             TSVector2 r = p2 - p1;
-            Debug.Assert(r.LengthSquared() > FP.Zero);
+            Debug.Assert(r.LengthSquared() > FixedPoint.Zero);
             r.Normalize();
 
             // v is perpendicular to the segment.
@@ -352,7 +352,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             // Separating axis for segment (Gino, p80).
             // |dot(v, p1 - c)| > dot(|v|, h)
 
-            FP maxFraction = input.MaxFraction;
+            FixedPoint maxFraction = input.MaxFraction;
 
             // Build a bounding box for the segment.
             AABB segmentAABB = new AABB();
@@ -384,8 +384,8 @@ namespace vFrame.Lockstep.Core.Physics2D
                 // |dot(v, p1 - c)| > dot(|v|, h)
                 TSVector2 c = node.AABB.Center;
                 TSVector2 h = node.AABB.Extents;
-                FP separation = FP.Abs(TSVector2.Dot(new TSVector2(-r.y, r.x), p1 - c)) - TSVector2.Dot(absV, h);
-                if (separation > FP.Zero)
+                FixedPoint separation = FixedPoint.Abs(TSVector2.Dot(new TSVector2(-r.y, r.x), p1 - c)) - TSVector2.Dot(absV, h);
+                if (separation > FixedPoint.Zero)
                 {
                     continue;
                 }
@@ -397,15 +397,15 @@ namespace vFrame.Lockstep.Core.Physics2D
                     subInput.Point2 = input.Point2;
                     subInput.MaxFraction = maxFraction;
 
-                    FP value = callback(subInput, nodeId, layerMask);
+                    FixedPoint value = callback(subInput, nodeId, layerMask);
 
-                    if (value == FP.Zero)
+                    if (value == FixedPoint.Zero)
                     {
                         // the client has terminated the raycast.
                         return;
                     }
 
-                    if (value > FP.Zero)
+                    if (value > FixedPoint.Zero)
                     {
                         // Update segment bounding box.
                         maxFraction = value;
@@ -445,7 +445,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="callback">A callback class that is called for each proxy that is hit by the ray.</param>
         /// <param name="input">The ray-cast input data. The ray extends from p1 to p1 + maxFraction * (p2 - p1).</param>
-        public void CircleCast(Func<CircleCastInput, int, int, FP> callback, ref CircleCastInput input, int layerMask)
+        public void CircleCast(Func<CircleCastInput, int, int, FixedPoint> callback, ref CircleCastInput input, int layerMask)
         {
             TSVector2 p1 = input.Point1;
             TSVector2 p2 = input.Point2;
@@ -459,7 +459,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             // Separating axis for segment (Gino, p80).
             // |dot(v, p1 - c)| > dot(|v|, h)
 
-            FP maxFraction = input.MaxFraction;
+            FixedPoint maxFraction = input.MaxFraction;
 
             // Build a bounding box for the segment.
             AABB segmentAABB = new AABB();
@@ -511,9 +511,9 @@ namespace vFrame.Lockstep.Core.Physics2D
                     subInput.CastDir = input.CastDir;
                     subInput.Output = input.Output;
 
-                    FP value = callback(subInput, nodeId, layerMask);
+                    FixedPoint value = callback(subInput, nodeId, layerMask);
 
-                    if (value == FP.Zero)
+                    if (value == FixedPoint.Zero)
                     {
                         // the client has terminated the raycast.
                         return;
@@ -617,20 +617,20 @@ namespace vFrame.Lockstep.Core.Physics2D
                 int child1 = _nodes[index].Child1;
                 int child2 = _nodes[index].Child2;
 
-                FP area = _nodes[index].AABB.Perimeter;
+                FixedPoint area = _nodes[index].AABB.Perimeter;
 
                 AABB combinedAABB = new AABB();
                 combinedAABB.Combine(ref _nodes[index].AABB, ref leafAABB);
-                FP combinedArea = combinedAABB.Perimeter;
+                FixedPoint combinedArea = combinedAABB.Perimeter;
 
                 // Cost of creating a new parent for this node and the new leaf
-                FP cost = 2 * combinedArea;
+                FixedPoint cost = 2 * combinedArea;
 
                 // Minimum cost of pushing the leaf further down the tree
-                FP inheritanceCost = 2 * (combinedArea - area);
+                FixedPoint inheritanceCost = 2 * (combinedArea - area);
 
                 // Cost of descending into child1
-                FP cost1;
+                FixedPoint cost1;
                 if (_nodes[child1].IsLeaf())
                 {
                     AABB aabb = new AABB();
@@ -641,13 +641,13 @@ namespace vFrame.Lockstep.Core.Physics2D
                 {
                     AABB aabb = new AABB();
                     aabb.Combine(ref leafAABB, ref _nodes[child1].AABB);
-                    FP oldArea = _nodes[child1].AABB.Perimeter;
-                    FP newArea = aabb.Perimeter;
+                    FixedPoint oldArea = _nodes[child1].AABB.Perimeter;
+                    FixedPoint newArea = aabb.Perimeter;
                     cost1 = (newArea - oldArea) + inheritanceCost;
                 }
 
                 // Cost of descending into child2
-                FP cost2;
+                FixedPoint cost2;
                 if (_nodes[child2].IsLeaf())
                 {
                     AABB aabb = new AABB();
@@ -658,8 +658,8 @@ namespace vFrame.Lockstep.Core.Physics2D
                 {
                     AABB aabb = new AABB();
                     aabb.Combine(ref leafAABB, ref _nodes[child2].AABB);
-                    FP oldArea = _nodes[child2].AABB.Perimeter;
-                    FP newArea = aabb.Perimeter;
+                    FixedPoint oldArea = _nodes[child2].AABB.Perimeter;
+                    FixedPoint newArea = aabb.Perimeter;
                     cost2 = newArea - oldArea + inheritanceCost;
                 }
 
@@ -1101,7 +1101,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             while (count > 1)
             {
-                FP minCost = Settings.MaxFP;
+                FixedPoint minCost = Settings.MaxFP;
                 int iMin = -1, jMin = -1;
                 for (int i = 0; i < count; ++i)
                 {
@@ -1112,7 +1112,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                         AABB AABBj = _nodes[nodes[j]].AABB;
                         AABB b = new AABB();
                         b.Combine(ref AABBi, ref AABBj);
-                        FP cost = b.Perimeter;
+                        FixedPoint cost = b.Perimeter;
                         if (cost < minCost)
                         {
                             iMin = i;

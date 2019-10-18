@@ -31,7 +31,6 @@
 
 using System.Collections.Generic;
 using vFrame.Lockstep.Core.Physics2D;
-using FP = vFrame.Lockstep.Core.FP;
 
 namespace vFrame.Lockstep.Core.Physics2D
 {
@@ -39,9 +38,9 @@ namespace vFrame.Lockstep.Core.Physics2D
     {
         // List of edges this point constitutes an upper ending point (CDT)
 
-        public FP X, Y;
+        public FixedPoint X, Y;
 
-        public TriangulationPoint(FP x, FP y)
+        public TriangulationPoint(FixedPoint x, FixedPoint y)
         {
             X = x;
             Y = y;
@@ -49,15 +48,15 @@ namespace vFrame.Lockstep.Core.Physics2D
 
         public List<DTSweepConstraint> Edges { get; private set; }
 
-        public FP Xf
+        public FixedPoint Xf
         {
-            get { return (FP) X; }
+            get { return (FixedPoint) X; }
             set { X = value; }
         }
 
-        public FP Yf
+        public FixedPoint Yf
         {
-            get { return (FP) Y; }
+            get { return (FixedPoint) Y; }
             set { Y = value; }
         }
 

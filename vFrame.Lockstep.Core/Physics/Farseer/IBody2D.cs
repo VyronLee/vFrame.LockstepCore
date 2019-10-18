@@ -15,14 +15,14 @@
         /**
          *  @brief Static friction when in contact. 
          **/
-        FP TSFriction {
+        FixedPoint TSFriction {
             get; set;
         }
 
         /**
         * @brief Coeficient of restitution.
         **/
-        FP TSRestitution {
+        FixedPoint TSRestitution {
             get; set;
         }
 

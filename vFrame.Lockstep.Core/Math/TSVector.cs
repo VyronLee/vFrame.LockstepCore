@@ -28,16 +28,16 @@ namespace vFrame.Lockstep.Core
     public struct TSVector
     {
 
-        private static FP ZeroEpsilonSq = TSMath.Epsilon;
+        private static FixedPoint ZeroEpsilonSq = TSMath.Epsilon;
         internal static TSVector InternalZero;
         internal static TSVector Arbitrary;
 
         /// <summary>The X component of the vector.</summary>
-        public FP x;
+        public FixedPoint x;
         /// <summary>The Y component of the vector.</summary>
-        public FP y;
+        public FixedPoint y;
         /// <summary>The Z component of the vector.</summary>
-        public FP z;
+        public FixedPoint z;
 
         #region Static readonly variables
         /// <summary>
@@ -85,7 +85,7 @@ namespace vFrame.Lockstep.Core
 
         public static TSVector FromFloat(float x, float y, float z)
         {
-            return new TSVector(FP.FromFloat(x), FP.FromFloat(y), FP.FromFloat(z));
+            return new TSVector(FixedPoint.FromFloat(x), FixedPoint.FromFloat(y), FixedPoint.FromFloat(z));
         }
 
 
@@ -102,22 +102,22 @@ namespace vFrame.Lockstep.Core
             down = new TSVector(0, -1, 0);
             back = new TSVector(0, 0, -1);
             forward = new TSVector(0, 0, 1);
-            MinValue = new TSVector(FP.MinValue);
-            MaxValue = new TSVector(FP.MaxValue);
+            MinValue = new TSVector(FixedPoint.MinValue);
+            MaxValue = new TSVector(FixedPoint.MaxValue);
             Arbitrary = new TSVector(1, 1, 1);
             InternalZero = zero;
         }
         #endregion
 
         public static TSVector Abs(TSVector other) {
-            return new TSVector(FP.Abs(other.x), FP.Abs(other.y), FP.Abs(other.z));
+            return new TSVector(FixedPoint.Abs(other.x), FixedPoint.Abs(other.y), FixedPoint.Abs(other.z));
         }
 
         /// <summary>
         /// Gets the squared length of the vector.
         /// </summary>
         /// <returns>Returns the squared length of the vector.</returns>
-        public FP sqrMagnitude {
+        public FixedPoint sqrMagnitude {
             get {
                 return (((this.x * this.x) + (this.y * this.y)) + (this.z * this.z));
             }
@@ -127,14 +127,14 @@ namespace vFrame.Lockstep.Core
         /// Gets the length of the vector.
         /// </summary>
         /// <returns>Returns the length of the vector.</returns>
-        public FP magnitude {
+        public FixedPoint magnitude {
             get {
-                FP num = ((this.x * this.x) + (this.y * this.y)) + (this.z * this.z);
-                return FP.Sqrt(num);
+                FixedPoint num = ((this.x * this.x) + (this.y * this.y)) + (this.z * this.z);
+                return FixedPoint.Sqrt(num);
             }
         }
 
-        public static TSVector ClampMagnitude(TSVector vector, FP maxLength) {
+        public static TSVector ClampMagnitude(TSVector vector, FixedPoint maxLength) {
             return Normalize(vector) * maxLength;
         }
 
@@ -160,12 +160,12 @@ namespace vFrame.Lockstep.Core
 
         public TSVector(int x,int y,int z)
 		{
-			this.x = (FP)x;
-			this.y = (FP)y;
-			this.z = (FP)z;
+			this.x = (FixedPoint)x;
+			this.y = (FixedPoint)y;
+			this.z = (FixedPoint)z;
 		}
 
-		public TSVector(FP x, FP y, FP z)
+		public TSVector(FixedPoint x, FixedPoint y, FixedPoint z)
         {
             this.x = x;
             this.y = y;
@@ -187,7 +187,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="x">The X component of the vector.</param>
         /// <param name="y">The Y component of the vector.</param>
         /// <param name="z">The Z component of the vector.</param>
-        public void Set(FP x, FP y, FP z)
+        public void Set(FixedPoint x, FixedPoint y, FixedPoint z)
         {
             this.x = x;
             this.y = y;
@@ -198,14 +198,14 @@ namespace vFrame.Lockstep.Core
         /// Constructor initializing a new instance of the structure
         /// </summary>
         /// <param name="xyz">All components of the vector are set to xyz</param>
-        public TSVector(FP xyz)
+        public TSVector(FixedPoint xyz)
         {
             this.x = xyz;
             this.y = xyz;
             this.z = xyz;
         }
 
-		public static TSVector Lerp(TSVector from, TSVector to, FP percent) {
+		public static TSVector Lerp(TSVector from, TSVector to, FixedPoint percent) {
 			return from + (to - from) * percent;
 		}
 
@@ -319,11 +319,11 @@ namespace vFrame.Lockstep.Core
             return result;
         }
 
-		public static FP Distance(TSVector v1, TSVector v2) {
-			return FP.Sqrt ((v1.x - v2.x) * (v1.x - v2.x) + (v1.y - v2.y) * (v1.y - v2.y) + (v1.z - v2.z) * (v1.z - v2.z));
+		public static FixedPoint Distance(TSVector v1, TSVector v2) {
+			return FixedPoint.Sqrt ((v1.x - v2.x) * (v1.x - v2.x) + (v1.y - v2.y) * (v1.y - v2.y) + (v1.z - v2.z) * (v1.z - v2.z));
 		}
 
-        public static FP DistanceSquare(TSVector v1, TSVector v2)
+        public static FixedPoint DistanceSquare(TSVector v1, TSVector v2)
         {
             return (v1.x - v2.x) * (v1.x - v2.x) + (v1.y - v2.y) * (v1.y - v2.y) + (v1.z - v2.z) * (v1.z - v2.z);
         }
@@ -348,9 +348,9 @@ namespace vFrame.Lockstep.Core
         #region public void MakeZero()
         public void MakeZero()
         {
-            x = FP.Zero;
-            y = FP.Zero;
-            z = FP.Zero;
+            x = FixedPoint.Zero;
+            y = FixedPoint.Zero;
+            z = FixedPoint.Zero;
         }
         #endregion
 
@@ -361,7 +361,7 @@ namespace vFrame.Lockstep.Core
         #region public bool IsZero()
         public bool IsZero()
         {
-            return (this.sqrMagnitude == FP.Zero);
+            return (this.sqrMagnitude == FixedPoint.Zero);
         }
 
         /// <summary>
@@ -396,9 +396,9 @@ namespace vFrame.Lockstep.Core
         /// <param name="result">The transformed vector.</param>
         public static void Transform(ref TSVector position, ref TSMatrix matrix, out TSVector result)
         {
-            FP num0 = ((position.x * matrix.M11) + (position.y * matrix.M21)) + (position.z * matrix.M31);
-            FP num1 = ((position.x * matrix.M12) + (position.y * matrix.M22)) + (position.z * matrix.M32);
-            FP num2 = ((position.x * matrix.M13) + (position.y * matrix.M23)) + (position.z * matrix.M33);
+            FixedPoint num0 = ((position.x * matrix.M11) + (position.y * matrix.M21)) + (position.z * matrix.M31);
+            FixedPoint num1 = ((position.x * matrix.M12) + (position.y * matrix.M22)) + (position.z * matrix.M32);
+            FixedPoint num2 = ((position.x * matrix.M13) + (position.y * matrix.M23)) + (position.z * matrix.M33);
 
             result.x = num0;
             result.y = num1;
@@ -413,9 +413,9 @@ namespace vFrame.Lockstep.Core
         /// <param name="result">The transformed vector.</param>
         public static void TransposedTransform(ref TSVector position, ref TSMatrix matrix, out TSVector result)
         {
-            FP num0 = ((position.x * matrix.M11) + (position.y * matrix.M12)) + (position.z * matrix.M13);
-            FP num1 = ((position.x * matrix.M21) + (position.y * matrix.M22)) + (position.z * matrix.M23);
-            FP num2 = ((position.x * matrix.M31) + (position.y * matrix.M32)) + (position.z * matrix.M33);
+            FixedPoint num0 = ((position.x * matrix.M11) + (position.y * matrix.M12)) + (position.z * matrix.M13);
+            FixedPoint num1 = ((position.x * matrix.M21) + (position.y * matrix.M22)) + (position.z * matrix.M23);
+            FixedPoint num2 = ((position.x * matrix.M31) + (position.y * matrix.M32)) + (position.z * matrix.M33);
 
             result.x = num0;
             result.y = num1;
@@ -430,14 +430,14 @@ namespace vFrame.Lockstep.Core
         /// <param name="vector2">The second vector.</param>
         /// <returns>Returns the dot product of both vectors.</returns>
         #region public static FP Dot(JVector vector1, JVector vector2)
-        public static FP Dot(TSVector vector1, TSVector vector2)
+        public static FixedPoint Dot(TSVector vector1, TSVector vector2)
         {
             return TSVector.Dot(ref vector1, ref vector2);
         }
 
-        public static bool IsSameDir(FP dotVal)
+        public static bool IsSameDir(FixedPoint dotVal)
         {
-            return dotVal >= 96 * FP.EN2;
+            return dotVal >= 96 * FixedPoint.EN2;
         }
 
 
@@ -447,7 +447,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="vector1">The first vector.</param>
         /// <param name="vector2">The second vector.</param>
         /// <returns>Returns the dot product of both vectors.</returns>
-        public static FP Dot(ref TSVector vector1, ref TSVector vector2)
+        public static FixedPoint Dot(ref TSVector vector1, ref TSVector vector2)
         {
             return ((vector1.x * vector2.x) + (vector1.y * vector2.y)) + (vector1.z * vector2.z);
         }
@@ -456,7 +456,7 @@ namespace vFrame.Lockstep.Core
         // Projects a vector onto another vector.
         public static TSVector Project(TSVector vector, TSVector onNormal)
         {
-            FP sqrtMag = Dot(onNormal, onNormal);
+            FixedPoint sqrtMag = Dot(onNormal, onNormal);
             if (sqrtMag < TSMath.Epsilon)
                 return zero;
             else
@@ -471,19 +471,19 @@ namespace vFrame.Lockstep.Core
 
 
         // Returns the angle in degrees between /from/ and /to/. This is always the smallest
-        public static FP Angle(TSVector from, TSVector to)
+        public static FixedPoint Angle(TSVector from, TSVector to)
         {
-            return TSMath.Acos(TSMath.Clamp(Dot(from.normalized, to.normalized), -FP.L_ONE, FP.L_ONE)) * TSMath.Rad2Deg;
+            return TSMath.Acos(TSMath.Clamp(Dot(from.normalized, to.normalized), -FixedPoint.L_ONE, FixedPoint.L_ONE)) * TSMath.Rad2Deg;
         }
 
         // The smaller of the two possible angles between the two vectors is returned, therefore the result will never be greater than 180 degrees or smaller than -180 degrees.
         // If you imagine the from and to vectors as lines on a piece of paper, both originating from the same point, then the /axis/ vector would point up out of the paper.
         // The measured angle between the two vectors would be positive in a clockwise direction and negative in an anti-clockwise direction.
-        public static FP SignedAngle(TSVector from, TSVector to, TSVector axis)
+        public static FixedPoint SignedAngle(TSVector from, TSVector to, TSVector axis)
         {
             TSVector fromNorm = from.normalized, toNorm = to.normalized;
-            FP unsignedAngle = TSMath.Acos(TSMath.Clamp(Dot(fromNorm, toNorm), -FP.L_ONE, FP.L_ONE)) * TSMath.Rad2Deg;
-            FP sign = TSMath.Sign(Dot(axis, Cross(fromNorm, toNorm)));
+            FixedPoint unsignedAngle = TSMath.Acos(TSMath.Clamp(Dot(fromNorm, toNorm), -FixedPoint.L_ONE, FixedPoint.L_ONE)) * TSMath.Rad2Deg;
+            FixedPoint sign = TSMath.Sign(Dot(axis, Cross(fromNorm, toNorm)));
             return unsignedAngle * sign;
         }
 
@@ -509,9 +509,9 @@ namespace vFrame.Lockstep.Core
         /// <param name="result">The sum of both vectors.</param>
         public static void Add(ref TSVector value1, ref TSVector value2, out TSVector result)
         {
-            FP num0 = value1.x + value2.x;
-            FP num1 = value1.y + value2.y;
-            FP num2 = value1.z + value2.z;
+            FixedPoint num0 = value1.x + value2.x;
+            FixedPoint num1 = value1.y + value2.y;
+            FixedPoint num2 = value1.z + value2.z;
 
             result.x = num0;
             result.y = num1;
@@ -525,7 +525,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="value1">The vector to divide.</param>
         /// <param name="scaleFactor">The scale factor.</param>
         /// <returns>Returns the scaled vector.</returns>
-        public static TSVector Divide(TSVector value1, FP scaleFactor) {
+        public static TSVector Divide(TSVector value1, FixedPoint scaleFactor) {
             TSVector result;
             TSVector.Divide(ref value1, scaleFactor, out result);
             return result;
@@ -537,7 +537,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="value1">The vector to divide.</param>
         /// <param name="scaleFactor">The scale factor.</param>
         /// <param name="result">Returns the scaled vector.</param>
-        public static void Divide(ref TSVector value1, FP scaleFactor, out TSVector result) {
+        public static void Divide(ref TSVector value1, FixedPoint scaleFactor, out TSVector result) {
             result.x = value1.x / scaleFactor;
             result.y = value1.y / scaleFactor;
             result.z = value1.z / scaleFactor;
@@ -565,9 +565,9 @@ namespace vFrame.Lockstep.Core
         /// <param name="result">The difference of both vectors.</param>
         public static void Subtract(ref TSVector value1, ref TSVector value2, out TSVector result)
         {
-            FP num0 = value1.x - value2.x;
-            FP num1 = value1.y - value2.y;
-            FP num2 = value1.z - value2.z;
+            FixedPoint num0 = value1.x - value2.x;
+            FixedPoint num1 = value1.y - value2.y;
+            FixedPoint num2 = value1.z - value2.z;
 
             result.x = num0;
             result.y = num1;
@@ -597,9 +597,9 @@ namespace vFrame.Lockstep.Core
         /// <param name="result">The cross product of both vectors.</param>
         public static void Cross(ref TSVector vector1, ref TSVector vector2, out TSVector result)
         {
-            FP num3 = (vector1.y * vector2.z) - (vector1.z * vector2.y);
-            FP num2 = (vector1.z * vector2.x) - (vector1.x * vector2.z);
-            FP num = (vector1.x * vector2.y) - (vector1.y * vector2.x);
+            FixedPoint num3 = (vector1.y * vector2.z) - (vector1.z * vector2.y);
+            FixedPoint num2 = (vector1.z * vector2.x) - (vector1.x * vector2.z);
+            FixedPoint num = (vector1.x * vector2.y) - (vector1.y * vector2.x);
             result.x = num3;
             result.y = num2;
             result.z = num;
@@ -647,9 +647,9 @@ namespace vFrame.Lockstep.Core
         /// <param name="result">The negated vector.</param>
         public static void Negate(ref TSVector value, out TSVector result)
         {
-            FP num0 = -value.x;
-            FP num1 = -value.y;
-            FP num2 = -value.z;
+            FixedPoint num0 = -value.x;
+            FixedPoint num1 = -value.y;
+            FixedPoint num2 = -value.z;
 
             result.x = num0;
             result.y = num1;
@@ -675,8 +675,8 @@ namespace vFrame.Lockstep.Core
         /// </summary>
         public void Normalize()
         {
-            FP num2 = ((this.x * this.x) + (this.y * this.y)) + (this.z * this.z);
-            FP num = FP.One / FP.Sqrt(num2);
+            FixedPoint num2 = ((this.x * this.x) + (this.y * this.y)) + (this.z * this.z);
+            FixedPoint num = FixedPoint.One / FixedPoint.Sqrt(num2);
             this.x *= num;
             this.y *= num;
             this.z *= num;
@@ -689,8 +689,8 @@ namespace vFrame.Lockstep.Core
         /// <param name="result">A normalized vector.</param>
         public static void Normalize(ref TSVector value, out TSVector result)
         {
-            FP num2 = ((value.x * value.x) + (value.y * value.y)) + (value.z * value.z);
-            FP num = FP.One / FP.Sqrt(num2);
+            FixedPoint num2 = ((value.x * value.x) + (value.y * value.y)) + (value.z * value.z);
+            FixedPoint num = FixedPoint.One / FixedPoint.Sqrt(num2);
             result.x = value.x * num;
             result.y = value.y * num;
             result.z = value.z * num;
@@ -706,7 +706,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="vector2">The second vector to swap with the first.</param>
         public static void Swap(ref TSVector vector1, ref TSVector vector2)
         {
-            FP temp;
+            FixedPoint temp;
 
             temp = vector1.x;
             vector1.x = vector2.x;
@@ -729,7 +729,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="scaleFactor">The scale factor.</param>
         /// <returns>Returns the multiplied vector.</returns>
         #region public static JVector Multiply(JVector value1, FP scaleFactor)
-        public static TSVector Multiply(TSVector value1, FP scaleFactor)
+        public static TSVector Multiply(TSVector value1, FixedPoint scaleFactor)
         {
             TSVector result;
             TSVector.Multiply(ref value1, scaleFactor, out result);
@@ -742,7 +742,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="value1">The vector to multiply.</param>
         /// <param name="scaleFactor">The scale factor.</param>
         /// <param name="result">Returns the multiplied vector.</param>
-        public static void Multiply(ref TSVector value1, FP scaleFactor, out TSVector result)
+        public static void Multiply(ref TSVector value1, FixedPoint scaleFactor, out TSVector result)
         {
             result.x = value1.x * scaleFactor;
             result.y = value1.y * scaleFactor;
@@ -771,7 +771,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="value2">The second vector.</param>
         /// <returns>Returns the dot product of both.</returns>
         #region public static FP operator *(JVector value1, JVector value2)
-        public static FP operator *(TSVector value1, TSVector value2)
+        public static FixedPoint operator *(TSVector value1, TSVector value2)
         {
             return TSVector.Dot(ref value1, ref value2);
         }
@@ -784,7 +784,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="value2">The scale factor.</param>
         /// <returns>Returns the scaled vector.</returns>
         #region public static JVector operator *(JVector value1, FP value2)
-        public static TSVector operator *(TSVector value1, FP value2)
+        public static TSVector operator *(TSVector value1, FixedPoint value2)
         {
             TSVector result;
             TSVector.Multiply(ref value1, value2,out result);
@@ -799,7 +799,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="value1">The scale factor.</param>
         /// <returns>Returns the scaled vector.</returns>
         #region public static JVector operator *(FP value1, JVector value2)
-        public static TSVector operator *(FP value1, TSVector value2)
+        public static TSVector operator *(FixedPoint value1, TSVector value2)
         {
             TSVector result;
             TSVector.Multiply(ref value2, value1, out result);
@@ -841,7 +841,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="value1">The vector to divide.</param>
         /// <param name="scaleFactor">The scale factor.</param>
         /// <returns>Returns the scaled vector.</returns>
-        public static TSVector operator /(TSVector value1, FP value2) {
+        public static TSVector operator /(TSVector value1, FixedPoint value2) {
             TSVector result;
             TSVector.Divide(ref value1, value2, out result);
             return result;
@@ -853,10 +853,10 @@ namespace vFrame.Lockstep.Core
 
         public TSVector4 ToTSVector4()
         {
-            return new TSVector4(this.x, this.y, this.z, FP.One);
+            return new TSVector4(this.x, this.y, this.z, FixedPoint.One);
         }
 
-        public static TSVector RotateTowards(TSVector from, TSVector to, FP maxDegree)
+        public static TSVector RotateTowards(TSVector from, TSVector to, FixedPoint maxDegree)
         {
             var fromRot = TSQuaternion.LookRotation(from);
             var toRot = TSQuaternion.LookRotation(to);

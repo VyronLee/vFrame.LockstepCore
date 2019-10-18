@@ -78,7 +78,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         internal bool _awake = true;
 
         internal bool _enabled = true;
-        internal FP _sleepTime;
+        internal FixedPoint _sleepTime;
         internal Sweep _sweep; // the swept motion for CCD
 
         internal World _world;
@@ -99,7 +99,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             _world = world;
 
             UserData = userdata;
-            GravityScale = FP.One;
+            GravityScale = FixedPoint.One;
             BodyType = BodyType.Static;
             Enabled = true; //FPE note: Also creates proxies in the broadphase
 
@@ -116,7 +116,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             world.AddBody(this); //FPE note: bodies can't live without a World
         }
 
-        private FP GetAngle(TSVector2 dir)
+        private FixedPoint GetAngle(TSVector2 dir)
         {
             var ret = TSMath.Atan2(dir.y, dir.x);
             var pi2 = TSMath.Pi * 2;
@@ -143,7 +143,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Scale the gravity applied to this body.
         /// Defaults to 1. A value of 2 means FP the gravity is applied to this body.
         /// </summary>
-        public FP GravityScale { get; set; }
+        public FixedPoint GravityScale { get; set; }
 
         /// <summary>
         /// Set the user data. Use this to store your application specific data.
@@ -213,7 +213,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 {
                     if (!_awake)
                     {
-                        _sleepTime = FP.Zero;
+                        _sleepTime = FixedPoint.Zero;
 
 #if USE_AWAKE_BODY_SET
 						if (InWorld && !World.AwakeBodySet.Contains(this))
@@ -234,7 +234,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 					}
 #endif
                     ResetDynamics();
-                    _sleepTime = FP.Zero;
+                    _sleepTime = FixedPoint.Zero;
                 }
 
                 _awake = value;
@@ -307,7 +307,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             get { return _xf.p; }
             set
             {
-                Debug.Assert(!FP.IsNaN(value.x) && !FP.IsNaN(value.y));
+                Debug.Assert(!FixedPoint.IsNaN(value.x) && !FixedPoint.IsNaN(value.y));
 
                 var forward = Forward;
                 SetTransform(ref value, ref forward);
@@ -360,11 +360,11 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
         }
         
-        public FP Friction
+        public FixedPoint Friction
         {
             get
             {
-                FP res = 0;
+                FixedPoint res = 0;
 
                 for (int i = 0; i < FixtureList.Count; i++)
                 {
@@ -482,7 +482,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="position">The world position of the body's local origin.</param>
         /// <param name="rotation">The world rotation in radians.</param>
-        public void SetTransform(ref TSVector2 position, FP rotation)
+        public void SetTransform(ref TSVector2 position, FixedPoint rotation)
         {
             SetTransformIgnoreContacts(ref position, rotation);
         }
@@ -497,7 +497,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="position">The position.</param>
         /// <param name="angle">The angle.</param>
-        public void SetTransformIgnoreContacts(ref TSVector2 position, FP angle)
+        public void SetTransformIgnoreContacts(ref TSVector2 position, FixedPoint angle)
         {
             _xf.q.Set(angle);
             _xf.p = position;
@@ -653,7 +653,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         }
 
 
-        public FP TSFriction {
+        public FixedPoint TSFriction {
             get {
                 return FixtureList[0].Friction;
             }
@@ -667,7 +667,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
         }
 
-        public FP TSRestitution {
+        public FixedPoint TSRestitution {
             get {
                 return FixtureList[0].Restitution;
             }

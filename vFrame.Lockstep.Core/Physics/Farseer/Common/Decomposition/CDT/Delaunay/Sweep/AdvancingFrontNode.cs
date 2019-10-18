@@ -35,8 +35,6 @@
 // Future possibilities
 //   Comments!
 
-using FP = vFrame.Lockstep.Core.FP;
-
 namespace vFrame.Lockstep.Core.Physics2D
 {
     internal class AdvancingFrontNode
@@ -45,7 +43,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         public TriangulationPoint Point;
         public AdvancingFrontNode Prev;
         public DelaunayTriangle Triangle;
-        public FP Value;
+        public FixedPoint Value;
 
         public AdvancingFrontNode(TriangulationPoint point)
         {

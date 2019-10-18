@@ -37,9 +37,9 @@ namespace vFrame.Lockstep.Core.Physics2D
     /// </summary>
     public class World : IWorld
     {
-        internal FP _invDt0;
+        internal FixedPoint _invDt0 = 0f;
         internal Body[] _stack = new Body[64];
-        internal bool _stepComplete;
+        internal bool _stepComplete = false;
         internal List<Body> _bodyAddList = new List<Body>();
         internal List<Body> _bodyRemoveList = new List<Body>();
 
@@ -50,9 +50,9 @@ namespace vFrame.Lockstep.Core.Physics2D
         private TSVector2 _point1;
         internal TSVector2 _point2;
         internal List<Fixture> _testPointAllFixtures;
-        private Func<Fixture, TSVector2, TSVector2, FP, FP> _rayCastCallback;
-        private Func<RayCastInput, int, int, FP> _rayCastCallbackWrapper;
-        private Func<CircleCastInput, int, int, FP> _circleCastCallbackWrapper;
+        private Func<Fixture, TSVector2, TSVector2, FixedPoint, FixedPoint> _rayCastCallback;
+        private Func<RayCastInput, int, int, FixedPoint> _rayCastCallbackWrapper;
+        private Func<CircleCastInput, int, int, FixedPoint> _circleCastCallbackWrapper;
 
         internal Queue<Contact> _contactPool = new Queue<Contact>(256);
         internal bool _worldHasNewFixture;
@@ -203,7 +203,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             return _queryAABBCallback(proxy.Fixture);
         }
 
-        private FP RayCastCallbackWrapper(RayCastInput rayCastInput, int proxyId, int layerMask)
+        private FixedPoint RayCastCallbackWrapper(RayCastInput rayCastInput, int proxyId, int layerMask)
         {
             FixtureProxy proxy = BroadPhase.GetProxy(proxyId);
             Fixture fixture = proxy.Fixture;
@@ -218,8 +218,8 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             if (hit)
             {
-                FP fraction = output.Fraction;
-                TSVector2 point = (FP.One - fraction) * rayCastInput.Point1 + fraction * rayCastInput.Point2;
+                FixedPoint fraction = output.Fraction;
+                TSVector2 point = (FixedPoint.One - fraction) * rayCastInput.Point1 + fraction * rayCastInput.Point2;
                 return _rayCastCallback(fixture, point, output.Normal, fraction);
             }
 
@@ -227,7 +227,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         }
 
         private bool ConvertHitPointAndNormal(Transform transA, Transform transB, Fixture fixtureA, Fixture fixtureB, int shapeIndex,
-                FP shapeRadiusA, FP shapeRadiusB,
+                FixedPoint shapeRadiusA, FixedPoint shapeRadiusB,
                 out TSVector2 hitPoint,
                 out TSVector2 hitNoraml,
                 out bool zeroNormal)
@@ -332,7 +332,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         }
 #endif
 
-        private FP CircleCastCallbackWrapper(CircleCastInput rayCastInput, int proxyId, int layerMask)
+        private FixedPoint CircleCastCallbackWrapper(CircleCastInput rayCastInput, int proxyId, int layerMask)
         {
             FixtureProxy proxy = BroadPhase.GetProxy(proxyId);
             Fixture fixture = proxy.Fixture;
@@ -352,12 +352,12 @@ namespace vFrame.Lockstep.Core.Physics2D
             sweepInput.SweepB.A0 = sweepInput.SweepB.A = fixture.Body._sweep.A;
             sweepInput.SweepB.Alpha0 = 0;
 
-            sweepInput.TMax = FP.One;
+            sweepInput.TMax = FixedPoint.One;
 
             var shape = fixture.Shape;
             var shapeChildCount = shape.ChildCount;
             int contactShapeIndex = -1;
-            FP fraction = rayCastInput.MaxFraction;
+            FixedPoint fraction = rayCastInput.MaxFraction;
             for (int shapeIndex = 0; shapeIndex < shapeChildCount; shapeIndex++)
             {
                 sweepInput.ProxyB.Set(fixture.Shape, shapeIndex);
@@ -422,7 +422,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             //如果是背面，也直接忽略
             var hitVec = hitPoint - rayCastInput.Point1;
-            if (TSVector2.Dot(rayCastInput.CastDir, hitVec) <= FP.Zero)
+            if (TSVector2.Dot(rayCastInput.CastDir, hitVec) <= FixedPoint.Zero)
             {
                 //BLogger.Error("leave hit fraction: {0}, zero noarml:{1}, fixture proxy: {2}, hit vec: {3}",
                 //    fraction, isZeroNormal, proxyId, hitVec);
@@ -596,11 +596,11 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="callback">A user implemented callback class.</param>
         /// <param name="point1">The ray starting point.</param>
         /// <param name="point2">The ray ending point.</param>
-        public void RayCast(Func<Fixture, TSVector2, TSVector2, FP, FP> callback,
+        public void RayCast(Func<Fixture, TSVector2, TSVector2, FixedPoint, FixedPoint> callback,
                         TSVector2 point1, TSVector2 point2, int layerMask = (int)Category.All)
         {
             RayCastInput input = new RayCastInput();
-            input.MaxFraction = FP.One;
+            input.MaxFraction = FixedPoint.One;
             input.Point1 = point1;
             input.Point2 = point2;
 
@@ -613,11 +613,11 @@ namespace vFrame.Lockstep.Core.Physics2D
         private TOIInput m_sweepInput = new TOIInput();
         private Shape m_circleShape = new CircleShape();
         private CircleCastOutput m_output = new CircleCastOutput();
-        public void CircleCast(Func<Fixture, TSVector2, TSVector2, FP, FP> callback,
-            TSVector2 point1, TSVector2 dir, FP dist, FP radius, int layerMask = (int)Category.All)
+        public void CircleCast(Func<Fixture, TSVector2, TSVector2, FixedPoint, FixedPoint> callback,
+            TSVector2 point1, TSVector2 dir, FixedPoint dist, FixedPoint radius, int layerMask = (int)Category.All)
         {
             var input = new CircleCastInput();
-            input.MaxFraction = FP.One;
+            input.MaxFraction = FixedPoint.One;
             input.Point1 = point1;
             input.Point2 = point1 + dir * dist;
             input.Radius = radius;
@@ -625,7 +625,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             input.SweepInput = m_sweepInput;
             input.Output = m_output;
             m_output.fixture = null;
-            m_output.fraction = FP.One;
+            m_output.fraction = FixedPoint.One;
             m_output.shapeIndex = -1;
 
             InitSweep(m_sweepInput, point1, input.Point2, radius);
@@ -658,7 +658,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             //}
         }
 
-        private void InitSweep(TOIInput sweepInput, TSVector2 p1, TSVector2 p2, FP radius)
+        private void InitSweep(TOIInput sweepInput, TSVector2 p1, TSVector2 p2, FixedPoint radius)
         {
             m_circleShape.Radius = radius;
             m_castFixture.Initialize(m_circleShape, false);

@@ -7,7 +7,7 @@
             return new TSVector(vec2.x, 0, vec2.y);
         }
 
-        public static TSVector PhyVed2ToVec3(TSVector2 vec2, FP y)
+        public static TSVector PhyVed2ToVec3(TSVector2 vec2, FixedPoint y)
         {
             return new TSVector(vec2.x, y, vec2.y);
         }

@@ -72,7 +72,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         public bool IsPointMatch(TSVector2 p1, TSVector2 p2)
         {
             var distSqrt = TSVector2.DistanceSquared(p1, p2);
-            return distSqrt <= FP.EN4;
+            return distSqrt <= FixedPoint.EN4;
         }
 
         public int FindVertexIndex(TSVector2 worldVert)
@@ -98,7 +98,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             var next = m_vertex[1 - index];
 
             ///要判断是否在一条线上
-            if (MathUtils.IsCollinear(ref prev, ref current, ref next, FP.Zero))
+            if (MathUtils.IsCollinear(ref prev, ref current, ref next, FixedPoint.Zero))
             {
                 m_vertex[index] = localVert;
                 return true;
@@ -126,7 +126,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             return -1;
         }
 
-        public List<MergeShape> CutEdge(int index, FP cutPoint, bool leftOrRight)
+        public List<MergeShape> CutEdge(int index, FixedPoint cutPoint, bool leftOrRight)
         {
             ///先彻底切断，然后再拼一个进去
             TSVector2 cutStart, cutEnd;
@@ -311,7 +311,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         private uint m_nextSource = 1;
         public void AddBox(string name, TSVector2 center, TSVector2 forward, TSVector2 size, int layer, bool canMerge = true)
         {
-            var extend = size * FP.Half;
+            var extend = size * FixedPoint.Half;
             var shape = new MergeShape(name, layer, m_nextSource++, center, forward, PolygonTools.CreateRectangle(extend.x, extend.y), true, canMerge);
             m_listShape.Add(shape);
         }

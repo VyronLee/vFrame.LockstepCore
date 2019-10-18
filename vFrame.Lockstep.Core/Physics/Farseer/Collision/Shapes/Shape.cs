@@ -42,8 +42,8 @@ namespace vFrame.Lockstep.Core.Physics2D
     /// </summary>
     public abstract class Shape
     {
-        internal FP _radius;
-        internal FP _2radius;
+        internal FixedPoint _radius;
+        internal FixedPoint _2radius;
 
         protected Shape()
         {
@@ -66,7 +66,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Radius of the Shape
         /// Changing the radius causes a recalculation of shape properties.
         /// </summary>
-        public FP Radius
+        public FixedPoint Radius
         {
             get { return _radius; }
             set

@@ -51,10 +51,10 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Create a new PolygonShape with the specified density.
         /// </summary>
         /// <param name="density">The density.</param>
-        public PolygonShape(FP density)
+        public PolygonShape(FixedPoint density)
             : base()
         {
-            Debug.Assert(density >= FP.Zero);
+            Debug.Assert(density >= FixedPoint.Zero);
 
             ShapeType = ShapeType.Polygon;
             _radius = Settings.PolygonRadius;
@@ -125,8 +125,8 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             for (int i = 0; i < Vertices.Count; ++i)
             {
-                FP dot = TSVector2.Dot(Normals[i], pLocal - Vertices[i]);
-                if (dot > FP.Zero)
+                FixedPoint dot = TSVector2.Dot(Normals[i], pLocal - Vertices[i]);
+                if (dot > FixedPoint.Zero)
                 {
                     return false;
                 }
@@ -144,7 +144,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             TSVector2 p2 = MathUtils.MulT(transform.q, input.Point2 - transform.p);
             TSVector2 d = p2 - p1;
 
-            FP lower = FP.Zero, upper = input.MaxFraction;
+            FixedPoint lower = FixedPoint.Zero, upper = input.MaxFraction;
 
             int index = -1;
 
@@ -153,12 +153,12 @@ namespace vFrame.Lockstep.Core.Physics2D
                 // p = p1 + a * d
                 // dot(normal, p - v) = 0
                 // dot(normal, p1 - v) + a * dot(normal, d) = 0
-                FP numerator = TSVector2.Dot(Normals[i], Vertices[i] - p1);
-                FP denominator = TSVector2.Dot(Normals[i], d);
+                FixedPoint numerator = TSVector2.Dot(Normals[i], Vertices[i] - p1);
+                FixedPoint denominator = TSVector2.Dot(Normals[i], d);
 
-                if (denominator == FP.Zero)
+                if (denominator == FixedPoint.Zero)
                 {
-                    if (numerator < FP.Zero)
+                    if (numerator < FixedPoint.Zero)
                     {
                         return false;
                     }
@@ -169,14 +169,14 @@ namespace vFrame.Lockstep.Core.Physics2D
                     // lower < numerator / denominator, where denominator < 0
                     // Since denominator < 0, we have to flip the inequality:
                     // lower < numerator / denominator <==> denominator * lower > numerator.
-                    if (denominator < FP.Zero && numerator < lower * denominator)
+                    if (denominator < FixedPoint.Zero && numerator < lower * denominator)
                     {
                         // Increase lower.
                         // The segment enters this half-space.
                         lower = numerator / denominator;
                         index = i;
                     }
-                    else if (denominator > FP.Zero && numerator < upper * denominator)
+                    else if (denominator > FixedPoint.Zero && numerator < upper * denominator)
                     {
                         // Decrease upper.
                         // The segment exits this half-space.
@@ -194,7 +194,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 }
             }
 
-            Debug.Assert(FP.Zero <= lower && lower <= input.MaxFraction);
+            Debug.Assert(FixedPoint.Zero <= lower && lower <= input.MaxFraction);
 
             if (index >= 0)
             {

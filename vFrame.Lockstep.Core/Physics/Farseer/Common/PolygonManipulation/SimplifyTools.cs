@@ -16,7 +16,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="collinearityTolerance">The collinearity tolerance.</param>
         /// <returns>A simplified polygon.</returns>
         // TS - public static Vertices CollinearSimplify(Vertices vertices, FP collinearityTolerance = 0)
-        public static Vertices CollinearSimplify(Vertices vertices, FP collinearityTolerance)
+        public static Vertices CollinearSimplify(Vertices vertices, FixedPoint collinearityTolerance)
         {
             if (vertices.Count <= 3)
                 return vertices;
@@ -46,7 +46,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// If you pass in 0, it will remove all collinear points.
         /// </summary>
         /// <returns>The simplified polygon</returns>
-        public static Vertices DouglasPeuckerSimplify(Vertices vertices, FP distanceTolerance)
+        public static Vertices DouglasPeuckerSimplify(Vertices vertices, FixedPoint distanceTolerance)
         {
             if (vertices.Count <= 3)
                 return vertices;
@@ -69,7 +69,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             return simplified;
         }
 
-        private static void SimplifySection(Vertices vertices, int i, int j, bool[] usePoint, FP distanceTolerance)
+        private static void SimplifySection(Vertices vertices, int i, int j, bool[] usePoint, FixedPoint distanceTolerance)
         {
             if ((i + 1) == j)
                 return;
@@ -77,13 +77,13 @@ namespace vFrame.Lockstep.Core.Physics2D
             TSVector2 a = vertices[i];
             TSVector2 b = vertices[j];
 
-            FP maxDistance = -1;//-1.0;
+            FixedPoint maxDistance = -1;//-1.0;
             int maxIndex = i;
             for (int k = i + 1; k < j; k++)
             {
                 TSVector2 point = vertices[k];
 
-                FP distance = LineTools.DistanceBetweenPointAndLineSegment(ref point, ref a, ref b);
+                FixedPoint distance = LineTools.DistanceBetweenPointAndLineSegment(ref point, ref a, ref b);
 
                 if (distance > maxDistance)
                 {
@@ -111,7 +111,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="vertices">The vertices.</param>
         /// <param name="tolerance">The tolerance.</param>
-        public static Vertices MergeParallelEdges(Vertices vertices, FP tolerance)
+        public static Vertices MergeParallelEdges(Vertices vertices, FixedPoint tolerance)
         {
             //From Eric Jordan's convex decomposition library
 
@@ -128,14 +128,14 @@ namespace vFrame.Lockstep.Core.Physics2D
                 int middle = i;
                 int upper = (i == vertices.Count - 1) ? (0) : (i + 1);
 
-                FP dx0 = vertices[middle].x - vertices[lower].x;
-                FP dy0 = vertices[middle].y - vertices[lower].y;
-                FP dx1 = vertices[upper].y - vertices[middle].x;
-                FP dy1 = vertices[upper].y - vertices[middle].y;
-                FP norm0 = FP.Sqrt(dx0 * dx0 + dy0 * dy0);
-                FP norm1 = FP.Sqrt(dx1 * dx1 + dy1 * dy1);
+                FixedPoint dx0 = vertices[middle].x - vertices[lower].x;
+                FixedPoint dy0 = vertices[middle].y - vertices[lower].y;
+                FixedPoint dx1 = vertices[upper].y - vertices[middle].x;
+                FixedPoint dy1 = vertices[upper].y - vertices[middle].y;
+                FixedPoint norm0 = FixedPoint.Sqrt(dx0 * dx0 + dy0 * dy0);
+                FixedPoint norm1 = FixedPoint.Sqrt(dx1 * dx1 + dy1 * dy1);
 
-                if (!(norm0 > FP.Zero && norm1 > FP.Zero) && newNVertices > 3)
+                if (!(norm0 > FixedPoint.Zero && norm1 > FixedPoint.Zero) && newNVertices > 3)
                 {
                     //Merge identical points
                     mergeMe[i] = true;
@@ -146,10 +146,10 @@ namespace vFrame.Lockstep.Core.Physics2D
                 dy0 /= norm0;
                 dx1 /= norm1;
                 dy1 /= norm1;
-                FP cross = dx0 * dy1 - dx1 * dy0;
-                FP dot = dx0 * dx1 + dy0 * dy1;
+                FixedPoint cross = dx0 * dy1 - dx1 * dy0;
+                FixedPoint dot = dx0 * dx1 + dy0 * dy1;
 
-                if (FP.Abs(cross) < tolerance && dot > 0 && newNVertices > 3)
+                if (FixedPoint.Abs(cross) < tolerance && dot > 0 && newNVertices > 3)
                 {
                     mergeMe[i] = true;
                     --newNVertices;
@@ -201,12 +201,12 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="vertices">The vertices.</param>
         /// <param name="distance">The distance between points. Points closer than this will be removed.</param>
-        public static Vertices ReduceByDistance(Vertices vertices, FP distance)
+        public static Vertices ReduceByDistance(Vertices vertices, FixedPoint distance)
         {
             if (vertices.Count <= 3)
                 return vertices;
 
-            FP distance2 = distance * distance;
+            FixedPoint distance2 = distance * distance;
 
             Vertices simplified = new Vertices(vertices.Count);
 
@@ -260,7 +260,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="vertices"></param>
         /// <param name="areaTolerance"></param>
         /// <returns></returns>
-        public static Vertices ReduceByArea(Vertices vertices, FP areaTolerance)
+        public static Vertices ReduceByArea(Vertices vertices, FixedPoint areaTolerance)
         {
             //From physics2d.net
 
@@ -280,16 +280,16 @@ namespace vFrame.Lockstep.Core.Physics2D
             {
                 v3 = i == vertices.Count - 1 ? simplified[0] : vertices[i];
 
-                FP old1;
+                FixedPoint old1;
                 MathUtils.Cross(ref v1, ref v2, out old1);
 
-                FP old2;
+                FixedPoint old2;
                 MathUtils.Cross(ref v2, ref v3, out old2);
 
-                FP new1;
+                FixedPoint new1;
                 MathUtils.Cross(ref v1, ref v3, out new1);
 
-                if (FP.Abs(new1 - (old1 + old2)) > areaTolerance)
+                if (FixedPoint.Abs(new1 - (old1 + old2)) > areaTolerance)
                 {
                     simplified.Add(v2);
                     v1 = v2;

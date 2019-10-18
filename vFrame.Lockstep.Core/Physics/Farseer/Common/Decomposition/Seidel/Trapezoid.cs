@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using FP = vFrame.Lockstep.Core.FP;
 
 namespace vFrame.Lockstep.Core.Physics2D
 {
@@ -94,9 +93,9 @@ namespace vFrame.Lockstep.Core.Physics2D
             return verts;
         }
 
-        private Point LineIntersect(Edge edge, FP x)
+        private Point LineIntersect(Edge edge, FixedPoint x)
         {
-            FP y = edge.Slope * x + edge.B;
+            FixedPoint y = edge.Slope * x + edge.B;
             return new Point(x, y);
         }
 

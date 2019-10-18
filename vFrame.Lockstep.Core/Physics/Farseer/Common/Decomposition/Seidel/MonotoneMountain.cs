@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using FP = vFrame.Lockstep.Core.FP;
 
 namespace vFrame.Lockstep.Core.Physics2D
 {
     internal class MonotoneMountain
     {
         // Almost Pi!
-        private static readonly FP PiSlop = 31*FP.EN1;//3.1f;
+        private static readonly FixedPoint PiSlop = 31*FixedPoint.EN1;//3.1f;
 
         // Triangles that constitute the mountain
         public List<List<Point>> Triangles;
@@ -84,9 +83,9 @@ namespace vFrame.Lockstep.Core.Physics2D
             Point p = _head.Next;
             while (p.Neq(_tail))
             {
-                FP a = Angle(p);
+                FixedPoint a = Angle(p);
                 // If the point is almost colinear with it's neighbor, remove it!
-                if (a >= PiSlop || a <= -PiSlop || a == FP.Zero)
+                if (a >= PiSlop || a <= -PiSlop || a == FixedPoint.Zero)
                     Remove(p);
                 else if (IsConvex(p))
                     _convexPoints.Add(p);
@@ -142,18 +141,18 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
         }
 
-        private FP Angle(Point p)
+        private FixedPoint Angle(Point p)
         {
             Point a = (p.Next - p);
             Point b = (p.Prev - p);
-            return FP.Atan2(a.Cross(b), a.Dot(b));
+            return FixedPoint.Atan2(a.Cross(b), a.Dot(b));
         }
 
         private bool AngleSign()
         {
             Point a = (_head.Next - _head);
             Point b = (_tail - _head);
-            return FP.Atan2(a.Cross(b), a.Dot(b)) >= 0;
+            return FixedPoint.Atan2(a.Cross(b), a.Dot(b)) >= 0;
         }
 
         // Determines if the inslide angle is convex or reflex

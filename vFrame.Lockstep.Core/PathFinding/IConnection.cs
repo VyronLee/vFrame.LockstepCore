@@ -2,7 +2,7 @@
 {
     public interface IConnection<out TNode> where TNode: INode
     {
-        FP GetCost();
+        FixedPoint GetCost();
         TNode GetFromNode();
         TNode GetToNode();
     }

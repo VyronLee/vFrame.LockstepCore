@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using vFrame.Lockstep.Core.Physics2D;
-using FP = vFrame.Lockstep.Core.FP;
 
 namespace vFrame.Lockstep.Core.Physics2D
 {
@@ -73,7 +72,7 @@ namespace vFrame.Lockstep.Core.Physics2D
     public static class Triangulate
     {
         // TS - public static List<Vertices> ConvexPartition(Vertices vertices, TriangulationAlgorithm algorithm, bool discardAndFixInvalid = true, FP tolerance = 0.001f)
-        public static List<Vertices> ConvexPartition(Vertices vertices, TriangulationAlgorithm algorithm, bool discardAndFixInvalid, FP tolerance)
+        public static List<Vertices> ConvexPartition(Vertices vertices, TriangulationAlgorithm algorithm, bool discardAndFixInvalid, FixedPoint tolerance)
         {
             if (vertices.Count <= 3)
                 return new List<Vertices> { vertices };

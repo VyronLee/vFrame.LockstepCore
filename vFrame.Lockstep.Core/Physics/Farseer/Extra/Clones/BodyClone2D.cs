@@ -14,7 +14,7 @@ namespace vFrame.Lockstep.Core.Physics2D {
         public bool _awake = true;
 
         public bool _enabled = true;
-        public FP _sleepTime;
+        public FixedPoint _sleepTime;
 
         public Transform _xf = new Transform();
         public bool disabled;

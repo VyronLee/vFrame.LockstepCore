@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using FP = vFrame.Lockstep.Core.FP;
 
 namespace vFrame.Lockstep.Core.Physics2D
 {
@@ -7,7 +6,7 @@ namespace vFrame.Lockstep.Core.Physics2D
     {
         // Pointers used for building trapezoidal map
         public Trapezoid Above;
-        public FP B;
+        public FixedPoint B;
         public Trapezoid Below;
 
         // Montone mountain points
@@ -16,7 +15,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         public Point Q;
 
         // Slope of the line (m)
-        public FP Slope;
+        public FixedPoint Slope;
 
 
         public Edge(Point p, Point q)

@@ -29,8 +29,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using FP = vFrame.Lockstep.Core.FP;
-
 namespace vFrame.Lockstep.Core.Physics2D
 {
     /**
@@ -39,7 +37,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
     internal class TriangulationUtil
     {
-        public static FP EPSILON = FP.EN12;//1e-12;
+        public static FixedPoint EPSILON = FixedPoint.EN12;//1e-12;
 
         /// <summary>
         ///   Requirements:
@@ -68,36 +66,36 @@ namespace vFrame.Lockstep.Core.Physics2D
         public static bool SmartIncircle(TriangulationPoint pa, TriangulationPoint pb, TriangulationPoint pc,
                                          TriangulationPoint pd)
         {
-            FP pdx = pd.X;
-            FP pdy = pd.Y;
-            FP adx = pa.X - pdx;
-            FP ady = pa.Y - pdy;
-            FP bdx = pb.X - pdx;
-            FP bdy = pb.Y - pdy;
+            FixedPoint pdx = pd.X;
+            FixedPoint pdy = pd.Y;
+            FixedPoint adx = pa.X - pdx;
+            FixedPoint ady = pa.Y - pdy;
+            FixedPoint bdx = pb.X - pdx;
+            FixedPoint bdy = pb.Y - pdy;
 
-            FP adxbdy = adx * bdy;
-            FP bdxady = bdx * ady;
-            FP oabd = adxbdy - bdxady;
+            FixedPoint adxbdy = adx * bdy;
+            FixedPoint bdxady = bdx * ady;
+            FixedPoint oabd = adxbdy - bdxady;
             //        oabd = orient2d(pa,pb,pd);
             if (oabd <= 0) return false;
 
-            FP cdx = pc.X - pdx;
-            FP cdy = pc.Y - pdy;
+            FixedPoint cdx = pc.X - pdx;
+            FixedPoint cdy = pc.Y - pdy;
 
-            FP cdxady = cdx * ady;
-            FP adxcdy = adx * cdy;
-            FP ocad = cdxady - adxcdy;
+            FixedPoint cdxady = cdx * ady;
+            FixedPoint adxcdy = adx * cdy;
+            FixedPoint ocad = cdxady - adxcdy;
             //      ocad = orient2d(pc,pa,pd);
             if (ocad <= 0) return false;
 
-            FP bdxcdy = bdx * cdy;
-            FP cdxbdy = cdx * bdy;
+            FixedPoint bdxcdy = bdx * cdy;
+            FixedPoint cdxbdy = cdx * bdy;
 
-            FP alift = adx * adx + ady * ady;
-            FP blift = bdx * bdx + bdy * bdy;
-            FP clift = cdx * cdx + cdy * cdy;
+            FixedPoint alift = adx * adx + ady * ady;
+            FixedPoint blift = bdx * bdx + bdy * bdy;
+            FixedPoint clift = cdx * cdx + cdy * cdy;
 
-            FP det = alift * (bdxcdy - cdxbdy) + blift * ocad + clift * oabd;
+            FixedPoint det = alift * (bdxcdy - cdxbdy) + blift * ocad + clift * oabd;
 
             return det > 0;
         }
@@ -138,13 +136,13 @@ namespace vFrame.Lockstep.Core.Physics2D
 
         public static bool InScanArea(TriangulationPoint pa, TriangulationPoint pb, TriangulationPoint pc, TriangulationPoint pd)
         {
-            FP oadb = (pa.X - pb.X) * (pd.Y - pb.Y) - (pd.X - pb.X) * (pa.Y - pb.Y);
+            FixedPoint oadb = (pa.X - pb.X) * (pd.Y - pb.Y) - (pd.X - pb.X) * (pa.Y - pb.Y);
             if (oadb >= -EPSILON)
             {
                 return false;
             }
 
-            FP oadc = (pa.X - pc.X) * (pd.Y - pc.Y) - (pd.X - pc.X) * (pa.Y - pc.Y);
+            FixedPoint oadc = (pa.X - pc.X) * (pd.Y - pc.Y) - (pd.X - pc.X) * (pa.Y - pc.Y);
             if (oadc <= EPSILON)
             {
                 return false;
@@ -160,9 +158,9 @@ namespace vFrame.Lockstep.Core.Physics2D
         ///              =  (x1-x3)*(y2-y3) - (y1-y3)*(x2-x3)
         public static Orientation Orient2d(TriangulationPoint pa, TriangulationPoint pb, TriangulationPoint pc)
         {
-            FP detleft = (pa.X - pc.X) * (pb.Y - pc.Y);
-            FP detright = (pa.Y - pc.Y) * (pb.X - pc.X);
-            FP val = detleft - detright;
+            FixedPoint detleft = (pa.X - pc.X) * (pb.Y - pc.Y);
+            FixedPoint detright = (pa.Y - pc.Y) * (pb.X - pc.X);
+            FixedPoint val = detleft - detright;
             if (val > -EPSILON && val < EPSILON)
             {
                 return Orientation.Collinear;

@@ -35,7 +35,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         public DistanceProxy ProxyB = new DistanceProxy();
         public Sweep SweepA;
         public Sweep SweepB;
-        public FP TMax; // defines sweep interval [0, tMax]
+        public FixedPoint TMax; // defines sweep interval [0, tMax]
     }
 
     public enum TOIOutputState
@@ -50,7 +50,7 @@ namespace vFrame.Lockstep.Core.Physics2D
     public struct TOIOutput
     {
         public TOIOutputState State;
-        public FP T;
+        public FixedPoint T;
     }
 
     public enum SeparationFunctionType
@@ -75,7 +75,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         [ThreadStatic]
         private static SeparationFunctionType _type;
 
-        public static void Set(ref SimplexCache cache, DistanceProxy proxyA, ref Sweep sweepA, DistanceProxy proxyB, ref Sweep sweepB, FP t1)
+        public static void Set(ref SimplexCache cache, DistanceProxy proxyA, ref Sweep sweepA, DistanceProxy proxyB, ref Sweep sweepB, FixedPoint t1)
         {
             _localPoint = TSVector2.zero;
             _proxyA = proxyA;
@@ -112,14 +112,14 @@ namespace vFrame.Lockstep.Core.Physics2D
                 _axis.Normalize();
                 TSVector2 normal = MathUtils.Mul(ref xfB.q, _axis);
 
-                _localPoint = FP.Half * (localPointB1 + localPointB2);
+                _localPoint = FixedPoint.Half * (localPointB1 + localPointB2);
                 TSVector2 pointB = MathUtils.Mul(ref xfB, _localPoint);
 
                 TSVector2 localPointA = proxyA.Vertices[cache.IndexA[0]];
                 TSVector2 pointA = MathUtils.Mul(ref xfA, localPointA);
 
-                FP s = TSVector2.Dot(pointA - pointB, normal);
-                if (s < FP.Zero)
+                FixedPoint s = TSVector2.Dot(pointA - pointB, normal);
+                if (s < FixedPoint.Zero)
                 {
                     _axis = -_axis;
                 }
@@ -136,14 +136,14 @@ namespace vFrame.Lockstep.Core.Physics2D
                 _axis.Normalize();
                 TSVector2 normal = MathUtils.Mul(ref xfA.q, _axis);
 
-                _localPoint = FP.Half * (localPointA1 + localPointA2);
+                _localPoint = FixedPoint.Half * (localPointA1 + localPointA2);
                 TSVector2 pointA = MathUtils.Mul(ref xfA, _localPoint);
 
                 TSVector2 localPointB = _proxyB.Vertices[cache.IndexB[0]];
                 TSVector2 pointB = MathUtils.Mul(ref xfB, localPointB);
 
-                FP s = TSVector2.Dot(pointB - pointA, normal);
-                if (s < FP.Zero)
+                FixedPoint s = TSVector2.Dot(pointB - pointA, normal);
+                if (s < FixedPoint.Zero)
                 {
                     _axis = -_axis;
                 }
@@ -152,7 +152,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             //FPE note: the returned value that used to be here has been removed, as it was not used.
         }
 
-        public static FP FindMinSeparation(out int indexA, out int indexB, FP t)
+        public static FixedPoint FindMinSeparation(out int indexA, out int indexB, FixedPoint t)
         {
             Transform xfA, xfB;
             _sweepA.GetTransform(out xfA, t);
@@ -174,7 +174,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                         TSVector2 pointA = MathUtils.Mul(ref xfA, localPointA);
                         TSVector2 pointB = MathUtils.Mul(ref xfB, localPointB);
 
-                        FP separation = TSVector2.Dot(pointB - pointA, _axis);
+                        FixedPoint separation = TSVector2.Dot(pointB - pointA, _axis);
                         return separation;
                     }
 
@@ -191,7 +191,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                         TSVector2 localPointB = _proxyB.Vertices[indexB];
                         TSVector2 pointB = MathUtils.Mul(ref xfB, localPointB);
 
-                        FP separation = TSVector2.Dot(pointB - pointA, normal);
+                        FixedPoint separation = TSVector2.Dot(pointB - pointA, normal);
                         return separation;
                     }
 
@@ -208,7 +208,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                         TSVector2 localPointA = _proxyA.Vertices[indexA];
                         TSVector2 pointA = MathUtils.Mul(ref xfA, localPointA);
 
-                        FP separation = TSVector2.Dot(pointA - pointB, normal);
+                        FixedPoint separation = TSVector2.Dot(pointA - pointB, normal);
                         return separation;
                     }
 
@@ -216,11 +216,11 @@ namespace vFrame.Lockstep.Core.Physics2D
                     Debug.Assert(false);
                     indexA = -1;
                     indexB = -1;
-                    return FP.Zero;
+                    return FixedPoint.Zero;
             }
         }
 
-        public static FP Evaluate(int indexA, int indexB, FP t)
+        public static FixedPoint Evaluate(int indexA, int indexB, FixedPoint t)
         {
             Transform xfA, xfB;
             _sweepA.GetTransform(out xfA, t);
@@ -235,7 +235,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
                         TSVector2 pointA = MathUtils.Mul(ref xfA, localPointA);
                         TSVector2 pointB = MathUtils.Mul(ref xfB, localPointB);
-                        FP separation = TSVector2.Dot(pointB - pointA, _axis);
+                        FixedPoint separation = TSVector2.Dot(pointB - pointA, _axis);
 
                         return separation;
                     }
@@ -247,7 +247,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                         TSVector2 localPointB = _proxyB.Vertices[indexB];
                         TSVector2 pointB = MathUtils.Mul(ref xfB, localPointB);
 
-                        FP separation = TSVector2.Dot(pointB - pointA, normal);
+                        FixedPoint separation = TSVector2.Dot(pointB - pointA, normal);
                         return separation;
                     }
                 case SeparationFunctionType.FaceB:
@@ -258,12 +258,12 @@ namespace vFrame.Lockstep.Core.Physics2D
                         TSVector2 localPointA = _proxyA.Vertices[indexA];
                         TSVector2 pointA = MathUtils.Mul(ref xfA, localPointA);
 
-                        FP separation = TSVector2.Dot(pointA - pointB, normal);
+                        FixedPoint separation = TSVector2.Dot(pointA - pointB, normal);
                         return separation;
                     }
                 default:
                     Debug.Assert(false);
-                    return FP.Zero;
+                    return FixedPoint.Zero;
             }
         }
     }
@@ -306,14 +306,14 @@ namespace vFrame.Lockstep.Core.Physics2D
             sweepA.Normalize();
             sweepB.Normalize();
 
-            FP tMax = input.TMax;
+            FixedPoint tMax = input.TMax;
 
-            FP totalRadius = input.ProxyA.Radius + input.ProxyB.Radius;
-            FP target = TSMath.Max(Settings.LinearSlop, totalRadius - 3 * Settings.LinearSlop);
-            FP tolerance = 25 * FP.EN2 * Settings.LinearSlop;
+            FixedPoint totalRadius = input.ProxyA.Radius + input.ProxyB.Radius;
+            FixedPoint target = TSMath.Max(Settings.LinearSlop, totalRadius - 3 * Settings.LinearSlop);
+            FixedPoint tolerance = 25 * FixedPoint.EN2 * Settings.LinearSlop;
             Debug.Assert(target > tolerance);
 
-            FP t1 = FP.Zero;
+            FixedPoint t1 = FixedPoint.Zero;
             const int k_maxIterations = 20;
             int iter = 0;
 
@@ -340,11 +340,11 @@ namespace vFrame.Lockstep.Core.Physics2D
                 Distance.ComputeDistance(out distanceOutput, out cache, _distanceInput);
 
                 // If the shapes are overlapped, we give up on continuous collision.
-                if (distanceOutput.Distance <= FP.Zero)
+                if (distanceOutput.Distance <= FixedPoint.Zero)
                 {
                     // Failure!
                     output.State = TOIOutputState.Overlapped;
-                    output.T = FP.Zero;
+                    output.T = FixedPoint.Zero;
                     break;
                 }
 
@@ -361,13 +361,13 @@ namespace vFrame.Lockstep.Core.Physics2D
                 // Compute the TOI on the separating axis. We do this by successively
                 // resolving the deepest point. This loop is bounded by the number of vertices.
                 bool done = false;
-                FP t2 = tMax;
+                FixedPoint t2 = tMax;
                 int pushBackIter = 0;
                 for (; ; )
                 {
                     // Find the deepest point at t2. Store the witness point indices.
                     int indexA, indexB;
-                    FP s2 = SeparationFunction.FindMinSeparation(out indexA, out indexB, t2);
+                    FixedPoint s2 = SeparationFunction.FindMinSeparation(out indexA, out indexB, t2);
 
                     // Is the final configuration separated?
                     if (s2 > target + tolerance)
@@ -388,7 +388,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                     }
 
                     // Compute the initial separation of the witness points.
-                    FP s1 = SeparationFunction.Evaluate(indexA, indexB, t1);
+                    FixedPoint s1 = SeparationFunction.Evaluate(indexA, indexB, t1);
 
                     // Check for initial overlap. This might happen if the root finder
                     // runs out of iterations.
@@ -412,11 +412,11 @@ namespace vFrame.Lockstep.Core.Physics2D
 
                     // Compute 1D root of: f(x) - target = 0
                     int rootIterCount = 0;
-                    FP a1 = t1, a2 = t2;
+                    FixedPoint a1 = t1, a2 = t2;
                     for (; ; )
                     {
                         // Use a mix of the secant rule and bisection.
-                        FP t;
+                        FixedPoint t;
                         if ((rootIterCount & 1) != 0)
                         {
                             // Secant rule to improve convergence.
@@ -425,7 +425,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                         else
                         {
                             // Bisection to guarantee progress.
-                            t = FP.Half * (a1 + a2);
+                            t = FixedPoint.Half * (a1 + a2);
                         }
 
                         ++rootIterCount;
@@ -433,9 +433,9 @@ namespace vFrame.Lockstep.Core.Physics2D
                         if (Settings.EnableDiagnostics) //FPE: We only gather diagnostics when enabled
                             ++TOIRootIters;
 
-                        FP s = SeparationFunction.Evaluate(indexA, indexB, t);
+                        FixedPoint s = SeparationFunction.Evaluate(indexA, indexB, t);
 
-                        if (FP.Abs(s - target) < tolerance)
+                        if (FixedPoint.Abs(s - target) < tolerance)
                         {
                             // t2 holds a tentative value for t1
                             t2 = t;

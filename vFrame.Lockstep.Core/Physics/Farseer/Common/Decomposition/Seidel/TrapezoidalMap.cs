@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using FP = vFrame.Lockstep.Core.FP;
 
 namespace vFrame.Lockstep.Core.Physics2D
 {
@@ -15,7 +14,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         private Edge _cross;
 
         // AABB margin
-        private FP _margin;
+        private FixedPoint _margin;
 
         public TrapezoidalMap()
         {

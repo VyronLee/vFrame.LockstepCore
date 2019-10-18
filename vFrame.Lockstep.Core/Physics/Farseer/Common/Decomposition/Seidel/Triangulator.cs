@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using FP = vFrame.Lockstep.Core.FP;
 
 namespace vFrame.Lockstep.Core.Physics2D
 {
@@ -14,11 +13,11 @@ namespace vFrame.Lockstep.Core.Physics2D
         private Trapezoid _boundingBox;
         private List<Edge> _edgeList;
         private QueryGraph _queryGraph;
-        private FP _sheer = FP.EN3;//0.001f;
+        private FixedPoint _sheer = FixedPoint.EN3;//0.001f;
         private TrapezoidalMap _trapezoidalMap;
         private List<MonotoneMountain> _xMonoPoly;
 
-        public Triangulator(List<Point> polyLine, FP sheer)
+        public Triangulator(List<Point> polyLine, FixedPoint sheer)
         {
             _sheer = sheer;
             Triangles = new List<List<Point>>();

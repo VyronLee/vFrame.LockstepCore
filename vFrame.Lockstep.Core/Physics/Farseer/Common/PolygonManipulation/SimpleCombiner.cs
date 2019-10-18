@@ -39,10 +39,10 @@ namespace vFrame.Lockstep.Core.Physics2D
         ///<param name="tolerance">The tolerance</param>
         public static List<Vertices> PolygonizeTriangles(List<Vertices> triangles, int maxPolys = int.MaxValue)
         {
-            return PolygonizeTriangles(triangles, maxPolys, FP.EN3);
+            return PolygonizeTriangles(triangles, maxPolys, FixedPoint.EN3);
         }
 
-        public static List<Vertices> PolygonizeTriangles(List<Vertices> triangles, int maxPolys,  FP tolerance)
+        public static List<Vertices> PolygonizeTriangles(List<Vertices> triangles, int maxPolys,  FixedPoint tolerance)
         {
             if (triangles.Count <= 0)
                 return triangles;

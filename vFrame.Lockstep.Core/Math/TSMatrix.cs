@@ -28,39 +28,39 @@ namespace vFrame.Lockstep.Core
         /// <summary>
         /// M11
         /// </summary>
-        public FP M11; // 1st row vector
+        public FixedPoint M11; // 1st row vector
         /// <summary>
         /// M12
         /// </summary>
-        public FP M12;
+        public FixedPoint M12;
         /// <summary>
         /// M13
         /// </summary>
-        public FP M13;
+        public FixedPoint M13;
         /// <summary>
         /// M21
         /// </summary>
-        public FP M21; // 2nd row vector
+        public FixedPoint M21; // 2nd row vector
         /// <summary>
         /// M22
         /// </summary>
-        public FP M22;
+        public FixedPoint M22;
         /// <summary>
         /// M23
         /// </summary>
-        public FP M23;
+        public FixedPoint M23;
         /// <summary>
         /// M31
         /// </summary>
-        public FP M31; // 3rd row vector
+        public FixedPoint M31; // 3rd row vector
         /// <summary>
         /// M32
         /// </summary>
-        public FP M32;
+        public FixedPoint M32;
         /// <summary>
         /// M33
         /// </summary>
-        public FP M33;
+        public FixedPoint M33;
 
         internal static TSMatrix InternalIdentity;
 
@@ -75,9 +75,9 @@ namespace vFrame.Lockstep.Core
             Zero = new TSMatrix();
 
             Identity = new TSMatrix();
-            Identity.M11 = FP.One;
-            Identity.M22 = FP.One;
-            Identity.M33 = FP.One;
+            Identity.M11 = FixedPoint.One;
+            Identity.M22 = FixedPoint.One;
+            Identity.M33 = FixedPoint.One;
 
             InternalIdentity = Identity;
         }
@@ -86,15 +86,15 @@ namespace vFrame.Lockstep.Core
             get {
                 TSVector result = new TSVector();
 
-                result.x = TSMath.Atan2(M32, M33) * FP.Rad2Deg;
-                result.y = TSMath.Atan2(-M31, TSMath.Sqrt(M32 * M32 + M33 * M33)) * FP.Rad2Deg;
-                result.z = TSMath.Atan2(M21, M11) * FP.Rad2Deg;
+                result.x = TSMath.Atan2(M32, M33) * FixedPoint.Rad2Deg;
+                result.y = TSMath.Atan2(-M31, TSMath.Sqrt(M32 * M32 + M33 * M33)) * FixedPoint.Rad2Deg;
+                result.z = TSMath.Atan2(M21, M11) * FixedPoint.Rad2Deg;
 
                 return result * -1;
             }
         }
 
-        public static TSMatrix CreateFromYawPitchRoll(FP yaw, FP pitch, FP roll)
+        public static TSMatrix CreateFromYawPitchRoll(FixedPoint yaw, FixedPoint pitch, FixedPoint roll)
         {
             TSMatrix matrix;
             TSQuaternion quaternion;
@@ -103,101 +103,101 @@ namespace vFrame.Lockstep.Core
             return matrix;
         }
 
-        public static TSMatrix CreateRotationX(FP radians)
+        public static TSMatrix CreateRotationX(FixedPoint radians)
         {
             TSMatrix matrix;
-            FP num2 = FP.Cos(radians);
-            FP num = FP.Sin(radians);
-            matrix.M11 = FP.One;
-            matrix.M12 = FP.Zero;
-            matrix.M13 = FP.Zero;
-            matrix.M21 = FP.Zero;
+            FixedPoint num2 = FixedPoint.Cos(radians);
+            FixedPoint num = FixedPoint.Sin(radians);
+            matrix.M11 = FixedPoint.One;
+            matrix.M12 = FixedPoint.Zero;
+            matrix.M13 = FixedPoint.Zero;
+            matrix.M21 = FixedPoint.Zero;
             matrix.M22 = num2;
             matrix.M23 = num;
-            matrix.M31 = FP.Zero;
+            matrix.M31 = FixedPoint.Zero;
             matrix.M32 = -num;
             matrix.M33 = num2;
             return matrix;
         }
 
-        public static void CreateRotationX(FP radians, out TSMatrix result)
+        public static void CreateRotationX(FixedPoint radians, out TSMatrix result)
         {
-            FP num2 = FP.Cos(radians);
-            FP num = FP.Sin(radians);
-            result.M11 = FP.One;
-            result.M12 = FP.Zero;
-            result.M13 = FP.Zero;
-            result.M21 = FP.Zero;
+            FixedPoint num2 = FixedPoint.Cos(radians);
+            FixedPoint num = FixedPoint.Sin(radians);
+            result.M11 = FixedPoint.One;
+            result.M12 = FixedPoint.Zero;
+            result.M13 = FixedPoint.Zero;
+            result.M21 = FixedPoint.Zero;
             result.M22 = num2;
             result.M23 = num;
-            result.M31 = FP.Zero;
+            result.M31 = FixedPoint.Zero;
             result.M32 = -num;
             result.M33 = num2;
         }
 
-        public static TSMatrix CreateRotationY(FP radians)
+        public static TSMatrix CreateRotationY(FixedPoint radians)
         {
             TSMatrix matrix;
-            FP num2 = FP.Cos(radians);
-            FP num = FP.Sin(radians);
+            FixedPoint num2 = FixedPoint.Cos(radians);
+            FixedPoint num = FixedPoint.Sin(radians);
             matrix.M11 = num2;
-            matrix.M12 = FP.Zero;
+            matrix.M12 = FixedPoint.Zero;
             matrix.M13 = -num;
-            matrix.M21 = FP.Zero;
-            matrix.M22 = FP.One;
-            matrix.M23 = FP.Zero;
+            matrix.M21 = FixedPoint.Zero;
+            matrix.M22 = FixedPoint.One;
+            matrix.M23 = FixedPoint.Zero;
             matrix.M31 = num;
-            matrix.M32 = FP.Zero;
+            matrix.M32 = FixedPoint.Zero;
             matrix.M33 = num2;
             return matrix;
         }
 
-        public static void CreateRotationY(FP radians, out TSMatrix result)
+        public static void CreateRotationY(FixedPoint radians, out TSMatrix result)
         {
-            FP num2 = FP.Cos(radians);
-            FP num = FP.Sin(radians);
+            FixedPoint num2 = FixedPoint.Cos(radians);
+            FixedPoint num = FixedPoint.Sin(radians);
             result.M11 = num2;
-            result.M12 = FP.Zero;
+            result.M12 = FixedPoint.Zero;
             result.M13 = -num;
-            result.M21 = FP.Zero;
-            result.M22 = FP.One;
-            result.M23 = FP.Zero;
+            result.M21 = FixedPoint.Zero;
+            result.M22 = FixedPoint.One;
+            result.M23 = FixedPoint.Zero;
             result.M31 = num;
-            result.M32 = FP.Zero;
+            result.M32 = FixedPoint.Zero;
             result.M33 = num2;
         }
 
-        public static TSMatrix CreateRotationZ(FP radians)
+        public static TSMatrix CreateRotationZ(FixedPoint radians)
         {
             TSMatrix matrix;
-            FP num2 = FP.Cos(radians);
-            FP num = FP.Sin(radians);
+            FixedPoint num2 = FixedPoint.Cos(radians);
+            FixedPoint num = FixedPoint.Sin(radians);
             matrix.M11 = num2;
             matrix.M12 = num;
-            matrix.M13 = FP.Zero;
+            matrix.M13 = FixedPoint.Zero;
             matrix.M21 = -num;
             matrix.M22 = num2;
-            matrix.M23 = FP.Zero;
-            matrix.M31 = FP.Zero;
-            matrix.M32 = FP.Zero;
-            matrix.M33 = FP.One;
+            matrix.M23 = FixedPoint.Zero;
+            matrix.M31 = FixedPoint.Zero;
+            matrix.M32 = FixedPoint.Zero;
+            matrix.M33 = FixedPoint.One;
             return matrix;
         }
 
 
-        public static void CreateRotationZ(FP radians, out TSMatrix result)
+        public static void CreateRotationZ(FixedPoint radians, out TSMatrix result)
         {
-            FP num2 = FP.Cos(radians);
-            FP num = FP.Sin(radians);
+            FixedPoint num2 = FixedPoint.Cos(radians);
+            FixedPoint num = FixedPoint.Sin(radians);
             result.M11 = num2;
             result.M12 = num;
-            result.M13 = FP.Zero;
+            result.M13 = FixedPoint.Zero;
             result.M21 = -num;
             result.M22 = num2;
-            result.M23 = FP.Zero;
-            result.M31 = FP.Zero;
-            result.M32 = FP.Zero;
-            result.M33 = FP.One;
+            result.M23 = FixedPoint.Zero;
+            result.M31 = FixedPoint.Zero;
+            result.M32 = FixedPoint.Zero;
+            result.M33 = FixedPoint.One;
         }
 
         /// <summary>
@@ -213,7 +213,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="m32">m32</param>
         /// <param name="m33">m33</param>
         #region public JMatrix(FP m11, FP m12, FP m13, FP m21, FP m22, FP m23,FP m31, FP m32, FP m33)
-        public TSMatrix(FP m11, FP m12, FP m13, FP m21, FP m22, FP m23,FP m31, FP m32, FP m33)
+        public TSMatrix(FixedPoint m11, FixedPoint m12, FixedPoint m13, FixedPoint m21, FixedPoint m22, FixedPoint m23,FixedPoint m31, FixedPoint m32, FixedPoint m33)
         {
             this.M11 = m11;
             this.M12 = m12;
@@ -260,15 +260,15 @@ namespace vFrame.Lockstep.Core
         /// <param name="result">The product of both matrices.</param>
         public static void Multiply(ref TSMatrix matrix1, ref TSMatrix matrix2, out TSMatrix result)
         {
-            FP num0 = ((matrix1.M11 * matrix2.M11) + (matrix1.M12 * matrix2.M21)) + (matrix1.M13 * matrix2.M31);
-            FP num1 = ((matrix1.M11 * matrix2.M12) + (matrix1.M12 * matrix2.M22)) + (matrix1.M13 * matrix2.M32);
-            FP num2 = ((matrix1.M11 * matrix2.M13) + (matrix1.M12 * matrix2.M23)) + (matrix1.M13 * matrix2.M33);
-            FP num3 = ((matrix1.M21 * matrix2.M11) + (matrix1.M22 * matrix2.M21)) + (matrix1.M23 * matrix2.M31);
-            FP num4 = ((matrix1.M21 * matrix2.M12) + (matrix1.M22 * matrix2.M22)) + (matrix1.M23 * matrix2.M32);
-            FP num5 = ((matrix1.M21 * matrix2.M13) + (matrix1.M22 * matrix2.M23)) + (matrix1.M23 * matrix2.M33);
-            FP num6 = ((matrix1.M31 * matrix2.M11) + (matrix1.M32 * matrix2.M21)) + (matrix1.M33 * matrix2.M31);
-            FP num7 = ((matrix1.M31 * matrix2.M12) + (matrix1.M32 * matrix2.M22)) + (matrix1.M33 * matrix2.M32);
-            FP num8 = ((matrix1.M31 * matrix2.M13) + (matrix1.M32 * matrix2.M23)) + (matrix1.M33 * matrix2.M33);
+            FixedPoint num0 = ((matrix1.M11 * matrix2.M11) + (matrix1.M12 * matrix2.M21)) + (matrix1.M13 * matrix2.M31);
+            FixedPoint num1 = ((matrix1.M11 * matrix2.M12) + (matrix1.M12 * matrix2.M22)) + (matrix1.M13 * matrix2.M32);
+            FixedPoint num2 = ((matrix1.M11 * matrix2.M13) + (matrix1.M12 * matrix2.M23)) + (matrix1.M13 * matrix2.M33);
+            FixedPoint num3 = ((matrix1.M21 * matrix2.M11) + (matrix1.M22 * matrix2.M21)) + (matrix1.M23 * matrix2.M31);
+            FixedPoint num4 = ((matrix1.M21 * matrix2.M12) + (matrix1.M22 * matrix2.M22)) + (matrix1.M23 * matrix2.M32);
+            FixedPoint num5 = ((matrix1.M21 * matrix2.M13) + (matrix1.M22 * matrix2.M23)) + (matrix1.M23 * matrix2.M33);
+            FixedPoint num6 = ((matrix1.M31 * matrix2.M11) + (matrix1.M32 * matrix2.M21)) + (matrix1.M33 * matrix2.M31);
+            FixedPoint num7 = ((matrix1.M31 * matrix2.M12) + (matrix1.M32 * matrix2.M22)) + (matrix1.M33 * matrix2.M32);
+            FixedPoint num8 = ((matrix1.M31 * matrix2.M13) + (matrix1.M32 * matrix2.M23)) + (matrix1.M33 * matrix2.M33);
 
             result.M11 = num0;
             result.M12 = num1;
@@ -329,7 +329,7 @@ namespace vFrame.Lockstep.Core
             return result;
         }
 
-        public FP Determinant()
+        public FixedPoint Determinant()
         {
             return M11 * M22 * M33 + M12 * M23 * M31 + M13 * M21 * M32 -
                    M31 * M22 * M13 - M32 * M23 * M11 - M33 * M21 * M12;
@@ -337,18 +337,18 @@ namespace vFrame.Lockstep.Core
 
         public static void Invert(ref TSMatrix matrix, out TSMatrix result)
         {
-            FP determinantInverse = 1 / matrix.Determinant();
-            FP m11 = (matrix.M22 * matrix.M33 - matrix.M23 * matrix.M32) * determinantInverse;
-            FP m12 = (matrix.M13 * matrix.M32 - matrix.M33 * matrix.M12) * determinantInverse;
-            FP m13 = (matrix.M12 * matrix.M23 - matrix.M22 * matrix.M13) * determinantInverse;
+            FixedPoint determinantInverse = 1 / matrix.Determinant();
+            FixedPoint m11 = (matrix.M22 * matrix.M33 - matrix.M23 * matrix.M32) * determinantInverse;
+            FixedPoint m12 = (matrix.M13 * matrix.M32 - matrix.M33 * matrix.M12) * determinantInverse;
+            FixedPoint m13 = (matrix.M12 * matrix.M23 - matrix.M22 * matrix.M13) * determinantInverse;
 
-            FP m21 = (matrix.M23 * matrix.M31 - matrix.M21 * matrix.M33) * determinantInverse;
-            FP m22 = (matrix.M11 * matrix.M33 - matrix.M13 * matrix.M31) * determinantInverse;
-            FP m23 = (matrix.M13 * matrix.M21 - matrix.M11 * matrix.M23) * determinantInverse;
+            FixedPoint m21 = (matrix.M23 * matrix.M31 - matrix.M21 * matrix.M33) * determinantInverse;
+            FixedPoint m22 = (matrix.M11 * matrix.M33 - matrix.M13 * matrix.M31) * determinantInverse;
+            FixedPoint m23 = (matrix.M13 * matrix.M21 - matrix.M11 * matrix.M23) * determinantInverse;
 
-            FP m31 = (matrix.M21 * matrix.M32 - matrix.M22 * matrix.M31) * determinantInverse;
-            FP m32 = (matrix.M12 * matrix.M31 - matrix.M11 * matrix.M32) * determinantInverse;
-            FP m33 = (matrix.M11 * matrix.M22 - matrix.M12 * matrix.M21) * determinantInverse;
+            FixedPoint m31 = (matrix.M21 * matrix.M32 - matrix.M22 * matrix.M31) * determinantInverse;
+            FixedPoint m32 = (matrix.M12 * matrix.M31 - matrix.M11 * matrix.M32) * determinantInverse;
+            FixedPoint m33 = (matrix.M11 * matrix.M22 - matrix.M12 * matrix.M21) * determinantInverse;
 
             result.M11 = m11;
             result.M12 = m12;
@@ -370,35 +370,35 @@ namespace vFrame.Lockstep.Core
         /// <param name="result">The inverted JMatrix.</param>
         public static void Inverse(ref TSMatrix matrix, out TSMatrix result)
         {
-			FP det = 1024 * matrix.M11 * matrix.M22 * matrix.M33 -
+			FixedPoint det = 1024 * matrix.M11 * matrix.M22 * matrix.M33 -
 				1024 * matrix.M11 * matrix.M23 * matrix.M32 -
 				1024 * matrix.M12 * matrix.M21 * matrix.M33 +
 				1024 * matrix.M12 * matrix.M23 * matrix.M31 +
 				1024 * matrix.M13 * matrix.M21 * matrix.M32 -
 				1024 * matrix.M13 * matrix.M22 * matrix.M31;
 
-			FP num11 =1024* matrix.M22 * matrix.M33 - 1024*matrix.M23 * matrix.M32;
-			FP num12 =1024* matrix.M13 * matrix.M32 -1024* matrix.M12 * matrix.M33;
-			FP num13 =1024* matrix.M12 * matrix.M23 -1024* matrix.M22 * matrix.M13;
+			FixedPoint num11 =1024* matrix.M22 * matrix.M33 - 1024*matrix.M23 * matrix.M32;
+			FixedPoint num12 =1024* matrix.M13 * matrix.M32 -1024* matrix.M12 * matrix.M33;
+			FixedPoint num13 =1024* matrix.M12 * matrix.M23 -1024* matrix.M22 * matrix.M13;
 
-			FP num21 =1024* matrix.M23 * matrix.M31 -1024* matrix.M33 * matrix.M21;
-			FP num22 =1024* matrix.M11 * matrix.M33 -1024* matrix.M31 * matrix.M13;
-			FP num23 =1024* matrix.M13 * matrix.M21 -1024* matrix.M23 * matrix.M11;
+			FixedPoint num21 =1024* matrix.M23 * matrix.M31 -1024* matrix.M33 * matrix.M21;
+			FixedPoint num22 =1024* matrix.M11 * matrix.M33 -1024* matrix.M31 * matrix.M13;
+			FixedPoint num23 =1024* matrix.M13 * matrix.M21 -1024* matrix.M23 * matrix.M11;
 
-			FP num31 =1024* matrix.M21 * matrix.M32 - 1024* matrix.M31 * matrix.M22;
-			FP num32 =1024* matrix.M12 * matrix.M31 - 1024* matrix.M32 * matrix.M11;
-			FP num33 =1024* matrix.M11 * matrix.M22 - 1024*matrix.M21 * matrix.M12;
+			FixedPoint num31 =1024* matrix.M21 * matrix.M32 - 1024* matrix.M31 * matrix.M22;
+			FixedPoint num32 =1024* matrix.M12 * matrix.M31 - 1024* matrix.M32 * matrix.M11;
+			FixedPoint num33 =1024* matrix.M11 * matrix.M22 - 1024*matrix.M21 * matrix.M12;
 
 			if(det == 0){
-				result.M11 = FP.PositiveInfinity;
-				result.M12 = FP.PositiveInfinity;
-				result.M13 = FP.PositiveInfinity;
-				result.M21 = FP.PositiveInfinity;
-				result.M22 = FP.PositiveInfinity;
-				result.M23 = FP.PositiveInfinity;
-				result.M31 = FP.PositiveInfinity;
-				result.M32 = FP.PositiveInfinity;
-				result.M33 = FP.PositiveInfinity;
+				result.M11 = FixedPoint.PositiveInfinity;
+				result.M12 = FixedPoint.PositiveInfinity;
+				result.M13 = FixedPoint.PositiveInfinity;
+				result.M21 = FixedPoint.PositiveInfinity;
+				result.M22 = FixedPoint.PositiveInfinity;
+				result.M23 = FixedPoint.PositiveInfinity;
+				result.M31 = FixedPoint.PositiveInfinity;
+				result.M32 = FixedPoint.PositiveInfinity;
+				result.M33 = FixedPoint.PositiveInfinity;
 			} else{
 				result.M11 = num11 / det;
 				result.M12 = num12 / det;
@@ -421,7 +421,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="scaleFactor">The scale factor.</param>
         /// <returns>A JMatrix multiplied by the scale factor.</returns>
         #region public static JMatrix Multiply(JMatrix matrix1, FP scaleFactor)
-        public static TSMatrix Multiply(TSMatrix matrix1, FP scaleFactor)
+        public static TSMatrix Multiply(TSMatrix matrix1, FixedPoint scaleFactor)
         {
             TSMatrix result;
             TSMatrix.Multiply(ref matrix1, scaleFactor, out result);
@@ -434,9 +434,9 @@ namespace vFrame.Lockstep.Core
         /// <param name="matrix1">The matrix.</param>
         /// <param name="scaleFactor">The scale factor.</param>
         /// <param name="result">A JMatrix multiplied by the scale factor.</param>
-        public static void Multiply(ref TSMatrix matrix1, FP scaleFactor, out TSMatrix result)
+        public static void Multiply(ref TSMatrix matrix1, FixedPoint scaleFactor, out TSMatrix result)
         {
-            FP num = scaleFactor;
+            FixedPoint num = scaleFactor;
             result.M11 = matrix1.M11 * num;
             result.M12 = matrix1.M12 * num;
             result.M13 = matrix1.M13 * num;
@@ -499,24 +499,24 @@ namespace vFrame.Lockstep.Core
         /// <param name="result">JMatrix representing an orientation.</param>
         public static void CreateFromQuaternion(ref TSQuaternion quaternion, out TSMatrix result)
         {
-            FP num9 = quaternion.x * quaternion.x;
-            FP num8 = quaternion.y * quaternion.y;
-            FP num7 = quaternion.z * quaternion.z;
-            FP num6 = quaternion.x * quaternion.y;
-            FP num5 = quaternion.z * quaternion.w;
-            FP num4 = quaternion.z * quaternion.x;
-            FP num3 = quaternion.y * quaternion.w;
-            FP num2 = quaternion.y * quaternion.z;
-            FP num = quaternion.x * quaternion.w;
-            result.M11 = FP.One - (2 * (num8 + num7));
+            FixedPoint num9 = quaternion.x * quaternion.x;
+            FixedPoint num8 = quaternion.y * quaternion.y;
+            FixedPoint num7 = quaternion.z * quaternion.z;
+            FixedPoint num6 = quaternion.x * quaternion.y;
+            FixedPoint num5 = quaternion.z * quaternion.w;
+            FixedPoint num4 = quaternion.z * quaternion.x;
+            FixedPoint num3 = quaternion.y * quaternion.w;
+            FixedPoint num2 = quaternion.y * quaternion.z;
+            FixedPoint num = quaternion.x * quaternion.w;
+            result.M11 = FixedPoint.One - (2 * (num8 + num7));
             result.M12 = 2 * (num6 + num5);
             result.M13 = 2 * (num4 - num3);
             result.M21 = 2 * (num6 - num5);
-            result.M22 = FP.One - (2 * (num7 + num9));
+            result.M22 = FixedPoint.One - (2 * (num7 + num9));
             result.M23 = 2 * (num2 + num);
             result.M31 = 2 * (num4 + num3);
             result.M32 = 2 * (num2 - num);
-            result.M33 = FP.One - (2 * (num8 + num9));
+            result.M33 = FixedPoint.One - (2 * (num8 + num9));
         }
         #endregion
 
@@ -567,7 +567,7 @@ namespace vFrame.Lockstep.Core
         #endregion
 
 
-        public FP Trace()
+        public FixedPoint Trace()
         {
             return this.M11 + this.M22 + this.M33;
         }
@@ -595,7 +595,7 @@ namespace vFrame.Lockstep.Core
         #region public static JMatrix operator -(JMatrix value1, JMatrix value2)
         public static TSMatrix operator -(TSMatrix value1, TSMatrix value2)
         {
-            TSMatrix result; TSMatrix.Multiply(ref value2, -FP.One, out value2);
+            TSMatrix result; TSMatrix.Multiply(ref value2, -FixedPoint.One, out value2);
             TSMatrix.Add(ref value1, ref value2, out result);
             return result;
         }
@@ -659,28 +659,28 @@ namespace vFrame.Lockstep.Core
         /// <param name="angle">The angle.</param>
         /// <param name="result">The resulting rotation matrix</param>
         #region public static void CreateFromAxisAngle(ref JVector axis, FP angle, out JMatrix result)
-        public static void CreateFromAxisAngle(ref TSVector axis, FP angle, out TSMatrix result)
+        public static void CreateFromAxisAngle(ref TSVector axis, FixedPoint angle, out TSMatrix result)
         {
-            FP x = axis.x;
-            FP y = axis.y;
-            FP z = axis.z;
-            FP num2 = FP.Sin(angle);
-            FP num = FP.Cos(angle);
-            FP num11 = x * x;
-            FP num10 = y * y;
-            FP num9 = z * z;
-            FP num8 = x * y;
-            FP num7 = x * z;
-            FP num6 = y * z;
-            result.M11 = num11 + (num * (FP.One - num11));
+            FixedPoint x = axis.x;
+            FixedPoint y = axis.y;
+            FixedPoint z = axis.z;
+            FixedPoint num2 = FixedPoint.Sin(angle);
+            FixedPoint num = FixedPoint.Cos(angle);
+            FixedPoint num11 = x * x;
+            FixedPoint num10 = y * y;
+            FixedPoint num9 = z * z;
+            FixedPoint num8 = x * y;
+            FixedPoint num7 = x * z;
+            FixedPoint num6 = y * z;
+            result.M11 = num11 + (num * (FixedPoint.One - num11));
             result.M12 = (num8 - (num * num8)) + (num2 * z);
             result.M13 = (num7 - (num * num7)) - (num2 * y);
             result.M21 = (num8 - (num * num8)) - (num2 * z);
-            result.M22 = num10 + (num * (FP.One - num10));
+            result.M22 = num10 + (num * (FixedPoint.One - num10));
             result.M23 = (num6 - (num * num6)) + (num2 * x);
             result.M31 = (num7 - (num * num7)) + (num2 * y);
             result.M32 = (num6 - (num * num6)) - (num2 * x);
-            result.M33 = num9 + (num * (FP.One - num9));
+            result.M33 = num9 + (num * (FixedPoint.One - num9));
         }
 
         /// <summary>
@@ -689,7 +689,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="axis">The axis.</param>
         /// <param name="angle">The angle.</param>
         /// <returns>The resulting rotation matrix</returns>
-        public static TSMatrix AngleAxis(FP angle, TSVector axis)
+        public static TSMatrix AngleAxis(FixedPoint angle, TSVector axis)
         {
             TSMatrix result; CreateFromAxisAngle(ref axis, angle, out result);
             return result;

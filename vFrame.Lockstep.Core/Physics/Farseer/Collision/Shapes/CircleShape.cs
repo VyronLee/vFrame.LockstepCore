@@ -37,7 +37,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="radius">The radius of the circle.</param>
         /// <param name="density">The density of the circle.</param>
-        public CircleShape(FP radius)
+        public CircleShape(FixedPoint radius)
             : base()
         {
             Debug.Assert(radius >= 0);
@@ -51,7 +51,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             : base()
         {
             ShapeType = ShapeType.Circle;
-            _radius = FP.Zero;
+            _radius = FixedPoint.Zero;
             _position = TSVector2.zero;
         }
 
@@ -90,25 +90,25 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             TSVector2 position = transform.p + MathUtils.Mul(transform.q, Position);
             TSVector2 s = input.Point1 - position;
-            FP b = TSVector2.Dot(s, s) - _2radius;
+            FixedPoint b = TSVector2.Dot(s, s) - _2radius;
 
             // Solve quadratic equation.
             TSVector2 r = input.Point2 - input.Point1;
-            FP c = TSVector2.Dot(s, r);
-            FP rr = TSVector2.Dot(r, r);
-            FP sigma = c * c - rr * b;
+            FixedPoint c = TSVector2.Dot(s, r);
+            FixedPoint rr = TSVector2.Dot(r, r);
+            FixedPoint sigma = c * c - rr * b;
 
             // Check for negative discriminant and short segment.
-            if (sigma < FP.Zero || rr < Settings.Epsilon)
+            if (sigma < FixedPoint.Zero || rr < Settings.Epsilon)
             {
                 return false;
             }
 
             // Find the point of intersection of the line with the circle.
-            FP a = -(c + FP.Sqrt(sigma));
+            FixedPoint a = -(c + FixedPoint.Sqrt(sigma));
 
             // Is the intersection point on the segment?
-            if (FP.Zero <= a && a <= input.MaxFraction * rr)
+            if (FixedPoint.Zero <= a && a <= input.MaxFraction * rr)
             {
                 a /= rr;
                 output.Fraction = a;

@@ -59,7 +59,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 Vertices v = new Vertices();
                 foreach (TriangulationPoint p in triangle.Points)
                 {
-                    v.Add(new TSVector2((FP)p.X, (FP)p.Y));
+                    v.Add(new TSVector2((FixedPoint)p.X, (FixedPoint)p.Y));
                 }
                 results.Add(v);
             }

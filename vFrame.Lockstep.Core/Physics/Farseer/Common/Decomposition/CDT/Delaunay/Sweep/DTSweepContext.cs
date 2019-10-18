@@ -29,8 +29,6 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-using FP = vFrame.Lockstep.Core.FP;
-
 namespace vFrame.Lockstep.Core.Physics2D
 {
     /**
@@ -43,7 +41,7 @@ namespace vFrame.Lockstep.Core.Physics2D
     {
         // Inital triangle factor, seed triangle will extend 30% of 
         // PointSet width to both left and right.
-        private static readonly FP ALPHA = 3*FP.EN1;// 0.3f;
+        private static readonly FixedPoint ALPHA = 3*FixedPoint.EN1;// 0.3f;
 
         public DTSweepBasin Basin = new DTSweepBasin();
         public DTSweepEdgeEvent EdgeEvent = new DTSweepEdgeEvent();
@@ -167,8 +165,8 @@ namespace vFrame.Lockstep.Core.Physics2D
         {
             base.PrepareTriangulation(t);
 
-            FP xmax, xmin;
-            FP ymax, ymin;
+            FixedPoint xmax, xmin;
+            FixedPoint ymax, ymin;
 
             xmax = xmin = Points[0].X;
             ymax = ymin = Points[0].Y;
@@ -186,8 +184,8 @@ namespace vFrame.Lockstep.Core.Physics2D
                     ymin = p.Y;
             }
 
-            FP deltaX = ALPHA*(xmax - xmin);
-            FP deltaY = ALPHA*(ymax - ymin);
+            FixedPoint deltaX = ALPHA*(xmax - xmin);
+            FixedPoint deltaY = ALPHA*(ymax - ymin);
             TriangulationPoint p1 = new TriangulationPoint(xmax + deltaX, ymin - deltaY);
             TriangulationPoint p2 = new TriangulationPoint(xmin - deltaX, ymin - deltaY);
 
@@ -220,7 +218,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             public bool leftHighest;
             public AdvancingFrontNode leftNode;
             public AdvancingFrontNode rightNode;
-            public FP width;
+            public FixedPoint width;
         }
 
         #endregion

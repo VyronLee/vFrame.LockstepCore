@@ -27,31 +27,31 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <summary>
         /// Time step (Delta time)
         /// </summary>
-        public FP dt;
+        public FixedPoint dt;
 
         /// <summary>
         /// dt * inv_dt0
         /// </summary>
-        public FP dtRatio;
+        public FixedPoint dtRatio;
 
         /// <summary>
         /// Inverse time step (0 if dt == 0).
         /// </summary>
-        public FP inv_dt;
+        public FixedPoint inv_dt;
     }
 
     /// This is an internal structure.
     public struct Position
     {
         public TSVector2 c;
-        public FP a;
+        public FixedPoint a;
     }
 
     /// This is an internal structure.
     public struct Velocity
     {
         public TSVector2 v;
-        public FP w;
+        public FixedPoint w;
     }
 
     /// Solver Data

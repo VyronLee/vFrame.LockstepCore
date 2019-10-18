@@ -68,7 +68,7 @@ namespace vFrame.Lockstep.Core {
             return minValue + Next() % range;
         }
 
-        public FP Next(FP min, FP max)
+        public FixedPoint Next(FixedPoint min, FixedPoint max)
         {
             if (min == max)
             {
@@ -81,15 +81,15 @@ namespace vFrame.Lockstep.Core {
                 min = tmp;
             }
 
-            return NextFP() * (max - min + FP.Precision) + min;
+            return NextFP() * (max - min + FixedPoint.Precision) + min;
         }
 
-        public FP Next01()
+        public FixedPoint Next01()
         {
-            return Next(FP.Zero, FP.One);
+            return Next(FixedPoint.Zero, FixedPoint.One);
         }
 
-        public TSVector2 RandomInsideCircle(FP radius)
+        public TSVector2 RandomInsideCircle(FixedPoint radius)
         {
             var val = new TSVector2();
             val.x = Next(-radius, radius);
@@ -116,8 +116,8 @@ namespace vFrame.Lockstep.Core {
         /**
          *  @brief Returns a {@link FP} between 0.0 [inclusive] and 1.0 [inclusive].
          **/
-        public FP NextFP() {
-            return ((FP) Next()) / (MaxRandomInt);
+        public FixedPoint NextFP() {
+            return ((FixedPoint) Next()) / (MaxRandomInt);
         }
         
         private void init_genrand(uint s) {
@@ -189,8 +189,8 @@ namespace vFrame.Lockstep.Core {
             return (int)(genrand_int32() >> 1);
         }
 
-        FP genrand_FP() {
-            return (FP)genrand_int32() * (FP.One / (FP)4294967295);
+        FixedPoint genrand_FP() {
+            return (FixedPoint)genrand_int32() * (FixedPoint.One / (FixedPoint)4294967295);
         }
 
         double genrand_real1() {

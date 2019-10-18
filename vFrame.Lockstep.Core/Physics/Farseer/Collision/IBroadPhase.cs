@@ -23,8 +23,8 @@ namespace vFrame.Lockstep.Core.Physics2D
 
         void Query(Func<int, bool> callback, ref AABB aabb);
 
-        void RayCast(Func<RayCastInput, int, int, FP> callback, ref RayCastInput input, int layerMask);
-        void CircleCast(Func<CircleCastInput, int, int, FP> callback, ref CircleCastInput input, int layerMask);
+        void RayCast(Func<RayCastInput, int, int, FixedPoint> callback, ref RayCastInput input, int layerMask);
+        void CircleCast(Func<CircleCastInput, int, int, FixedPoint> callback, ref CircleCastInput input, int layerMask);
 
         void ShiftOrigin(TSVector2 newOrigin);
     }

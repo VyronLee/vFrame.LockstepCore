@@ -323,12 +323,12 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="callback">A callback class that is called for each proxy that is hit by the ray.</param>
         /// <param name="input">The ray-cast input data. The ray extends from p1 to p1 + maxFraction * (p2 - p1).</param>
-        public void RayCast(Func<RayCastInput, int, int, FP> callback, ref RayCastInput input, int layerMask)
+        public void RayCast(Func<RayCastInput, int, int, FixedPoint> callback, ref RayCastInput input, int layerMask)
         {
             _tree.RayCast(callback, ref input, layerMask);
         }
 
-        public void CircleCast(Func<CircleCastInput, int, int, FP> callback, ref CircleCastInput input, int layerMask)
+        public void CircleCast(Func<CircleCastInput, int, int, FixedPoint> callback, ref CircleCastInput input, int layerMask)
         {
             _tree.CircleCast(callback, ref input, layerMask);
         }
@@ -341,7 +341,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <summary>
         /// Get the tree quality based on the area of the tree.
         /// </summary>
-        public FP TreeQuality
+        public FixedPoint TreeQuality
         {
             get { return _tree.AreaRatio; }
         }

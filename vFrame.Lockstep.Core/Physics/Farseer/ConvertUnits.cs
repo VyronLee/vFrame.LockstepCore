@@ -10,21 +10,21 @@ namespace vFrame.Lockstep.Core.Physics2D
     /// </summary>
     public static class ConvertUnits
     {
-        private static FP _displayUnitsToSimUnitsRatio = 100;
-        private static FP _simUnitsToDisplayUnitsRatio = 1 / _displayUnitsToSimUnitsRatio;
+        private static FixedPoint _displayUnitsToSimUnitsRatio = 100;
+        private static FixedPoint _simUnitsToDisplayUnitsRatio = 1 / _displayUnitsToSimUnitsRatio;
 
-        public static void SetDisplayUnitToSimUnitRatio(FP displayUnitsPerSimUnit)
+        public static void SetDisplayUnitToSimUnitRatio(FixedPoint displayUnitsPerSimUnit)
         {
             _displayUnitsToSimUnitsRatio = displayUnitsPerSimUnit;
             _simUnitsToDisplayUnitsRatio = 1 / displayUnitsPerSimUnit;
         }
 
-        public static FP ToDisplayUnits(FP simUnits)
+        public static FixedPoint ToDisplayUnits(FixedPoint simUnits)
         {
             return simUnits * _displayUnitsToSimUnitsRatio;
         }
 
-        public static FP ToDisplayUnits(int simUnits)
+        public static FixedPoint ToDisplayUnits(int simUnits)
         {
             return simUnits * _displayUnitsToSimUnitsRatio;
         }
@@ -44,24 +44,24 @@ namespace vFrame.Lockstep.Core.Physics2D
             return simUnits * _displayUnitsToSimUnitsRatio;
         }
 
-        public static TSVector2 ToDisplayUnits(FP x, FP y)
+        public static TSVector2 ToDisplayUnits(FixedPoint x, FixedPoint y)
         {
             return new TSVector2(x, y) * _displayUnitsToSimUnitsRatio;
         }
 
-        public static void ToDisplayUnits(FP x, FP y, out TSVector2 displayUnits)
+        public static void ToDisplayUnits(FixedPoint x, FixedPoint y, out TSVector2 displayUnits)
         {
             displayUnits = TSVector2.zero;
             displayUnits.x = x * _displayUnitsToSimUnitsRatio;
             displayUnits.y = y * _displayUnitsToSimUnitsRatio;
         }
 
-        public static FP ToSimUnits(FP displayUnits)
+        public static FixedPoint ToSimUnits(FixedPoint displayUnits)
         {
             return displayUnits * _simUnitsToDisplayUnitsRatio;
         }
 
-        public static FP ToSimUnits(int displayUnits)
+        public static FixedPoint ToSimUnits(int displayUnits)
         {
             return displayUnits * _simUnitsToDisplayUnitsRatio;
         }
@@ -81,12 +81,12 @@ namespace vFrame.Lockstep.Core.Physics2D
             TSVector2.Multiply(ref displayUnits, _simUnitsToDisplayUnitsRatio, out simUnits);
         }
 
-        public static TSVector2 ToSimUnits(FP x, FP y)
+        public static TSVector2 ToSimUnits(FixedPoint x, FixedPoint y)
         {
             return new TSVector2(x, y) * _simUnitsToDisplayUnitsRatio;
         }
 
-        public static void ToSimUnits(FP x, FP y, out TSVector2 simUnits)
+        public static void ToSimUnits(FixedPoint x, FixedPoint y, out TSVector2 simUnits)
         {
             simUnits = TSVector2.zero;
             simUnits.x = x * _simUnitsToDisplayUnitsRatio;

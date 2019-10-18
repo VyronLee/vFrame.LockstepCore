@@ -22,10 +22,10 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             // Find the right most point on the hull
             int i0 = 0;
-            FP x0 = vertices[0].x;
+            FixedPoint x0 = vertices[0].x;
             for (int i = 1; i < vertices.Count; ++i)
             {
-                FP x = vertices[i].x;
+                FixedPoint x = vertices[i].x;
                 if (x > x0 || (x == x0 && vertices[i].y < vertices[i0].y))
                 {
                     i0 = i;
@@ -52,14 +52,14 @@ namespace vFrame.Lockstep.Core.Physics2D
 
                     TSVector2 r = vertices[ie] - vertices[hull[m]];
                     TSVector2 v = vertices[j] - vertices[hull[m]];
-                    FP c = MathUtils.Cross(ref r, ref v);
-                    if (c < FP.Zero)
+                    FixedPoint c = MathUtils.Cross(ref r, ref v);
+                    if (c < FixedPoint.Zero)
                     {
                         ie = j;
                     }
 
                     // Collinearity check
-                    if (c == FP.Zero && v.LengthSquared() > r.LengthSquared())
+                    if (c == FixedPoint.Zero && v.LengthSquared() > r.LengthSquared())
                     {
                         ie = j;
                     }

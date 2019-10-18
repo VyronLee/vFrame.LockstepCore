@@ -44,12 +44,12 @@ namespace vFrame.Lockstep.Core.Physics2D
             {
                 if (Reflex(i, vertices))
                 {
-                    FP upperDist;
-                    FP lowerDist = upperDist = FP.MaxValue;
+                    FixedPoint upperDist;
+                    FixedPoint lowerDist = upperDist = FixedPoint.MaxValue;
                     for (int j = 0; j < vertices.Count; ++j)
                     {
                         // if line intersects with an edge
-                        FP d;
+                        FixedPoint d;
                         TSVector2 p;
                         if (Left(At(i - 1, vertices), At(i, vertices), At(j, vertices)) && RightOn(At(i - 1, vertices), At(i, vertices), At(j - 1, vertices)))
                         {
@@ -99,7 +99,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                     }
                     else
                     {
-                        FP highestScore = 0, bestIndex = lowerIndex;
+                        FixedPoint highestScore = 0, bestIndex = lowerIndex;
                         while (upperIndex < lowerIndex)
                             upperIndex += vertices.Count;
 
@@ -107,7 +107,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                         {
                             if (CanSee(i, j, vertices))
                             {
-                                FP score = 1 / (SquareDist(At(i, vertices), At(j, vertices)) + 1);
+                                FixedPoint score = 1 / (SquareDist(At(i, vertices), At(j, vertices)) + 1);
                                 if (Reflex(j, vertices))
                                 {
                                     if (RightOn(At(j - 1, vertices), At(j, vertices), At(i, vertices)) && LeftOn(At(j + 1, vertices), At(j, vertices), At(i, vertices)))
@@ -234,10 +234,10 @@ namespace vFrame.Lockstep.Core.Physics2D
             return MathUtils.Area(ref a, ref b, ref c) <= 0;
         }
 
-        private static FP SquareDist(TSVector2 a, TSVector2 b)
+        private static FixedPoint SquareDist(TSVector2 a, TSVector2 b)
         {
-            FP dx = b.x - a.x;
-            FP dy = b.y - a.y;
+            FixedPoint dx = b.x - a.x;
+            FixedPoint dy = b.y - a.y;
             return dx * dx + dy * dy;
         }
     }

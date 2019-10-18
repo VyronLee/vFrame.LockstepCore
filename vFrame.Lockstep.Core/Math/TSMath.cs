@@ -29,34 +29,34 @@ namespace vFrame.Lockstep.Core
         /// <summary>
         /// PI constant.
         /// </summary>
-        public static FP Pi = FP.Pi;
+        public static FixedPoint Pi = FixedPoint.Pi;
 
         /**
         *  @brief PI over 2 constant.
         **/
-        public static FP PiOver2 = FP.PiOver2;
+        public static FixedPoint PiOver2 = FixedPoint.PiOver2;
 
         /// <summary>
         /// A small value often used to decide if numeric 
         /// results are zero.
         /// </summary>
-		public static FP Epsilon = FP.Epsilon;
+		public static FixedPoint Epsilon = FixedPoint.Epsilon;
 
         /**
         *  @brief Degree to radians constant.
         **/
-        public static FP Deg2Rad = FP.Deg2Rad;
+        public static FixedPoint Deg2Rad = FixedPoint.Deg2Rad;
 
         /**
         *  @brief Radians to degree constant.
         **/
-        public static FP Rad2Deg = FP.Rad2Deg;
+        public static FixedPoint Rad2Deg = FixedPoint.Rad2Deg;
 
 
         /**
          * @brief FP infinity.
          * */
-        public static FP Infinity = FP.MaxValue;
+        public static FixedPoint Infinity = FixedPoint.MaxValue;
 
         /// <summary>
         /// Gets the square root.
@@ -64,8 +64,8 @@ namespace vFrame.Lockstep.Core
         /// <param name="number">The number to get the square root from.</param>
         /// <returns></returns>
         #region public static FP Sqrt(FP number)
-        public static FP Sqrt(FP number) {
-            return FP.Sqrt(number);
+        public static FixedPoint Sqrt(FixedPoint number) {
+            return FixedPoint.Sqrt(number);
         }
         #endregion
 
@@ -76,7 +76,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="val2">The second value.</param>
         /// <returns>Returns the largest value.</returns>
         #region public static FP Max(FP val1, FP val2)
-        public static FP Max(FP val1, FP val2) {
+        public static FixedPoint Max(FixedPoint val1, FixedPoint val2) {
             return (val1 > val2) ? val1 : val2;
         }
         #endregion
@@ -88,7 +88,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="val2">The second value.</param>
         /// <returns>Returns the smallest value.</returns>
         #region public static FP Min(FP val1, FP val2)
-        public static FP Min(FP val1, FP val2) {
+        public static FixedPoint Min(FixedPoint val1, FixedPoint val2) {
             return (val1 < val2) ? val1 : val2;
         }
         #endregion
@@ -101,8 +101,8 @@ namespace vFrame.Lockstep.Core
         /// <param name="val3">The third value.</param>
         /// <returns>Returns the largest value.</returns>
         #region public static FP Max(FP val1, FP val2,FP val3)
-        public static FP Max(FP val1, FP val2, FP val3) {
-            FP max12 = (val1 > val2) ? val1 : val2;
+        public static FixedPoint Max(FixedPoint val1, FixedPoint val2, FixedPoint val3) {
+            FixedPoint max12 = (val1 > val2) ? val1 : val2;
             return (max12 > val3) ? max12 : val3;
         }
         #endregion
@@ -115,7 +115,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="max">The maximum value.</param>
         /// <returns>The clamped value.</returns>
         #region public static FP Clamp(FP value, FP min, FP max)
-        public static FP Clamp(FP value, FP min, FP max) {
+        public static FixedPoint Clamp(FixedPoint value, FixedPoint min, FixedPoint max) {
             if (value < min)
             {
                 value = min;
@@ -134,13 +134,13 @@ namespace vFrame.Lockstep.Core
         /// </summary>
         /// <param name="value">The value to clamp.</param>
         /// <returns>The clamped value.</returns>
-        public static FP Clamp01(FP value)
+        public static FixedPoint Clamp01(FixedPoint value)
         {
-            if (value < FP.Zero)
-                return FP.Zero;
+            if (value < FixedPoint.Zero)
+                return FixedPoint.Zero;
 
-            if (value > FP.One)
-                return FP.One;
+            if (value > FixedPoint.One)
+                return FixedPoint.One;
 
             return value;
         }
@@ -152,160 +152,160 @@ namespace vFrame.Lockstep.Core
         /// <param name="result">The absolute matrix.</param>
         #region public static void Absolute(ref JMatrix matrix,out JMatrix result)
         public static void Absolute(ref TSMatrix matrix, out TSMatrix result) {
-            result.M11 = FP.Abs(matrix.M11);
-            result.M12 = FP.Abs(matrix.M12);
-            result.M13 = FP.Abs(matrix.M13);
-            result.M21 = FP.Abs(matrix.M21);
-            result.M22 = FP.Abs(matrix.M22);
-            result.M23 = FP.Abs(matrix.M23);
-            result.M31 = FP.Abs(matrix.M31);
-            result.M32 = FP.Abs(matrix.M32);
-            result.M33 = FP.Abs(matrix.M33);
+            result.M11 = FixedPoint.Abs(matrix.M11);
+            result.M12 = FixedPoint.Abs(matrix.M12);
+            result.M13 = FixedPoint.Abs(matrix.M13);
+            result.M21 = FixedPoint.Abs(matrix.M21);
+            result.M22 = FixedPoint.Abs(matrix.M22);
+            result.M23 = FixedPoint.Abs(matrix.M23);
+            result.M31 = FixedPoint.Abs(matrix.M31);
+            result.M32 = FixedPoint.Abs(matrix.M32);
+            result.M33 = FixedPoint.Abs(matrix.M33);
         }
         #endregion
 
         /// <summary>
         /// Returns the sine of value.
         /// </summary>
-        public static FP Sin(FP value) {
-            return FP.Sin(value);
+        public static FixedPoint Sin(FixedPoint value) {
+            return FixedPoint.Sin(value);
         }
 
         /// <summary>
         /// Returns the cosine of value.
         /// </summary>
-        public static FP Cos(FP value) {
-            return FP.Cos(value);
+        public static FixedPoint Cos(FixedPoint value) {
+            return FixedPoint.Cos(value);
         }
 
         /// <summary>
         /// Returns the tan of value.
         /// </summary>
-        public static FP Tan(FP value) {
-            return FP.Tan(value);
+        public static FixedPoint Tan(FixedPoint value) {
+            return FixedPoint.Tan(value);
         }
 
         /// <summary>
         /// Returns the arc sine of value.
         /// </summary>
-        public static FP Asin(FP value) {
-            return FP.Asin(value);
+        public static FixedPoint Asin(FixedPoint value) {
+            return FixedPoint.Asin(value);
         }
 
         /// <summary>
         /// Returns the arc cosine of value.
         /// </summary>
-        public static FP Acos(FP value) {
-            return FP.Acos(value);
+        public static FixedPoint Acos(FixedPoint value) {
+            return FixedPoint.Acos(value);
         }
 
         /// <summary>
         /// Returns the arc tan of value.
         /// </summary>
-        public static FP Atan(FP value) {
-            return FP.Atan(value);
+        public static FixedPoint Atan(FixedPoint value) {
+            return FixedPoint.Atan(value);
         }
 
         /// <summary>
         /// Returns the arc tan of coordinates x-y.
         /// </summary>
-        public static FP Atan2(FP y, FP x) {
-            return FP.Atan2(y, x);
+        public static FixedPoint Atan2(FixedPoint y, FixedPoint x) {
+            return FixedPoint.Atan2(y, x);
         }
 
         /// <summary>
         /// Returns the largest integer less than or equal to the specified number.
         /// </summary>
-        public static FP Floor(FP value) {
-            return FP.Floor(value);
+        public static FixedPoint Floor(FixedPoint value) {
+            return FixedPoint.Floor(value);
         }
 
         /// <summary>
         /// Returns the smallest integral value that is greater than or equal to the specified number.
         /// </summary>
-        public static FP Ceiling(FP value)
+        public static FixedPoint Ceiling(FixedPoint value)
         {
-            return FP.Ceiling(value);
+            return FixedPoint.Ceiling(value);
         }
 
         /// <summary>
         /// Rounds a value to the nearest integral value.
         /// If the value is halfway between an even and an uneven value, returns the even value.
         /// </summary>
-        public static FP Round(FP value) {
-            return FP.Round(value);
+        public static FixedPoint Round(FixedPoint value) {
+            return FixedPoint.Round(value);
         }
 
         /// <summary>
         /// Returns a number indicating the sign of a Fix64 number.
         /// Returns 1 if the value is positive, 0 if is 0, and -1 if it is negative.
         /// </summary>
-        public static int Sign(FP value) {
-            return FP.Sign(value);
+        public static int Sign(FixedPoint value) {
+            return FixedPoint.Sign(value);
         }
 
         /// <summary>
         /// Returns the absolute value of a Fix64 number.
         /// Note: Abs(Fix64.MinValue) == Fix64.MaxValue.
         /// </summary>
-        public static FP Abs(FP value) {
-            return FP.Abs(value);                
+        public static FixedPoint Abs(FixedPoint value) {
+            return FixedPoint.Abs(value);                
         }
 
-        public static FP Barycentric(FP value1, FP value2, FP value3, FP amount1, FP amount2) {
+        public static FixedPoint Barycentric(FixedPoint value1, FixedPoint value2, FixedPoint value3, FixedPoint amount1, FixedPoint amount2) {
             return value1 + (value2 - value1) * amount1 + (value3 - value1) * amount2;
         }
 
-        public static FP CatmullRom(FP value1, FP value2, FP value3, FP value4, FP amount) {
+        public static FixedPoint CatmullRom(FixedPoint value1, FixedPoint value2, FixedPoint value3, FixedPoint value4, FixedPoint amount) {
             // Using formula from http://www.mvps.org/directx/articles/catmull/
             // Internally using FPs not to lose precission
-            FP amountSquared = amount * amount;
-            FP amountCubed = amountSquared * amount;
-            return (FP)(FP.Half * (2 * value2 +
+            FixedPoint amountSquared = amount * amount;
+            FixedPoint amountCubed = amountSquared * amount;
+            return (FixedPoint)(FixedPoint.Half * (2 * value2 +
                                  (value3 - value1) * amount +
                                  (2 * value1 - 5 * value2 + 4 * value3 - value4) * amountSquared +
                                  (3 * value2 - value1 - 3 * value3 + value4) * amountCubed));
         }
 
-        public static FP Distance(FP value1, FP value2) {
-            return FP.Abs(value1 - value2);
+        public static FixedPoint Distance(FixedPoint value1, FixedPoint value2) {
+            return FixedPoint.Abs(value1 - value2);
         }
 
-        public static FP Hermite(FP value1, FP tangent1, FP value2, FP tangent2, FP amount) {
+        public static FixedPoint Hermite(FixedPoint value1, FixedPoint tangent1, FixedPoint value2, FixedPoint tangent2, FixedPoint amount) {
             // All transformed to FP not to lose precission
             // Otherwise, for high numbers of param:amount the result is NaN instead of Infinity
-            FP v1 = value1, v2 = value2, t1 = tangent1, t2 = tangent2, s = amount, result;
-            FP sCubed = s * s * s;
-            FP sSquared = s * s;
+            FixedPoint v1 = value1, v2 = value2, t1 = tangent1, t2 = tangent2, s = amount, result;
+            FixedPoint sCubed = s * s * s;
+            FixedPoint sSquared = s * s;
 
-            if (amount == FP.Zero)
+            if (amount == FixedPoint.Zero)
                 result = value1;
-            else if (amount == FP.One)
+            else if (amount == FixedPoint.One)
                 result = value2;
             else
                 result = (2 * v1 - 2 * v2 + t2 + t1) * sCubed +
                          (3 * v2 - 3 * v1 - 2 * t1 - t2) * sSquared +
                          t1 * s +
                          v1;
-            return (FP)result;
+            return (FixedPoint)result;
         }
 
-        public static FP Lerp(FP value1, FP value2, FP amount) {
+        public static FixedPoint Lerp(FixedPoint value1, FixedPoint value2, FixedPoint amount) {
             return value1 + (value2 - value1) * Clamp01(amount);
         }
 
-        public static FP InverseLerp(FP value1, FP value2, FP amount) {
+        public static FixedPoint InverseLerp(FixedPoint value1, FixedPoint value2, FixedPoint amount) {
             if (value1 != value2)
                 return Clamp01((amount - value1) / (value2 - value1));
-            return FP.Zero;
+            return FixedPoint.Zero;
         }
 
-        public static FP SmoothStep(FP value1, FP value2, FP amount) {
+        public static FixedPoint SmoothStep(FixedPoint value1, FixedPoint value2, FixedPoint amount) {
             // It is expected that 0 < amount < 1
             // If amount < 0, return value1
             // If amount > 1, return value2
-            FP result = Clamp(amount, FP.Zero, FP.One);
-            result = Hermite(value1, FP.Zero, value2, FP.Zero, result);
+            FixedPoint result = Clamp(amount, FixedPoint.Zero, FixedPoint.One);
+            result = Hermite(value1, FixedPoint.Zero, value2, FixedPoint.Zero, result);
             return result;
         }
 
@@ -314,11 +314,11 @@ namespace vFrame.Lockstep.Core
         /// Returns 2 raised to the specified power.
         /// Provides at least 6 decimals of accuracy.
         /// </summary>
-        internal static FP Pow2(FP x)
+        internal static FixedPoint Pow2(FixedPoint x)
         {
             if (x.RawValue == 0)
             {
-                return FP.One;
+                return FixedPoint.One;
             }
 
             // Avoid negative arguments by exploiting that exp(-x) = 1/exp(x).
@@ -328,17 +328,17 @@ namespace vFrame.Lockstep.Core
                 x = -x;
             }
 
-            if (x == FP.One)
+            if (x == FixedPoint.One)
             {
-                return neg ? FP.One / (FP)2 : (FP)2;
+                return neg ? FixedPoint.One / (FixedPoint)2 : (FixedPoint)2;
             }
-            if (x >= FP.Log2Max)
+            if (x >= FixedPoint.Log2Max)
             {
-                return neg ? FP.One / FP.MaxValue : FP.MaxValue;
+                return neg ? FixedPoint.One / FixedPoint.MaxValue : FixedPoint.MaxValue;
             }
-            if (x <= FP.Log2Min)
+            if (x <= FixedPoint.Log2Min)
             {
-                return neg ? FP.MaxValue : FP.Zero;
+                return neg ? FixedPoint.MaxValue : FixedPoint.Zero;
             }
 
             /* The algorithm is based on the power series for exp(x):
@@ -350,22 +350,22 @@ namespace vFrame.Lockstep.Core
 
             int integerPart = (int)Floor(x);
             // Take fractional part of exponent
-            x = FP.FromRaw(x.RawValue & 0x00000000FFFFFFFF);
+            x = FixedPoint.FromRaw(x.RawValue & 0x00000000FFFFFFFF);
 
-            var result = FP.One;
-            var term = FP.One;
+            var result = FixedPoint.One;
+            var term = FixedPoint.One;
             int i = 1;
             while (term.RawValue != 0)
             {
-                term = FP.FastMul(FP.FastMul(x, term), FP.Ln2) / (FP)i;
+                term = FixedPoint.FastMul(FixedPoint.FastMul(x, term), FixedPoint.Ln2) / (FixedPoint)i;
                 result += term;
                 i++;
             }
 
-            result = FP.FromRaw(result.RawValue << integerPart);
+            result = FixedPoint.FromRaw(result.RawValue << integerPart);
             if (neg)
             {
-                result = FP.One / result;
+                result = FixedPoint.One / result;
             }
 
             return result;
@@ -378,7 +378,7 @@ namespace vFrame.Lockstep.Core
         /// <exception cref="ArgumentOutOfRangeException">
         /// The argument was non-positive
         /// </exception>
-        internal static FP Log2(FP x)
+        internal static FixedPoint Log2(FixedPoint x)
         {
             if (x.RawValue <= 0)
             {
@@ -389,36 +389,36 @@ namespace vFrame.Lockstep.Core
             // algorithm (C. S. Turner,  "A Fast Binary Logarithm Algorithm", IEEE Signal
             //     Processing Mag., pp. 124,140, Sep. 2010.)
 
-            long b = 1U << (FP.FRACTIONAL_PLACES - 1);
+            long b = 1U << (FixedPoint.FRACTIONAL_PLACES - 1);
             long y = 0;
 
             long rawX = x.RawValue;
-            while (rawX < FP.L_ONE)
+            while (rawX < FixedPoint.L_ONE)
             {
                 rawX <<= 1;
-                y -= FP.L_ONE;
+                y -= FixedPoint.L_ONE;
             }
 
-            while (rawX >= (FP.L_ONE << 1))
+            while (rawX >= (FixedPoint.L_ONE << 1))
             {
                 rawX >>= 1;
-                y += FP.L_ONE;
+                y += FixedPoint.L_ONE;
             }
 
-            var z = FP.FromRaw(rawX);
+            var z = FixedPoint.FromRaw(rawX);
 
-            for (int i = 0; i < FP.FRACTIONAL_PLACES; i++)
+            for (int i = 0; i < FixedPoint.FRACTIONAL_PLACES; i++)
             {
-                z = FP.FastMul(z, z);
-                if (z.RawValue >= (FP.L_ONE << 1))
+                z = FixedPoint.FastMul(z, z);
+                if (z.RawValue >= (FixedPoint.L_ONE << 1))
                 {
-                    z = FP.FromRaw(z.RawValue >> 1);
+                    z = FixedPoint.FromRaw(z.RawValue >> 1);
                     y += b;
                 }
                 b >>= 1;
             }
 
-            return FP.FromRaw(y);
+            return FixedPoint.FromRaw(y);
         }
 
         /// <summary>
@@ -428,9 +428,9 @@ namespace vFrame.Lockstep.Core
         /// <exception cref="ArgumentOutOfRangeException">
         /// The argument was non-positive
         /// </exception>
-        public static FP Ln(FP x)
+        public static FixedPoint Ln(FixedPoint x)
         {
-            return FP.FastMul(Log2(x), FP.Ln2);
+            return FixedPoint.FastMul(Log2(x), FixedPoint.Ln2);
         }
 
         /// <summary>
@@ -443,16 +443,16 @@ namespace vFrame.Lockstep.Core
         /// <exception cref="ArgumentOutOfRangeException">
         /// The base was negative, with a non-zero exponent
         /// </exception>
-        public static FP Pow(FP b, FP exp)
+        public static FixedPoint Pow(FixedPoint b, FixedPoint exp)
         {
-            if (b == FP.One)
+            if (b == FixedPoint.One)
             {
-                return FP.One;
+                return FixedPoint.One;
             }
 
             if (exp.RawValue == 0)
             {
-                return FP.One;
+                return FixedPoint.One;
             }
 
             if (b.RawValue == 0)
@@ -460,71 +460,71 @@ namespace vFrame.Lockstep.Core
                 if (exp.RawValue < 0)
                 {
                     //throw new DivideByZeroException();
-                    return FP.MaxValue;
+                    return FixedPoint.MaxValue;
                 }
-                return FP.Zero;
+                return FixedPoint.Zero;
             }
 
-            FP log2 = Log2(b);
+            FixedPoint log2 = Log2(b);
             return Pow2(exp * log2);
         }
 
-        public static FP MoveTowards(FP current, FP target, FP maxDelta)
+        public static FixedPoint MoveTowards(FixedPoint current, FixedPoint target, FixedPoint maxDelta)
         {
             if (Abs(target - current) <= maxDelta)
                 return target;
             return (current + (Sign(target - current)) * maxDelta);
         }
 
-        public static FP Repeat(FP t, FP length)
+        public static FixedPoint Repeat(FixedPoint t, FixedPoint length)
         {
             return (t - (Floor(t / length) * length));
         }
 
-        public static FP DeltaAngle(FP current, FP target)
+        public static FixedPoint DeltaAngle(FixedPoint current, FixedPoint target)
         {
-            FP num = Repeat(target - current, (FP)360f);
-            if (num > (FP)180f)
+            FixedPoint num = Repeat(target - current, (FixedPoint)360f);
+            if (num > (FixedPoint)180f)
             {
-                num -= (FP)360f;
+                num -= (FixedPoint)360f;
             }
             return num;
         }
 
-        public static FP MoveTowardsAngle(FP current, FP target, FP maxDelta)
+        public static FixedPoint MoveTowardsAngle(FixedPoint current, FixedPoint target, FixedPoint maxDelta)
         {
             target = current + DeltaAngle(current, target);
             return MoveTowards(current, target, maxDelta);
         }
 
-        public static FP SmoothDamp(FP current, FP target, ref FP currentVelocity, FP smoothTime, FP maxSpeed)
+        public static FixedPoint SmoothDamp(FixedPoint current, FixedPoint target, ref FixedPoint currentVelocity, FixedPoint smoothTime, FixedPoint maxSpeed)
         {
-            FP deltaTime = FP.EN2;
+            FixedPoint deltaTime = FixedPoint.EN2;
             return SmoothDamp(current, target, ref currentVelocity, smoothTime, maxSpeed, deltaTime);
         }
 
-        public static FP SmoothDamp(FP current, FP target, ref FP currentVelocity, FP smoothTime)
+        public static FixedPoint SmoothDamp(FixedPoint current, FixedPoint target, ref FixedPoint currentVelocity, FixedPoint smoothTime)
         {
-            FP deltaTime = FP.EN2;
-            FP positiveInfinity = -FP.MaxValue;
+            FixedPoint deltaTime = FixedPoint.EN2;
+            FixedPoint positiveInfinity = -FixedPoint.MaxValue;
             return SmoothDamp(current, target, ref currentVelocity, smoothTime, positiveInfinity, deltaTime);
         }
 
-        public static FP SmoothDamp(FP current, FP target, ref FP currentVelocity, FP smoothTime, FP maxSpeed, FP deltaTime)
+        public static FixedPoint SmoothDamp(FixedPoint current, FixedPoint target, ref FixedPoint currentVelocity, FixedPoint smoothTime, FixedPoint maxSpeed, FixedPoint deltaTime)
         {
-            smoothTime = Max(FP.EN4, smoothTime);
-            FP num = (FP)2f / smoothTime;
-            FP num2 = num * deltaTime;
-            FP num3 = FP.One / (((FP.One + num2) + (((FP)0.48f * num2) * num2)) + ((((FP)0.235f * num2) * num2) * num2));
-            FP num4 = current - target;
-            FP num5 = target;
-            FP max = maxSpeed * smoothTime;
+            smoothTime = Max(FixedPoint.EN4, smoothTime);
+            FixedPoint num = (FixedPoint)2f / smoothTime;
+            FixedPoint num2 = num * deltaTime;
+            FixedPoint num3 = FixedPoint.One / (((FixedPoint.One + num2) + (((FixedPoint)0.48f * num2) * num2)) + ((((FixedPoint)0.235f * num2) * num2) * num2));
+            FixedPoint num4 = current - target;
+            FixedPoint num5 = target;
+            FixedPoint max = maxSpeed * smoothTime;
             num4 = Clamp(num4, -max, max);
             target = current - num4;
-            FP num7 = (currentVelocity + (num * num4)) * deltaTime;
+            FixedPoint num7 = (currentVelocity + (num * num4)) * deltaTime;
             currentVelocity = (currentVelocity - (num * num7)) * num3;
-            FP num8 = target + ((num4 + num7) * num3);
-            if (((num5 - current) > FP.Zero) == (num8 > num5))
+            FixedPoint num8 = target + ((num4 + num7) * num3);
+            if (((num5 - current) > FixedPoint.Zero) == (num8 > num5))
             {
                 num8 = num5;
                 currentVelocity = (num8 - num5) / deltaTime;

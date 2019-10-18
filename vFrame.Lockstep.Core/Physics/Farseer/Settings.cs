@@ -22,16 +22,15 @@
 
 using System;
 using vFrame.Lockstep.Core.Physics2D;
-using FP = vFrame.Lockstep.Core.FP;
 
 namespace vFrame.Lockstep.Core.Physics2D
 {
     public static class Settings
     {
-        public static readonly FP MaxFP = FP.MaxValue;
-        public static readonly FP Epsilon = 119209 * FP.EN12;//2896e-07f;
-        public static readonly FP EpsilonSqr = Epsilon * Epsilon;
-        public static readonly FP Pi = FP.Pi;
+        public static readonly FixedPoint MaxFP = FixedPoint.MaxValue;
+        public static readonly FixedPoint Epsilon = 119209 * FixedPoint.EN12;//2896e-07f;
+        public static readonly FixedPoint EpsilonSqr = Epsilon * Epsilon;
+        public static readonly FixedPoint Pi = FixedPoint.Pi;
 
         // Common
 
@@ -150,20 +149,20 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// to move by a small amount without triggering a tree adjustment.
         /// This is in meters.
         /// </summary>
-        public static readonly FP AABBExtension = FP.EN1;
+        public static readonly FixedPoint AABBExtension = FixedPoint.EN1;
 
         /// <summary>
         /// This is used to fatten AABBs in the dynamic tree. This is used to predict
         /// the future position based on the current displacement.
         /// This is a dimensionless multiplier.
         /// </summary>
-        public static readonly FP AABBMultiplier = 2;
+        public static readonly FixedPoint AABBMultiplier = 2;
 
         /// <summary>
         /// A small length used as a collision and constraint tolerance. Usually it is
         /// chosen to be numerically significant, but visually insignificant.
         /// </summary>
-        public static readonly FP LinearSlop = 5 * FP.EN3;
+        public static readonly FixedPoint LinearSlop = 5 * FixedPoint.EN3;
 
         ///0.005f;
 
@@ -171,14 +170,14 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// A small angle used as a collision and constraint tolerance. Usually it is
         /// chosen to be numerically significant, but visually insignificant.
         /// </summary>
-        public static readonly FP AngularSlop = FP.One * 2 / 180 * FP.Pi;// (2.0f / 180.0f * Pi);
+        public static readonly FixedPoint AngularSlop = FixedPoint.One * 2 / 180 * FixedPoint.Pi;// (2.0f / 180.0f * Pi);
 
         /// <summary>
         /// The radius of the polygon/edge shape skin. This should not be modified. Making
         /// this smaller means polygons will have an insufficient buffer for continuous collision.
         /// Making it larger may create artifacts for vertex collision.
         /// </summary>
-        public static readonly FP PolygonRadius = 2 * LinearSlop;
+        public static readonly FixedPoint PolygonRadius = 2 * LinearSlop;
 
         // Dynamics
 
@@ -191,58 +190,58 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// A velocity threshold for elastic collisions. Any collision with a relative linear
         /// velocity below this threshold will be treated as inelastic.
         /// </summary>
-        public static readonly FP VelocityThreshold = FP.One;
+        public static readonly FixedPoint VelocityThreshold = FixedPoint.One;
 
         /// <summary>
         /// The maximum linear position correction used when solving constraints. This helps to
         /// prevent overshoot.
         /// </summary>
-        public static readonly FP MaxLinearCorrection = 2*FP.EN1;//0.2f;
+        public static readonly FixedPoint MaxLinearCorrection = 2*FixedPoint.EN1;//0.2f;
 
         /// <summary>
         /// The maximum angular position correction used when solving constraints. This helps to
         /// prevent overshoot.
         /// </summary>
-        public static readonly FP MaxAngularCorrection = FP.One * 8 / 180 * FP.Pi;// (8.0f / 180.0f * Pi);
+        public static readonly FixedPoint MaxAngularCorrection = FixedPoint.One * 8 / 180 * FixedPoint.Pi;// (8.0f / 180.0f * Pi);
 
         /// <summary>
         /// This scale factor controls how fast overlap is resolved. Ideally this would be 1 so
         /// that overlap is removed in one time step. However using values close to 1 often lead
         /// to overshoot.
         /// </summary>
-        public static readonly FP Baumgarte = 2*FP.EN1;//0.2f;
+        public static readonly FixedPoint Baumgarte = 2*FixedPoint.EN1;//0.2f;
 
         // Sleep
         /// <summary>
         /// The time that a body must be still before it will go to sleep.
         /// </summary>
-        public static readonly FP TimeToSleep = 5*FP.EN1;
+        public static readonly FixedPoint TimeToSleep = 5*FixedPoint.EN1;
 
         /// <summary>
         /// A body cannot sleep if its linear velocity is above this tolerance.
         /// </summary>
-        public static readonly FP LinearSleepTolerance = FP.EN2;//0.01f;
+        public static readonly FixedPoint LinearSleepTolerance = FixedPoint.EN2;//0.01f;
 
         /// <summary>
         /// A body cannot sleep if its angular velocity is above this tolerance.
         /// </summary>
-        public static readonly FP AngularSleepTolerance = FP.One * 2 / 180 * FP.Pi;// (2.0f / 180.0f * Pi);
+        public static readonly FixedPoint AngularSleepTolerance = FixedPoint.One * 2 / 180 * FixedPoint.Pi;// (2.0f / 180.0f * Pi);
 
         /// <summary>
         /// The maximum linear velocity of a body. This limit is very large and is used
         /// to prevent numerical problems. You shouldn't need to adjust this.
         /// </summary>
-        public static readonly FP MaxTranslation = 2;
+        public static readonly FixedPoint MaxTranslation = 2;
 
-        public static readonly FP MaxTranslationSquared = (MaxTranslation * MaxTranslation);
+        public static readonly FixedPoint MaxTranslationSquared = (MaxTranslation * MaxTranslation);
 
         /// <summary>
         /// The maximum angular velocity of a body. This limit is very large and is used
         /// to prevent numerical problems. You shouldn't need to adjust this.
         /// </summary>
-        public static readonly FP MaxRotation = FP.Pi * FP.Half;// (0.5f * Pi);
+        public static readonly FixedPoint MaxRotation = FixedPoint.Pi * FixedPoint.Half;// (0.5f * Pi);
 
-        public static readonly FP MaxRotationSquared = (MaxRotation * MaxRotation);
+        public static readonly FixedPoint MaxRotationSquared = (MaxRotation * MaxRotation);
 
         /// <summary>
         /// Defines the maximum number of iterations made by the GJK algorithm.
@@ -270,9 +269,9 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="friction1">The friction1.</param>
         /// <param name="friction2">The friction2.</param>
         /// <returns></returns>
-        public static FP MixFriction(FP friction1, FP friction2)
+        public static FixedPoint MixFriction(FixedPoint friction1, FixedPoint friction2)
         {
-            return FP.Sqrt(friction1 * friction2);
+            return FixedPoint.Sqrt(friction1 * friction2);
         }
 
         /// <summary>
@@ -281,7 +280,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="restitution1">The restitution1.</param>
         /// <param name="restitution2">The restitution2.</param>
         /// <returns></returns>
-        public static FP MixRestitution(FP restitution1, FP restitution2)
+        public static FixedPoint MixRestitution(FixedPoint restitution1, FixedPoint restitution2)
         {
             return restitution1 > restitution2 ? restitution1 : restitution2;
         }

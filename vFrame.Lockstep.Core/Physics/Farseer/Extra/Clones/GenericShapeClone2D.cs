@@ -5,8 +5,8 @@
     **/
     public class GenericShapeClone2D {
 
-        private FP _radius;
-        private FP _2radius;
+        private FixedPoint _radius;
+        private FixedPoint _2radius;
 
         private TSVector2 _position;
 

@@ -107,15 +107,15 @@ namespace vFrame.Lockstep.Core.Physics2D
         private static bool InsideTriangle(ref TSVector2 a, ref TSVector2 b, ref TSVector2 c, ref TSVector2 p)
         {
             //A cross bp
-            FP abp = (c.x - b.x) * (p.y - b.y) - (c.y - b.y) * (p.x - b.x);
+            FixedPoint abp = (c.x - b.x) * (p.y - b.y) - (c.y - b.y) * (p.x - b.x);
 
             //A cross ap
-            FP aap = (b.x - a.x) * (p.y - a.y) - (b.y - a.y) * (p.x - a.x);
+            FixedPoint aap = (b.x - a.x) * (p.y - a.y) - (b.y - a.y) * (p.x - a.x);
 
             //b cross cp
-            FP bcp = (a.x - c.x) * (p.y - c.y) - (a.y - c.y) * (p.x - c.x);
+            FixedPoint bcp = (a.x - c.x) * (p.y - c.y) - (a.y - c.y) * (p.x - c.x);
 
-            return ((abp >= FP.Zero) && (bcp >= FP.Zero) && (aap >= FP.Zero));
+            return ((abp >= FixedPoint.Zero) && (bcp >= FixedPoint.Zero) && (aap >= FixedPoint.Zero));
         }
 
         /// <summary>

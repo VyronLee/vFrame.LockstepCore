@@ -149,16 +149,16 @@ namespace vFrame.Lockstep.Core.Physics2D
             // q = p1 + t * d
             // dot(normal, q - v1) = 0
             // dot(normal, p1 - v1) + t * dot(normal, d) = 0
-            FP numerator = TSVector2.Dot(normal, v1 - p1);
-            FP denominator = TSVector2.Dot(normal, d);
+            FixedPoint numerator = TSVector2.Dot(normal, v1 - p1);
+            FixedPoint denominator = TSVector2.Dot(normal, d);
 
-            if (denominator == FP.Zero)
+            if (denominator == FixedPoint.Zero)
             {
                 return false;
             }
 
-            FP t = numerator / denominator;
-            if (t < FP.Zero || input.MaxFraction < t)
+            FixedPoint t = numerator / denominator;
+            if (t < FixedPoint.Zero || input.MaxFraction < t)
             {
                 return false;
             }
@@ -168,20 +168,20 @@ namespace vFrame.Lockstep.Core.Physics2D
             // q = v1 + s * r
             // s = dot(q - v1, r) / dot(r, r)
             TSVector2 r = v2 - v1;
-            FP rr = TSVector2.Dot(r, r);
-            if (rr == FP.Zero)
+            FixedPoint rr = TSVector2.Dot(r, r);
+            if (rr == FixedPoint.Zero)
             {
                 return false;
             }
 
-            FP s = TSVector2.Dot(q - v1, r) / rr;
-            if (s < FP.Zero || FP.One < s)
+            FixedPoint s = TSVector2.Dot(q - v1, r) / rr;
+            if (s < FixedPoint.Zero || FixedPoint.One < s)
             {
                 return false;
             }
 
             output.Fraction = t;
-            if (numerator > FP.Zero)
+            if (numerator > FixedPoint.Zero)
             {
                 output.Normal = -normal;
             }

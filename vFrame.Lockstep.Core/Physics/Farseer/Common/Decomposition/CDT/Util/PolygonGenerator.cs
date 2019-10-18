@@ -31,7 +31,6 @@
 
 using System;
 using vFrame.Lockstep.Core.Physics2D;
-using FP = vFrame.Lockstep.Core.FP;
 using TSRandom = vFrame.Lockstep.Core.TSRandom;
 
 namespace vFrame.Lockstep.Core.Physics2D
@@ -40,13 +39,13 @@ namespace vFrame.Lockstep.Core.Physics2D
     {
         private static readonly TSRandom RNG = TSRandom.New(0);
 
-        private static FP PI_2 = 2* FP.Pi;
+        private static FixedPoint PI_2 = 2* FixedPoint.Pi;
 
-        public static Polygon RandomCircleSweep(FP scale, int vertexCount)
+        public static Polygon RandomCircleSweep(FixedPoint scale, int vertexCount)
         {
             PolygonPoint point;
             PolygonPoint[] points;
-            FP radius = scale/4;
+            FixedPoint radius = scale/4;
 
             points = new PolygonPoint[vertexCount];
             for (int i = 0; i < vertexCount; i++)
@@ -55,43 +54,43 @@ namespace vFrame.Lockstep.Core.Physics2D
                 {
                     if (i%250 == 0)
                     {
-                        radius += scale/2*(FP.Half - RNG.NextFP());
+                        radius += scale/2*(FixedPoint.Half - RNG.NextFP());
                     }
                     else if (i%50 == 0)
                     {
-                        radius += scale/5*(FP.Half - RNG.NextFP());
+                        radius += scale/5*(FixedPoint.Half - RNG.NextFP());
                     }
                     else
                     {
-                        radius += 25*scale/vertexCount*(FP.Half - RNG.NextFP());
+                        radius += 25*scale/vertexCount*(FixedPoint.Half - RNG.NextFP());
                     }
                     radius = radius > scale/2 ? scale/2 : radius;
                     radius = radius < scale/10 ? scale/10 : radius;
                 } while (radius < scale/10 || radius > scale/2);
-                point = new PolygonPoint(radius*FP.Cos((PI_2*i)/vertexCount),
-                                         radius*FP.Sin((PI_2*i)/vertexCount));
+                point = new PolygonPoint(radius*FixedPoint.Cos((PI_2*i)/vertexCount),
+                                         radius*FixedPoint.Sin((PI_2*i)/vertexCount));
                 points[i] = point;
             }
             return new Polygon(points);
         }
 
-        public static Polygon RandomCircleSweep2(FP scale, int vertexCount)
+        public static Polygon RandomCircleSweep2(FixedPoint scale, int vertexCount)
         {
             PolygonPoint point;
             PolygonPoint[] points;
-            FP radius = scale/4;
+            FixedPoint radius = scale/4;
 
             points = new PolygonPoint[vertexCount];
             for (int i = 0; i < vertexCount; i++)
             {
                 do
                 {
-                    radius += scale/5*(FP.Half - RNG.NextFP());
+                    radius += scale/5*(FixedPoint.Half - RNG.NextFP());
                     radius = radius > scale/2 ? scale/2 : radius;
                     radius = radius < scale/10 ? scale/10 : radius;
                 } while (radius < scale/10 || radius > scale/2);
-                point = new PolygonPoint(radius* FP.Cos((PI_2*i)/vertexCount),
-                                         radius* FP.Sin((PI_2*i)/vertexCount));
+                point = new PolygonPoint(radius* FixedPoint.Cos((PI_2*i)/vertexCount),
+                                         radius* FixedPoint.Sin((PI_2*i)/vertexCount));
                 points[i] = point;
             }
             return new Polygon(points);

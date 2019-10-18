@@ -26,7 +26,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             return body.CreateFixture(shape, userData);
         }
 
-        public static Fixture AttachRectangle(FP width, FP height, TSVector2 offset, Body body, object userData = null)
+        public static Fixture AttachRectangle(FixedPoint width, FixedPoint height, TSVector2 offset, Body body, object userData = null)
         {
             Vertices rectangleVertices = PolygonTools.CreateRectangle(width / 2, height / 2);
             rectangleVertices.Translate(ref offset);
@@ -34,7 +34,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             return body.CreateFixture(rectangleShape, userData);
         }
 
-        public static Fixture AttachCircle(FP radius, Body body, object userData = null)
+        public static Fixture AttachCircle(FixedPoint radius, Body body, object userData = null)
         {
             if (radius <= 0)
                 throw new ArgumentOutOfRangeException("radius", "Radius must be more than 0 meters");
@@ -43,7 +43,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             return body.CreateFixture(circleShape, userData);
         }
 
-        public static Fixture AttachCircle(FP radius, Body body, TSVector2 offset, object userData = null)
+        public static Fixture AttachCircle(FixedPoint radius, Body body, TSVector2 offset, object userData = null)
         {
             if (radius <= 0)
                 throw new ArgumentOutOfRangeException("radius", "Radius must be more than 0 meters");
@@ -62,7 +62,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             return body.CreateFixture(polygon, userData);
         }
 
-        public static Fixture AttachEllipse(FP xRadius, FP yRadius, int edges, Body body, object userData = null)
+        public static Fixture AttachEllipse(FixedPoint xRadius, FixedPoint yRadius, int edges, Body body, object userData = null)
         {
             if (xRadius <= 0)
                 throw new ArgumentOutOfRangeException("xRadius", "X-radius must be more than 0");
@@ -97,27 +97,27 @@ namespace vFrame.Lockstep.Core.Physics2D
             return res;
         }
 
-        public static Fixture AttachLineArc(FP radians, int sides, FP radius, TSVector2 position, FP angle, bool closed, Body body)
+        public static Fixture AttachLineArc(FixedPoint radians, int sides, FixedPoint radius, TSVector2 position, FixedPoint angle, bool closed, Body body)
         {
             Vertices arc = PolygonTools.CreateArc(radians, sides, radius);
-            arc.Rotate((FP.Pi - radians) / 2 + angle);
+            arc.Rotate((FixedPoint.Pi - radians) / 2 + angle);
             arc.Translate(ref position);
 
             return closed ? AttachLoopShape(arc, body) : AttachChainShape(arc, body);
         }
 
-        public static List<Fixture> AttachSolidArc(FP radians, int sides,
-            FP radius, TSVector2 position, FP angle, Body body)
+        public static List<Fixture> AttachSolidArc(FixedPoint radians, int sides,
+            FixedPoint radius, TSVector2 position, FixedPoint angle, Body body)
         {
             Vertices arc = PolygonTools.CreateArc(radians, sides, radius);
-            arc.Rotate((FP.Pi - radians) / 2 + angle);
+            arc.Rotate((FixedPoint.Pi - radians) / 2 + angle);
 
             arc.Translate(ref position);
 
             //Close the arc
             arc.Add(arc[0]);
 
-            List<Vertices> triangles = Triangulate.ConvexPartition(arc, TriangulationAlgorithm.Earclip, true, FP.EN3);
+            List<Vertices> triangles = Triangulate.ConvexPartition(arc, TriangulationAlgorithm.Earclip, true, FixedPoint.EN3);
 
             return AttachCompoundPolygon(triangles, body);
         }

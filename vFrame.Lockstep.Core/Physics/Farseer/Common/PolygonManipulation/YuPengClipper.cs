@@ -23,7 +23,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
   public static class YuPengClipper
   {
-      private static readonly FP ClipperEpsilonSquared = 119209 * FP.EN12; //e-07f; ////FP.FromFloat(1.192092896e-07f);
+      private static readonly FixedPoint ClipperEpsilonSquared = 119209 * FixedPoint.EN12; //e-07f; ////FP.FromFloat(1.192092896e-07f);
 
     public static List<Vertices> Union(Vertices polygon1, Vertices polygon2, out PolyClipError error)
     {
@@ -85,9 +85,9 @@ namespace vFrame.Lockstep.Core.Physics2D
       slicedClip.ForceCounterClockWise();
 
       List<Edge> subjectSimplices;
-      List<FP> subjectCoeff;
+      List<FixedPoint> subjectCoeff;
       List<Edge> clipSimplices;
-      List<FP> clipCoeff;
+      List<FixedPoint> clipCoeff;
       // Build simplical chains from the polygons and calculate the
       // the corresponding coefficients
       CalculateSimplicalChain(slicedSubject, out subjectCoeff, out subjectSimplices);
@@ -111,7 +111,7 @@ namespace vFrame.Lockstep.Core.Physics2D
       for (int i = 0; i < result.Count; ++i)
       {
         result[i].Translate(ref translate);
-        SimplifyTools.CollinearSimplify(result[i], FP.Zero);
+        SimplifyTools.CollinearSimplify(result[i], FixedPoint.Zero);
       }
       return result;
     }
@@ -147,10 +147,10 @@ namespace vFrame.Lockstep.Core.Physics2D
           if (LineTools.LineIntersect(a, b, c, d, out intersectionPoint))
           {
             // calculate alpha values for sorting multiple intersections points on a edge
-            FP alpha;
+            FixedPoint alpha;
             // Insert intersection point into first polygon
             alpha = GetAlpha(a, b, intersectionPoint);
-            if (alpha > FP.Zero && alpha < FP.One)
+            if (alpha > FixedPoint.Zero && alpha < FixedPoint.One)
             {
               int index = slicedPoly1.IndexOf(a) + 1;
               while (index < slicedPoly1.Count &&
@@ -162,7 +162,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
             // Insert intersection point into second polygon
             alpha = GetAlpha(c, d, intersectionPoint);
-            if (alpha > FP.Zero && alpha < FP.One)
+            if (alpha > FixedPoint.Zero && alpha < FixedPoint.One)
             {
               int index = slicedPoly2.IndexOf(c) + 1;
               while (index < slicedPoly2.Count &&
@@ -202,11 +202,11 @@ namespace vFrame.Lockstep.Core.Physics2D
     /// Calculates the simplical chain corresponding to the input polygon.
     /// </summary>
     /// <remarks>Used by method <c>Execute()</c>.</remarks>
-    private static void CalculateSimplicalChain(Vertices poly, out List<FP> coeff,
+    private static void CalculateSimplicalChain(Vertices poly, out List<FixedPoint> coeff,
                                                 out List<Edge> simplicies)
     {
       simplicies = new List<Edge>();
-      coeff = new List<FP>();
+      coeff = new List<FixedPoint>();
       for (int i = 0; i < poly.Count; ++i)
       {
         simplicies.Add(new Edge(poly[i], poly[poly.NextIndex(i)]));
@@ -219,22 +219,22 @@ namespace vFrame.Lockstep.Core.Physics2D
     /// the given simplical chains and builds the result chain.
     /// </summary>
     /// <remarks>Used by method <c>Execute()</c>.</remarks>
-    private static void CalculateResultChain(List<FP> poly1Coeff, List<Edge> poly1Simplicies,
-                                               List<FP> poly2Coeff, List<Edge> poly2Simplicies,
+    private static void CalculateResultChain(List<FixedPoint> poly1Coeff, List<Edge> poly1Simplicies,
+                                               List<FixedPoint> poly2Coeff, List<Edge> poly2Simplicies,
                                                PolyClipType clipType, out List<Edge> resultSimplices)
     {
       resultSimplices = new List<Edge>();
 
       for (int i = 0; i < poly1Simplicies.Count; ++i)
       {
-        FP edgeCharacter = 0;
+        FixedPoint edgeCharacter = 0;
         if (poly2Simplicies.Contains(poly1Simplicies[i]))
         {
-          edgeCharacter = FP.One;
+          edgeCharacter = FixedPoint.One;
         }
         else if (poly2Simplicies.Contains(-poly1Simplicies[i]) && clipType == PolyClipType.Union)
         {
-          edgeCharacter = FP.One;
+          edgeCharacter = FixedPoint.One;
         }
         else
         {
@@ -249,14 +249,14 @@ namespace vFrame.Lockstep.Core.Physics2D
         }
         if (clipType == PolyClipType.Intersect)
         {
-          if (edgeCharacter == FP.One)
+          if (edgeCharacter == FixedPoint.One)
           {
             resultSimplices.Add(poly1Simplicies[i]);
           }
         }
         else
         {
-          if (edgeCharacter == FP.Zero)
+          if (edgeCharacter == FixedPoint.Zero)
           {
             resultSimplices.Add(poly1Simplicies[i]);
           }
@@ -264,17 +264,17 @@ namespace vFrame.Lockstep.Core.Physics2D
       }
       for (int i = 0; i < poly2Simplicies.Count; ++i)
       {
-        FP edgeCharacter = FP.Zero;
+        FixedPoint edgeCharacter = FixedPoint.Zero;
         if (!resultSimplices.Contains(poly2Simplicies[i]) &&
             !resultSimplices.Contains(-poly2Simplicies[i]))
         {
           if (poly1Simplicies.Contains(-poly2Simplicies[i]) && clipType == PolyClipType.Union)
           {
-            edgeCharacter = FP.One;
+            edgeCharacter = FixedPoint.One;
           }
           else
           {
-            edgeCharacter = FP.Zero;
+            edgeCharacter = FixedPoint.Zero;
             for (int j = 0; j < poly1Simplicies.Count; ++j)
             {
               if (!poly1Simplicies.Contains(poly2Simplicies[i]) && !poly1Simplicies.Contains(-poly2Simplicies[i]))
@@ -285,14 +285,14 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
             if (clipType == PolyClipType.Intersect || clipType == PolyClipType.Difference)
             {
-              if (edgeCharacter == FP.One)
+              if (edgeCharacter == FixedPoint.One)
               {
                 resultSimplices.Add(-poly2Simplicies[i]);
               }
             }
             else
             {
-              if (edgeCharacter == FP.Zero)
+              if (edgeCharacter == FixedPoint.Zero)
               {
                 resultSimplices.Add(poly2Simplicies[i]);
               }
@@ -377,9 +377,9 @@ namespace vFrame.Lockstep.Core.Physics2D
     /// Needed to calculate the characteristics function of a simplex.
     /// </summary>
     /// <remarks>Used by method <c>CalculateEdgeCharacter()</c>.</remarks>
-    private static FP CalculateBeta(TSVector2 point, Edge e, FP coefficient)
+    private static FixedPoint CalculateBeta(TSVector2 point, Edge e, FixedPoint coefficient)
     {
-      FP result = FP.Zero;
+      FixedPoint result = FixedPoint.Zero;
       if (PointInSimplex(point, e))
       {
         result = coefficient;
@@ -387,7 +387,7 @@ namespace vFrame.Lockstep.Core.Physics2D
       if (PointOnLineSegment(TSVector2.zero, e.EdgeStart, point) ||
           PointOnLineSegment(TSVector2.zero, e.EdgeEnd, point))
       {
-        result = FP.Half * coefficient;
+        result = FixedPoint.Half * coefficient;
       }
       return result;
     }
@@ -396,7 +396,7 @@ namespace vFrame.Lockstep.Core.Physics2D
     /// Needed for sorting multiple intersections points on the same edge.
     /// </summary>
     /// <remarks>Used by method <c>CalculateIntersections()</c>.</remarks>
-    private static FP GetAlpha(TSVector2 start, TSVector2 end, TSVector2 point)
+    private static FixedPoint GetAlpha(TSVector2 start, TSVector2 end, TSVector2 point)
     {
       return (point - start).LengthSquared() / (end - start).LengthSquared();
     }
@@ -405,20 +405,20 @@ namespace vFrame.Lockstep.Core.Physics2D
     /// Returns the coefficient of a simplex.
     /// </summary>
     /// <remarks>Used by method <c>CalculateSimplicalChain()</c>.</remarks>
-    private static FP CalculateSimplexCoefficient(TSVector2 a, TSVector2 b, TSVector2 c)
+    private static FixedPoint CalculateSimplexCoefficient(TSVector2 a, TSVector2 b, TSVector2 c)
     {
-      FP isLeft = MathUtils.Area(ref a, ref b, ref c);
-      if (isLeft < FP.Zero)
+      FixedPoint isLeft = MathUtils.Area(ref a, ref b, ref c);
+      if (isLeft < FixedPoint.Zero)
       {
         return -1;
       }
 
-      if (isLeft > FP.Zero)
+      if (isLeft > FixedPoint.Zero)
       {
-        return FP.One;
+        return FixedPoint.One;
       }
 
-      return FP.Zero;
+      return FixedPoint.Zero;
     }
 
     /// <summary>
@@ -444,9 +444,9 @@ namespace vFrame.Lockstep.Core.Physics2D
     private static bool PointOnLineSegment(TSVector2 start, TSVector2 end, TSVector2 point)
     {
       TSVector2 segment = end - start;
-      return MathUtils.Area(ref start, ref end, ref point) == FP.Zero &&
-             TSVector2.Dot(point - start, segment) >= FP.Zero &&
-             TSVector2.Dot(point - end, segment) <= FP.Zero;
+      return MathUtils.Area(ref start, ref end, ref point) == FixedPoint.Zero &&
+             TSVector2.Dot(point - start, segment) >= FixedPoint.Zero &&
+             TSVector2.Dot(point - end, segment) <= FixedPoint.Zero;
     }
 
     private static bool VectorEqual(TSVector2 vec1, TSVector2 vec2)
@@ -470,7 +470,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
       public TSVector2 GetCenter()
       {
-        return (EdgeStart + EdgeEnd) * FP.Half;
+        return (EdgeStart + EdgeEnd) * FixedPoint.Half;
       }
 
       public static Edge operator -(Edge e)

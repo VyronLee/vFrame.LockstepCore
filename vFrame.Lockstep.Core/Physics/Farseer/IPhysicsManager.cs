@@ -9,7 +9,7 @@ public interface IPhysicsManager : IPhysicsManagerBase {
 
     bool SpeculativeContacts { get; set; }
 
-    FP LockedTimeStep { get;  set; }
+    FixedPoint LockedTimeStep { get;  set; }
 
     /**
     * @brief Returns the layer related to a {@link IBody}.

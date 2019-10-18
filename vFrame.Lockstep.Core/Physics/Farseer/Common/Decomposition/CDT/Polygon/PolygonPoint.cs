@@ -34,13 +34,11 @@
 // Future possibilities
 //   Documentation!
 
-using FP = vFrame.Lockstep.Core.FP;
-
 namespace vFrame.Lockstep.Core.Physics2D
 {
     internal class PolygonPoint : TriangulationPoint
     {
-        public PolygonPoint(FP x, FP y) : base(x, y)
+        public PolygonPoint(FixedPoint x, FixedPoint y) : base(x, y)
         {
         }
 

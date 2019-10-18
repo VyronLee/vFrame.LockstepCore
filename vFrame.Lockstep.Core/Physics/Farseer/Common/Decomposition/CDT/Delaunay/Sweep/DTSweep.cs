@@ -48,14 +48,13 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using FP = vFrame.Lockstep.Core.FP;
 
 namespace vFrame.Lockstep.Core.Physics2D
 {
     internal static class DTSweep
     {
-        private static readonly FP PI_div2 = FP.Pi / 2;
-        private static readonly FP PI_3div4 = 3 * FP.Pi / 4;
+        private static readonly FixedPoint PI_div2 = FixedPoint.Pi / 2;
+        private static readonly FixedPoint PI_3div4 = 3 * FixedPoint.Pi / 4;
 
         /// <summary>
         /// Triangulate simple polygon with holes
@@ -736,7 +735,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         private static void FillAdvancingFront(DTSweepContext tcx, AdvancingFrontNode n)
         {
-            FP angle;
+            FixedPoint angle;
 
             // Fill right holes
             AdvancingFrontNode node = n.Next;
@@ -802,19 +801,19 @@ namespace vFrame.Lockstep.Core.Physics2D
 
         private static bool AngleExceeds90Degrees(TriangulationPoint origin, TriangulationPoint pa, TriangulationPoint pb)
         {
-            FP angle = Angle(origin, pa, pb);
+            FixedPoint angle = Angle(origin, pa, pb);
             bool exceeds90Degrees = ((angle > PI_div2) || (angle < -PI_div2));
             return exceeds90Degrees;
         }
 
         private static bool AngleExceedsPlus90DegreesOrIsNegative(TriangulationPoint origin, TriangulationPoint pa, TriangulationPoint pb)
         {
-            FP angle = Angle(origin, pa, pb);
+            FixedPoint angle = Angle(origin, pa, pb);
             bool exceedsPlus90DegreesOrIsNegative = (angle > PI_div2) || (angle < 0);
             return exceedsPlus90DegreesOrIsNegative;
         }
 
-        private static FP Angle(TriangulationPoint origin, TriangulationPoint pa, TriangulationPoint pb)
+        private static FixedPoint Angle(TriangulationPoint origin, TriangulationPoint pa, TriangulationPoint pb)
         {
             /* Complex plane
             * ab = cosA +i*sinA
@@ -824,15 +823,15 @@ namespace vFrame.Lockstep.Core.Physics2D
             * Where x = ax*bx + ay*by
             * y = ax*by - ay*bx
             */
-            FP px = origin.X;
-            FP py = origin.Y;
-            FP ax = pa.X - px;
-            FP ay = pa.Y - py;
-            FP bx = pb.X - px;
-            FP by = pb.Y - py;
-            FP x = ax * by - ay * bx;
-            FP y = ax * bx + ay * by;
-            FP angle = FP.Atan2(x, y);
+            FixedPoint px = origin.X;
+            FixedPoint py = origin.Y;
+            FixedPoint ax = pa.X - px;
+            FixedPoint ay = pa.Y - py;
+            FixedPoint bx = pb.X - px;
+            FixedPoint by = pb.Y - py;
+            FixedPoint x = ax * by - ay * bx;
+            FixedPoint y = ax * bx + ay * by;
+            FixedPoint angle = FixedPoint.Atan2(x, y);
             return angle;
         }
 
@@ -938,7 +937,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
         private static bool IsShallow(DTSweepContext tcx, AdvancingFrontNode node)
         {
-            FP height;
+            FixedPoint height;
 
             if (tcx.Basin.leftHighest)
             {
@@ -960,7 +959,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="node">middle node</param>
         /// <returns>the angle between 3 front nodes</returns>
-        private static FP HoleAngle(AdvancingFrontNode node)
+        private static FixedPoint HoleAngle(AdvancingFrontNode node)
         {
             // XXX: do we really need a signed angle for holeAngle?
             //      could possible save some cycles here
@@ -972,23 +971,23 @@ namespace vFrame.Lockstep.Core.Physics2D
              * Where x = ax*bx + ay*by
              *       y = ax*by - ay*bx
              */
-            FP px = node.Point.X;
-            FP py = node.Point.Y;
-            FP ax = node.Next.Point.X - px;
-            FP ay = node.Next.Point.Y - py;
-            FP bx = node.Prev.Point.X - px;
-            FP by = node.Prev.Point.Y - py;
-            return FP.Atan2(ax * by - ay * bx, ax * bx + ay * by);
+            FixedPoint px = node.Point.X;
+            FixedPoint py = node.Point.Y;
+            FixedPoint ax = node.Next.Point.X - px;
+            FixedPoint ay = node.Next.Point.Y - py;
+            FixedPoint bx = node.Prev.Point.X - px;
+            FixedPoint by = node.Prev.Point.Y - py;
+            return FixedPoint.Atan2(ax * by - ay * bx, ax * bx + ay * by);
         }
 
         /// <summary>
         /// The basin angle is decided against the horizontal line [1,0]
         /// </summary>
-        private static FP BasinAngle(AdvancingFrontNode node)
+        private static FixedPoint BasinAngle(AdvancingFrontNode node)
         {
-            FP ax = node.Point.X - node.Next.Next.Point.X;
-            FP ay = node.Point.Y - node.Next.Next.Point.Y;
-            return FP.Atan2(ay, ax);
+            FixedPoint ax = node.Point.X - node.Next.Next.Point.X;
+            FixedPoint ay = node.Point.Y - node.Next.Next.Point.Y;
+            return FixedPoint.Atan2(ay, ax);
         }
 
         /// <summary>

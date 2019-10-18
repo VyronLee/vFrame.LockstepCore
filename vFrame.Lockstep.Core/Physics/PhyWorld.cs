@@ -8,7 +8,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         public PhyGameObject go;
         public TSVector point;
         public TSVector normal;
-        public FP distance;
+        public FixedPoint distance;
     }
 
 
@@ -16,14 +16,14 @@ namespace vFrame.Lockstep.Core.Physics2D
     {
         #region 输入
         private List<PhyHitInfo> m_rayallList;
-        private FP m_height;
-        private FP m_dist;
+        private FixedPoint m_height;
+        private FixedPoint m_dist;
 
         #endregion
 
-        public Func<Fixture, TSVector2, TSVector2, FP, FP> m_raycastCallback;
-        public Func<Fixture, TSVector2, TSVector2, FP, FP> m_raycastAllCallback;
-        public Func<Fixture, TSVector2, TSVector2, FP, FP> m_circlecastCallback;
+        public Func<Fixture, TSVector2, TSVector2, FixedPoint, FixedPoint> m_raycastCallback;
+        public Func<Fixture, TSVector2, TSVector2, FixedPoint, FixedPoint> m_raycastAllCallback;
+        public Func<Fixture, TSVector2, TSVector2, FixedPoint, FixedPoint> m_circlecastCallback;
         public PhyHitInfo m_hit = new PhyHitInfo();
 
         public PhyRaycastResultCallback()
@@ -33,7 +33,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             m_circlecastCallback = RaycastCallback;
         }
 
-        public void InitRaycastAll(FP height, FP distance, List<PhyHitInfo> listResult)
+        public void InitRaycastAll(FixedPoint height, FixedPoint distance, List<PhyHitInfo> listResult)
         {
             m_height = height;
             m_dist = distance;
@@ -41,7 +41,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             m_hit.go = null;
         }
 
-        public void InitRaycast(FP height, FP distance)
+        public void InitRaycast(FixedPoint height, FixedPoint distance)
         {
             m_height = height;
             m_dist = distance;
@@ -49,12 +49,12 @@ namespace vFrame.Lockstep.Core.Physics2D
             m_hit.go = null;
         }
 
-        public void InitCircleCast(FP height, FP distance)
+        public void InitCircleCast(FixedPoint height, FixedPoint distance)
         {
             InitRaycast(height, distance);
         }
 
-        private FP RaycastCallback(Fixture f, TSVector2 p, TSVector2 n, FP fr)
+        private FixedPoint RaycastCallback(Fixture f, TSVector2 p, TSVector2 n, FixedPoint fr)
         {
             var go = (PhyGameObject)f.Body.UserData;
             if (go != null)
@@ -68,7 +68,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             return fr;
         }
 
-        private FP RaycastAllCallback(Fixture f, TSVector2 p, TSVector2 n, FP fr)
+        private FixedPoint RaycastAllCallback(Fixture f, TSVector2 p, TSVector2 n, FixedPoint fr)
         {
             PhyGameObject go = f.Body.UserData as PhyGameObject;
             if (go == null)
@@ -137,13 +137,13 @@ namespace vFrame.Lockstep.Core.Physics2D
         public PhyGameObject AddBoxCollider(string name, TSVector2 centerPos, TSVector2 forward, TSVector2 size,
             int layer, BodyType bodyType = BodyType.Static)
         {
-            size *= FP.Half;
+            size *= FixedPoint.Half;
 
             var shape =  new PolygonShape(PolygonTools.CreateRectangle(size.x, size.y));
             return AddShape(name, centerPos, forward, shape, bodyType, layer);
         }
 
-        public PhyGameObject AddCircleCollider(string name, TSVector2 centerPos, TSVector2 forward, FP radius,
+        public PhyGameObject AddCircleCollider(string name, TSVector2 centerPos, TSVector2 forward, FixedPoint radius,
             int layer, BodyType bodyType = BodyType.Static)
         {
             var shape = new CircleShape(radius);
@@ -155,7 +155,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         PhyRaycastResultCallback m_castResult = new PhyRaycastResultCallback();
 
         #region 碰撞检测
-        public bool RayCastAll(List<PhyHitInfo> listResult, TSVector point1, TSVector dir, FP dist, int layerMask)
+        public bool RayCastAll(List<PhyHitInfo> listResult, TSVector point1, TSVector dir, FixedPoint dist, int layerMask)
         {
             listResult.Clear();
 
@@ -171,7 +171,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             return listResult.Count > 0;
         }
 
-        public bool RayCast(TSVector point1, TSVector dir, FP dist, int layerMask, out PhyHitInfo hit)
+        public bool RayCast(TSVector point1, TSVector dir, FixedPoint dist, int layerMask, out PhyHitInfo hit)
         {
             TSVector2 p1 = new TSVector2(point1.x, point1.z);
             TSVector2 dir2 = new TSVector2(dir.x, dir.z);
@@ -179,15 +179,15 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             var hitWall = RayCast(p1, point1.y, dir2, dist, layerMask, out hit);
             var ySpeed = -dir.y ;
-            if (ySpeed > FP.EN5)
+            if (ySpeed > FixedPoint.EN5)
             {
                 ///那么肯定相撞了
                 if (point1.y < ySpeed * dist)
                 {
                     var moveDist = point1.y / ySpeed;
-                    if (moveDist < FP.Zero)
+                    if (moveDist < FixedPoint.Zero)
                     {
-                        moveDist = FP.Zero;
+                        moveDist = FixedPoint.Zero;
                     }
 
                     ///如果墙壁没有碰撞或者更远，那么就取地面这个
@@ -205,7 +205,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             return hitWall;
         }
 
-        public bool RayCast(TSVector2 p1, FP y, TSVector2 dir2, FP dist, int layerMask, out PhyHitInfo hit)
+        public bool RayCast(TSVector2 p1, FixedPoint y, TSVector2 dir2, FixedPoint dist, int layerMask, out PhyHitInfo hit)
         {
             TSVector2 p2 = p1 + dir2 * dist;
 
@@ -223,7 +223,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="point2"></param>
         /// <param name="radius"></param>
         /// <returns></returns>
-        public bool CircleCast(TSVector2 p1, FP y, FP radius, TSVector2 dir, FP dist,  int layerMask, out PhyHitInfo hit)
+        public bool CircleCast(TSVector2 p1, FixedPoint y, FixedPoint radius, TSVector2 dir, FixedPoint dist,  int layerMask, out PhyHitInfo hit)
         {
             m_castResult.InitCircleCast(y, dist);
             m_world.CircleCast(m_castResult.m_circlecastCallback, p1, dir, dist, radius, layerMask);
@@ -232,7 +232,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             return hit.go != null;
         }
 
-        public bool CircleCast(TSVector point1, FP radius, TSVector dir, FP dist, int layerMask, out PhyHitInfo hit)
+        public bool CircleCast(TSVector point1, FixedPoint radius, TSVector dir, FixedPoint dist, int layerMask, out PhyHitInfo hit)
         {
             TSVector2 p1 = new TSVector2(point1.x, point1.z);
             TSVector2 dir2 = new TSVector2(dir.x, dir.z);
@@ -240,15 +240,15 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             var hitWall = CircleCast(p1, point1.y, radius, dir2, dist, layerMask, out hit);
             var ySpeed = -dir.y;
-            if (ySpeed > FP.EN5)
+            if (ySpeed > FixedPoint.EN5)
             {
                 ///那么肯定相撞了
                 if (point1.y < ySpeed * dist)
                 {
                     var moveDist = point1.y / ySpeed;
-                    if (moveDist < FP.Zero)
+                    if (moveDist < FixedPoint.Zero)
                     {
-                        moveDist = FP.Zero;
+                        moveDist = FixedPoint.Zero;
                     }
 
                     ///如果墙壁没有碰撞或者更远，那么就取地面这个
@@ -279,12 +279,12 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="layerMask"></param>
         /// <returns></returns>
         public bool CircleCastQuick(TSVector position,
-            FP radius, TSVector inDirNormal, out FP dist, FP maxDist, int layerMask)
+            FixedPoint radius, TSVector inDirNormal, out FixedPoint dist, FixedPoint maxDist, int layerMask)
         {
             ///都按照最长的距离来判断
 
             bool hasHit = false;
-            FP hitDistance = maxDist + radius;
+            FixedPoint hitDistance = maxDist + radius;
 
             PhyHitInfo hitInfo;
             if (RayCast(position, inDirNormal, hitDistance, layerMask, out hitInfo))
@@ -313,7 +313,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
             else
             {
-                dist = FP.Zero;
+                dist = FixedPoint.Zero;
             }
 
             return hasHit;

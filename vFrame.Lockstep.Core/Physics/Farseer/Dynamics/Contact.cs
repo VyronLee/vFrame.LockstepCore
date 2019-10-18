@@ -1,23 +1,23 @@
 /*
 * Farseer Physics Engine:
 * Copyright (c) 2012 Ian Qvist
-* 
+*
 * Original source Box2D:
-* Copyright (c) 2006-2011 Erin Catto http://www.box2d.org 
-* 
-* This software is provided 'as-is', without any express or implied 
-* warranty.  In no event will the authors be held liable for any damages 
-* arising from the use of this software. 
-* Permission is granted to anyone to use this software for any purpose, 
-* including commercial applications, and to alter it and redistribute it 
-* freely, subject to the following restrictions: 
-* 1. The origin of this software must not be misrepresented; you must not 
-* claim that you wrote the original software. If you use this software 
-* in a product, an acknowledgment in the product documentation would be 
-* appreciated but is not required. 
-* 2. Altered source versions must be plainly marked as such, and must not be 
-* misrepresented as being the original software. 
-* 3. This notice may not be removed or altered from any source distribution. 
+* Copyright (c) 2006-2011 Erin Catto http://www.box2d.org
+*
+* This software is provided 'as-is', without any express or implied
+* warranty.  In no event will the authors be held liable for any damages
+* arising from the use of this software.
+* Permission is granted to anyone to use this software for any purpose,
+* including commercial applications, and to alter it and redistribute it
+* freely, subject to the following restrictions:
+* 1. The origin of this software must not be misrepresented; you must not
+* claim that you wrote the original software. If you use this software
+* in a product, an acknowledgment in the product documentation would be
+* appreciated but is not required.
+* 2. Altered source versions must be plainly marked as such, and must not be
+* misrepresented as being the original software.
+* 3. This notice may not be removed or altered from any source distribution.
 */
 //#define USE_ACTIVE_CONTACT_SET
 #pragma warning disable 0162
@@ -103,12 +103,12 @@ namespace vFrame.Lockstep.Core.Physics2D
         internal ContactEdge _nodeA = new ContactEdge();
         internal ContactEdge _nodeB = new ContactEdge();
         internal int _toiCount;
-        internal FP _toi;
+        internal FixedPoint _toi = 0f;
 
         public Fixture FixtureA;
         public Fixture FixtureB;
-        public FP Friction { get; set; }
-        public FP Restitution { get; set; }
+        public FixedPoint Friction { get; set; }
+        public FixedPoint Restitution { get; set; }
 
         /// <summary>
         /// Get the contact manifold. Do not modify the manifold unless you understand the
@@ -123,13 +123,13 @@ namespace vFrame.Lockstep.Core.Physics2D
         }
 
         /// Get or set the desired tangent speed for a conveyor belt behavior. In meters per second.
-        public FP TangentSpeed { get; set; }
+        public FixedPoint TangentSpeed { get; set; }
 
         /// Enable/disable this contact. This can be used inside the pre-solve
         /// contact listener. The contact is only disabled for the current
         /// time step (or sub-step in continuous collisions).
         /// NOTE: If you are setting Enabled to a constant true or false,
-        /// use the explicit Enable() or Disable() functions instead to 
+        /// use the explicit Enable() or Disable() functions instead to
         /// save the CPU from doing a branch operation.
         public bool Enabled { get; set; }
 
@@ -174,7 +174,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             m_world = world;
             Reset(fA, indexA, fB, indexB);
         }
-        
+
         private void Reset(Fixture fA, int indexA, Fixture fB, int indexB)
         {
             Enabled = true;
@@ -214,7 +214,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         }
 
         /// <summary>
-        /// Evaluate this contact with your own manifold and transforms.   
+        /// Evaluate this contact with your own manifold and transforms.
         /// </summary>
         /// <param name="manifold">The manifold.</param>
         /// <param name="transformA">The first transform.</param>

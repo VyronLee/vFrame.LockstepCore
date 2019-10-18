@@ -2,6 +2,6 @@
 {
     public interface IHeuristic<in TNode> where TNode: INode
     {
-        FP Estimate(TNode node, TNode endNode);
+        FixedPoint Estimate(TNode node, TNode endNode);
     }
 }

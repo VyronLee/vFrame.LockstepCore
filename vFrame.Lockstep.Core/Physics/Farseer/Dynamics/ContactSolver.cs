@@ -39,8 +39,8 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="radiusB">The radius for B.</param>
         /// <param name="normal">World vector pointing from A to B</param>
         /// <param name="points">Torld contact point (point of intersection).</param>
-        public static void Initialize(ref Manifold manifold, ref Transform xfA, FP radiusA, ref Transform xfB,
-            FP radiusB, out TSVector2 normal, out FixedArray2<TSVector2> points)
+        public static void Initialize(ref Manifold manifold, ref Transform xfA, FixedPoint radiusA, ref Transform xfB,
+            FixedPoint radiusB, out TSVector2 normal, out FixedArray2<TSVector2> points)
         {
             normal = TSVector2.zero;
             points = new FixedArray2<TSVector2>();
@@ -54,7 +54,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             {
                 case ManifoldType.Circles:
                 {
-                    normal = new TSVector2(FP.One, FP.Zero);
+                    normal = new TSVector2(FixedPoint.One, FixedPoint.Zero);
                     TSVector2 pointA = MathUtils.Mul(ref xfA, manifold.LocalPoint);
                     TSVector2 pointB = MathUtils.Mul(ref xfB, manifold.Points[0].LocalPoint);
                     if (TSVector2.DistanceSquared(pointA, pointB) > Settings.EpsilonSqr)
@@ -65,7 +65,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
                     TSVector2 cA = pointA + radiusA * normal;
                     TSVector2 cB = pointB - radiusB * normal;
-                    points[0] = FP.Half * (cA + cB);
+                    points[0] = FixedPoint.Half * (cA + cB);
                 }
                     break;
 
@@ -79,7 +79,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                         TSVector2 clipPoint = MathUtils.Mul(ref xfB, manifold.Points[i].LocalPoint);
                         TSVector2 cA = clipPoint + (radiusA - TSVector2.Dot(clipPoint - planePoint, normal)) * normal;
                         TSVector2 cB = clipPoint - radiusB * normal;
-                        points[i] = FP.Half * (cA + cB);
+                        points[i] = FixedPoint.Half * (cA + cB);
                     }
                 }
                     break;
@@ -94,7 +94,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                         TSVector2 clipPoint = MathUtils.Mul(ref xfA, manifold.Points[i].LocalPoint);
                         TSVector2 cB = clipPoint + (radiusB - TSVector2.Dot(clipPoint - planePoint, normal)) * normal;
                         TSVector2 cA = clipPoint - radiusA * normal;
-                        points[i] = FP.Half * (cA + cB);
+                        points[i] = FixedPoint.Half * (cA + cB);
                     }
 
                     // Ensure normal points from A to B.
