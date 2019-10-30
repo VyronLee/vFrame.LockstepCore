@@ -177,6 +177,12 @@ namespace vFrame.Lockstep.Core
             this.z = z;
         }
 
+        public TSVector(TSVector2 value, FixedPoint z) {
+            this.x = value.x;
+            this.y = value.y;
+            this.z = z;
+        }
+
         /// <summary>
         /// Multiplies each component of the vector by the same components of the provided vector.
         /// </summary>

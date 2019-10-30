@@ -452,6 +452,25 @@ namespace vFrame.Lockstep.Core
             result.y = value1.y - value2.y;
         }
 
+        public static TSVector2 Transform(TSVector2 position, TSMatrix4x4 matrix) {
+            Transform(ref position, ref matrix, out position);
+            return position;
+        }
+
+        public static void Transform(ref TSVector2 position, ref TSMatrix4x4 matrix, out TSVector2 result) {
+            result = new TSVector2((position.x * matrix.M11) + (position.y * matrix.M21) + matrix.M41,
+                (position.x * matrix.M12) + (position.y * matrix.M22) + matrix.M42);
+        }
+
+        public static void Transform(TSVector2[] sourceArray, ref TSMatrix4x4 matrix, TSVector2[] destinationArray) {
+            throw new NotImplementedException();
+        }
+
+        public static void Transform(TSVector2[] sourceArray, int sourceIndex, ref TSMatrix4x4 matrix,
+            TSVector2[] destinationArray, int destinationIndex, int length) {
+            throw new NotImplementedException();
+        }
+
         public static FixedPoint Angle(TSVector2 a, TSVector2 b) {
             return FixedPoint.Acos(a.normalized * b.normalized) * FixedPoint.Rad2Deg;
         }
