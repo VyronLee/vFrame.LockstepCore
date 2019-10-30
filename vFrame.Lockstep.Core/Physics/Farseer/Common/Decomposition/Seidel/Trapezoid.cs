@@ -19,8 +19,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         public Trapezoid UpperLeft;
         public Trapezoid UpperRight;
 
-        public Trapezoid(Point leftPoint, Point rightPoint, Edge top, Edge bottom)
-        {
+        public Trapezoid(Point leftPoint, Point rightPoint, Edge top, Edge bottom) {
             LeftPoint = leftPoint;
             RightPoint = rightPoint;
             Top = top;
@@ -34,8 +33,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         }
 
         // Update neighbors to the left
-        public void UpdateLeft(Trapezoid ul, Trapezoid ll)
-        {
+        public void UpdateLeft(Trapezoid ul, Trapezoid ll) {
             UpperLeft = ul;
             if (ul != null) ul.UpperRight = this;
             LowerLeft = ll;
@@ -43,8 +41,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         }
 
         // Update neighbors to the right
-        public void UpdateRight(Trapezoid ur, Trapezoid lr)
-        {
+        public void UpdateRight(Trapezoid ur, Trapezoid lr) {
             UpperRight = ur;
             if (ur != null) ur.UpperLeft = this;
             LowerRight = lr;
@@ -52,8 +49,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         }
 
         // Update neighbors on both sides
-        public void UpdateLeftRight(Trapezoid ul, Trapezoid ll, Trapezoid ur, Trapezoid lr)
-        {
+        public void UpdateLeftRight(Trapezoid ul, Trapezoid ll, Trapezoid ur, Trapezoid lr) {
             UpperLeft = ul;
             if (ul != null) ul.UpperRight = this;
             LowerLeft = ll;
@@ -65,10 +61,8 @@ namespace vFrame.Lockstep.Core.Physics2D
         }
 
         // Recursively trim outside neighbors
-        public void TrimNeighbors()
-        {
-            if (Inside)
-            {
+        public void TrimNeighbors() {
+            if (Inside) {
                 Inside = false;
                 if (UpperLeft != null) UpperLeft.TrimNeighbors();
                 if (LowerLeft != null) LowerLeft.TrimNeighbors();
@@ -78,13 +72,11 @@ namespace vFrame.Lockstep.Core.Physics2D
         }
 
         // Determines if this point lies inside the trapezoid
-        public bool Contains(Point point)
-        {
+        public bool Contains(Point point) {
             return (point.X > LeftPoint.X && point.X < RightPoint.X && Top.IsAbove(point) && Bottom.IsBelow(point));
         }
 
-        public List<Point> GetVertices()
-        {
+        public List<Point> GetVertices() {
             List<Point> verts = new List<Point>(4);
             verts.Add(LineIntersect(Top, LeftPoint.X));
             verts.Add(LineIntersect(Bottom, LeftPoint.X));
@@ -93,29 +85,26 @@ namespace vFrame.Lockstep.Core.Physics2D
             return verts;
         }
 
-        private Point LineIntersect(Edge edge, FixedPoint x)
-        {
+        private Point LineIntersect(Edge edge, FixedPoint x) {
             FixedPoint y = edge.Slope * x + edge.B;
             return new Point(x, y);
         }
 
         // Add points to monotone mountain
-        public void AddPoints()
-        {
-            if (LeftPoint != Bottom.P)
-            {
+        public void AddPoints() {
+            if (LeftPoint != Bottom.P) {
                 Bottom.AddMpoint(LeftPoint);
             }
-            if (RightPoint != Bottom.Q)
-            {
+
+            if (RightPoint != Bottom.Q) {
                 Bottom.AddMpoint(RightPoint);
             }
-            if (LeftPoint != Top.P)
-            {
+
+            if (LeftPoint != Top.P) {
                 Top.AddMpoint(LeftPoint);
             }
-            if (RightPoint != Top.Q)
-            {
+
+            if (RightPoint != Top.Q) {
                 Top.AddMpoint(RightPoint);
             }
         }

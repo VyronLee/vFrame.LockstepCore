@@ -4,13 +4,13 @@ using vFrame.Lockstep.Core.Physics2D;
 
 public interface IPhysicsManagerBase
 {
-	void Init();
+    void Init();
 
-	void UpdateStep();
+    void UpdateStep();
 
-	IWorld GetWorld();
+    IWorld GetWorld();
 
-	IWorldClone GetWorldClone();
+    IWorldClone GetWorldClone();
 
-	void RemoveBody(IBody iBody);
+    void RemoveBody(IBody iBody);
 }

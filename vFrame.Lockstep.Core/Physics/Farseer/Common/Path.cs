@@ -25,8 +25,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <summary>
         /// Initializes a new instance of the <see cref="Path"/> class.
         /// </summary>
-        public Path()
-        {
+        public Path() {
             ControlPoints = new List<TSVector2>();
         }
 
@@ -34,12 +33,10 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Initializes a new instance of the <see cref="Path"/> class.
         /// </summary>
         /// <param name="vertices">The vertices to created the path from.</param>
-        public Path(TSVector2[] vertices)
-        {
+        public Path(TSVector2[] vertices) {
             ControlPoints = new List<TSVector2>(vertices.Length);
 
-            for (int i = 0; i < vertices.Length; i++)
-            {
+            for (int i = 0; i < vertices.Length; i++) {
                 Add(vertices[i]);
             }
         }
@@ -48,11 +45,9 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Initializes a new instance of the <see cref="Path"/> class.
         /// </summary>
         /// <param name="vertices">The vertices to created the path from.</param>
-        public Path(IList<TSVector2> vertices)
-        {
+        public Path(IList<TSVector2> vertices) {
             ControlPoints = new List<TSVector2>(vertices.Count);
-            for (int i = 0; i < vertices.Count; i++)
-            {
+            for (int i = 0; i < vertices.Count; i++) {
                 Add(vertices[i]);
             }
         }
@@ -68,12 +63,11 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="index">The index.</param>
         /// <returns></returns>
-        public int NextIndex(int index)
-        {
-            if (index == ControlPoints.Count - 1)
-            {
+        public int NextIndex(int index) {
+            if (index == ControlPoints.Count - 1) {
                 return 0;
             }
+
             return index + 1;
         }
 
@@ -82,12 +76,11 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="index">The index.</param>
         /// <returns></returns>
-        public int PreviousIndex(int index)
-        {
-            if (index == 0)
-            {
+        public int PreviousIndex(int index) {
+            if (index == 0) {
                 return ControlPoints.Count - 1;
             }
+
             return index - 1;
         }
 
@@ -95,8 +88,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Translates the control points by the specified vector.
         /// </summary>
         /// <param name="vector">The vector.</param>
-        public void Translate(ref TSVector2 vector)
-        {
+        public void Translate(ref TSVector2 vector) {
             for (int i = 0; i < ControlPoints.Count; i++)
                 ControlPoints[i] = TSVector2.Add(ControlPoints[i], vector);
         }
@@ -105,23 +97,20 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Scales the control points by the specified vector.
         /// </summary>
         /// <param name="value">The Value.</param>
-        public void Scale(ref TSVector2 value)
-        {
+        public void Scale(ref TSVector2 value) {
             for (int i = 0; i < ControlPoints.Count; i++)
                 ControlPoints[i] = TSVector2.Multiply(ControlPoints[i], value);
         }
 
-        public override string ToString()
-        {
+        public override string ToString() {
             StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < ControlPoints.Count; i++)
-            {
+            for (int i = 0; i < ControlPoints.Count; i++) {
                 builder.Append(ControlPoints[i].ToString());
-                if (i < ControlPoints.Count - 1)
-                {
+                if (i < ControlPoints.Count - 1) {
                     builder.Append(" ");
                 }
             }
+
             return builder.ToString();
         }
 
@@ -132,34 +121,30 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="divisions">Number of divisions between each control point.</param>
         /// <returns></returns>
-        public Vertices GetVertices(int divisions)
-        {
+        public Vertices GetVertices(int divisions) {
             Vertices verts = new Vertices();
 
             FixedPoint timeStep = FixedPoint.One / divisions;
 
-            for (FixedPoint i = 0; i < FixedPoint.One; i += timeStep)
-            {
+            for (FixedPoint i = 0; i < FixedPoint.One; i += timeStep) {
                 verts.Add(GetPosition(i));
             }
 
             return verts;
         }
 
-        public TSVector2 GetPosition(FixedPoint time)
-        {
+        public TSVector2 GetPosition(FixedPoint time) {
             TSVector2 temp;
 
             if (ControlPoints.Count < 2)
                 throw new Exception("You need at least 2 control points to calculate a position.");
 
-            if (Closed)
-            {
+            if (Closed) {
                 Add(ControlPoints[0]);
 
                 _deltaT = FixedPoint.One / (ControlPoints.Count - 1);
 
-                int p = (int)(time / _deltaT);
+                int p = (int) (time / _deltaT);
 
                 // use a circular indexing system
                 int p0 = p - 1;
@@ -178,13 +163,13 @@ namespace vFrame.Lockstep.Core.Physics2D
                 // relative time
                 FixedPoint lt = (time - _deltaT * p) / _deltaT;
 
-                temp = TSVector2.CatmullRom(ControlPoints[p0], ControlPoints[p1], ControlPoints[p2], ControlPoints[p3], lt);
+                temp = TSVector2.CatmullRom(ControlPoints[p0], ControlPoints[p1], ControlPoints[p2], ControlPoints[p3],
+                    lt);
 
                 RemoveAt(ControlPoints.Count - 1);
             }
-            else
-            {
-                int p = (int)(time / _deltaT);
+            else {
+                int p = (int) (time / _deltaT);
 
                 // 
                 int p0 = p - 1;
@@ -203,7 +188,8 @@ namespace vFrame.Lockstep.Core.Physics2D
                 // relative time
                 FixedPoint lt = (time - _deltaT * p) / _deltaT;
 
-                temp = TSVector2.CatmullRom(ControlPoints[p0], ControlPoints[p1], ControlPoints[p2], ControlPoints[p3], lt);
+                temp = TSVector2.CatmullRom(ControlPoints[p0], ControlPoints[p1], ControlPoints[p2], ControlPoints[p3],
+                    lt);
             }
 
             return temp;
@@ -214,9 +200,8 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="time">The time</param>
         /// <returns>The normal.</returns>
-        public TSVector2 GetPositionNormal(FixedPoint time)
-        {
-            FixedPoint offsetTime = time + FixedPoint.EN4;//0.0001f;
+        public TSVector2 GetPositionNormal(FixedPoint time) {
+            FixedPoint offsetTime = time + FixedPoint.EN4; //0.0001f;
 
             TSVector2 a = GetPosition(time);
             TSVector2 b = GetPosition(offsetTime);
@@ -236,31 +221,26 @@ output = new Vector2();
             return output;
         }
 
-        public void Add(TSVector2 point)
-        {
+        public void Add(TSVector2 point) {
             ControlPoints.Add(point);
             _deltaT = FixedPoint.One / (ControlPoints.Count - 1);
         }
 
-        public void Remove(TSVector2 point)
-        {
+        public void Remove(TSVector2 point) {
             ControlPoints.Remove(point);
             _deltaT = FixedPoint.One / (ControlPoints.Count - 1);
         }
 
-        public void RemoveAt(int index)
-        {
+        public void RemoveAt(int index) {
             ControlPoints.RemoveAt(index);
             _deltaT = FixedPoint.One / (ControlPoints.Count - 1);
         }
 
-        public FixedPoint GetLength()
-        {
+        public FixedPoint GetLength() {
             List<TSVector2> verts = GetVertices(ControlPoints.Count * 25);
             FixedPoint length = 0;
 
-            for (int i = 1; i < verts.Count; i++)
-            {
+            for (int i = 1; i < verts.Count; i++) {
                 length += TSVector2.Distance(verts[i - 1], verts[i]);
             }
 
@@ -270,13 +250,12 @@ output = new Vector2();
             return length;
         }
 
-        public List<TSVector> SubdivideEvenly(int divisions)
-        {
+        public List<TSVector> SubdivideEvenly(int divisions) {
             List<TSVector> verts = new List<TSVector>();
 
             FixedPoint length = GetLength();
 
-            FixedPoint deltaLength = length / divisions + FixedPoint.EN3;//0.001f;
+            FixedPoint deltaLength = length / divisions + FixedPoint.EN3; //0.001f;
             FixedPoint t = 0;
 
             // we always start at the first control point
@@ -284,10 +263,9 @@ output = new Vector2();
             TSVector2 end = GetPosition(t);
 
             // increment t until we are at half the distance
-            while (deltaLength * FixedPoint.Half >= TSVector2.Distance(start, end))
-            {
+            while (deltaLength * FixedPoint.Half >= TSVector2.Distance(start, end)) {
                 end = GetPosition(t);
-                t += FixedPoint.EN4;// 0.0001f;
+                t += FixedPoint.EN4; // 0.0001f;
 
                 if (t >= FixedPoint.One)
                     break;
@@ -296,27 +274,27 @@ output = new Vector2();
             start = end;
 
             // for each box
-            for (int i = 1; i < divisions; i++)
-            {
+            for (int i = 1; i < divisions; i++) {
                 TSVector2 normal = GetPositionNormal(t);
                 FixedPoint angle = FixedPoint.Atan2(normal.y, normal.x);
 
                 verts.Add(new TSVector(end.x, end.y, angle));
 
                 // until we reach the correct distance down the curve
-                while (deltaLength >= TSVector2.Distance(start, end))
-                {
+                while (deltaLength >= TSVector2.Distance(start, end)) {
                     end = GetPosition(t);
-                    t += FixedPoint.EN5;// 0.00001f;
+                    t += FixedPoint.EN5; // 0.00001f;
 
                     if (t >= FixedPoint.One)
                         break;
                 }
+
                 if (t >= FixedPoint.One)
                     break;
 
                 start = end;
             }
+
             return verts;
         }
     }

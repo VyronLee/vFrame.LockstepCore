@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 
-namespace vFrame.Lockstep.Core.Physics2D {
-
-    internal class ContactCloneKeyComparer : IEqualityComparer<ContactCloneKey> {
-
+namespace vFrame.Lockstep.Core.Physics2D
+{
+    internal class ContactCloneKeyComparer : IEqualityComparer<ContactCloneKey>
+    {
         public bool Equals(ContactCloneKey x, ContactCloneKey y) {
             return x.keyA == y.keyA && x.keyB == y.keyB;
         }
@@ -11,11 +11,10 @@ namespace vFrame.Lockstep.Core.Physics2D {
         public int GetHashCode(ContactCloneKey obj) {
             return obj.keyA.GetHashCode() * 33 + obj.keyB.GetHashCode() * 17;
         }
-
     }
 
-    internal class ContactEdgeKeyComparer : IEqualityComparer<ContactEdgeCloneKey> {
-
+    internal class ContactEdgeKeyComparer : IEqualityComparer<ContactEdgeCloneKey>
+    {
         public bool Equals(ContactEdgeCloneKey x, ContactEdgeCloneKey y) {
             return x.contactKey.Equals(y.contactKey) && x.bodyId == y.bodyId;
         }
@@ -23,11 +22,10 @@ namespace vFrame.Lockstep.Core.Physics2D {
         public int GetHashCode(ContactEdgeCloneKey obj) {
             return obj.contactKey.GetHashCode() * 33 + obj.bodyId.GetHashCode();
         }
-
     }
 
-    internal struct ContactCloneKey {
-
+    internal struct ContactCloneKey
+    {
         internal static ContactCloneKey empty = new ContactCloneKey(-1, -1);
 
         public int keyA;
@@ -38,11 +36,10 @@ namespace vFrame.Lockstep.Core.Physics2D {
             this.keyA = keyA;
             this.keyB = keyB;
         }
-
     }
 
-    internal struct ContactEdgeCloneKey {
-
+    internal struct ContactEdgeCloneKey
+    {
         public ContactCloneKey contactKey;
 
         public int bodyId;
@@ -56,17 +53,14 @@ namespace vFrame.Lockstep.Core.Physics2D {
             this.contactKey = contactKey;
             this.bodyId = bodyId;
         }
-
     }
 
-    public class WorldClone2D : IWorldClone {
-
+    public class WorldClone2D : IWorldClone
+    {
         internal static ResourcePoolBodyClone2D poolRigidBodyClone = new ResourcePoolBodyClone2D();
         internal static ResourcePoolTreeFixtureProxy2D poolTreeFixtureProxy = new ResourcePoolTreeFixtureProxy2D();
 
-        public string checksum {
-            get; private set;
-        }
+        public string checksum { get; private set; }
 
         internal int bodyCounter;
 
@@ -125,7 +119,7 @@ namespace vFrame.Lockstep.Core.Physics2D {
         }
 
         public void Restore(IWorld iWorld) {
-            Physics2D.World world = (Physics2D.World)iWorld;
+            Physics2D.World world = (Physics2D.World) iWorld;
 
             bodiesToRemove.Clear();
             for (index = 0, length = world.BodyList.Count; index < length; index++) {
@@ -155,20 +149,18 @@ namespace vFrame.Lockstep.Core.Physics2D {
 
             toiClone.Restore(world._input);
 
-            TreeNode<FixtureProxy>[] treeNodes = ((DynamicTreeBroadPhase)world.BroadPhase)._tree._nodes;
+            TreeNode<FixtureProxy>[] treeNodes = ((DynamicTreeBroadPhase) world.BroadPhase)._tree._nodes;
             for (index = 0, length = treeNodes.Length; index < length; index++) {
                 TreeNode<FixtureProxy> tn = treeNodes[index];
 
                 poolTreeFixtureProxy.GiveBack(tn);
             }
 
-            dynamicTreeClone.Restore((DynamicTreeBroadPhase)world.BroadPhase);
+            dynamicTreeClone.Restore((DynamicTreeBroadPhase) world.BroadPhase);
             world._worldHasNewFixture = this._worldHasNewFixture;
 
             Body._bodyIdCounter = bodyCounter;
             Fixture._fixtureIdCounter = fixtureCounter;
         }
-
     }
-
 }

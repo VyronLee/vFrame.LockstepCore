@@ -31,20 +31,17 @@ namespace vFrame.Lockstep.Core.Physics2D
 
         #region IComparable<Pair> Members
 
-        public int CompareTo(Pair other)
-        {
-            if (ProxyIdA < other.ProxyIdA)
-            {
+        public int CompareTo(Pair other) {
+            if (ProxyIdA < other.ProxyIdA) {
                 return -1;
             }
-            if (ProxyIdA == other.ProxyIdA)
-            {
-                if (ProxyIdB < other.ProxyIdB)
-                {
+
+            if (ProxyIdA == other.ProxyIdA) {
+                if (ProxyIdB < other.ProxyIdB) {
                     return -1;
                 }
-                if (ProxyIdB == other.ProxyIdB)
-                {
+
+                if (ProxyIdB == other.ProxyIdB) {
                     return 0;
                 }
             }
@@ -71,6 +68,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// todo.. remove
         /// </summary>
         internal Pair[] _pairBuffer;
+
         internal int _pairCapacity;
         internal int _pairCount;
 
@@ -82,8 +80,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <summary>
         /// Constructs a new broad phase based on the dynamic tree implementation
         /// </summary>
-        public DynamicTreeBroadPhase()
-        {
+        public DynamicTreeBroadPhase() {
             _queryCallback = QueryCallback;
             _proxyCount = 0;
 
@@ -100,8 +97,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Get the number of proxies.
         /// </summary>
         /// <value>The proxy count.</value>
-        public int ProxyCount
-        {
+        public int ProxyCount {
             get { return _proxyCount; }
         }
 
@@ -111,8 +107,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="proxy">The user data.</param>
         /// <returns></returns>
-        public int AddProxy(ref FixtureProxy proxy)
-        {
+        public int AddProxy(ref FixtureProxy proxy) {
             int proxyId = _tree.AddProxy(ref proxy.AABB, proxy);
             ++_proxyCount;
             BufferMove(proxyId);
@@ -123,31 +118,25 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Destroy a proxy. It is up to the client to remove any pairs.
         /// </summary>
         /// <param name="proxyId">The proxy id.</param>
-        public void RemoveProxy(int proxyId)
-        {
+        public void RemoveProxy(int proxyId) {
             UnBufferMove(proxyId);
             --_proxyCount;
             _tree.RemoveProxy(proxyId);
         }
 
-        public void MoveProxy(int proxyId, ref AABB aabb, TSVector2 displacement)
-        {
+        public void MoveProxy(int proxyId, ref AABB aabb, TSVector2 displacement) {
             bool buffer = _tree.MoveProxy(proxyId, ref aabb, displacement);
-            if (buffer)
-            {
+            if (buffer) {
                 BufferMove(proxyId);
             }
         }
 
-        public void TouchProxy(int proxyId)
-        {
+        public void TouchProxy(int proxyId) {
             BufferMove(proxyId);
         }
 
-        private void BufferMove(int proxyId)
-        {
-            if (_moveCount == _moveCapacity)
-            {
+        private void BufferMove(int proxyId) {
+            if (_moveCount == _moveCapacity) {
                 int[] oldBuffer = _moveBuffer;
                 _moveCapacity *= 2;
                 _moveBuffer = new int[_moveCapacity];
@@ -158,12 +147,9 @@ namespace vFrame.Lockstep.Core.Physics2D
             ++_moveCount;
         }
 
-        private void UnBufferMove(int proxyId)
-        {
-            for (int i = 0; i < _moveCount; ++i)
-            {
-                if (_moveBuffer[i] == proxyId)
-                {
+        private void UnBufferMove(int proxyId) {
+            for (int i = 0; i < _moveCount; ++i) {
+                if (_moveBuffer[i] == proxyId) {
                     _moveBuffer[i] = NullProxy;
                 }
             }
@@ -174,17 +160,14 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="proxyId"></param>
         /// <returns></returns>
-        private bool QueryCallback(int proxyId)
-        {
+        private bool QueryCallback(int proxyId) {
             // A proxy cannot form a pair with itself.
-            if (proxyId == _queryProxyId)
-            {
+            if (proxyId == _queryProxyId) {
                 return true;
             }
 
             // Grow the pair buffer as needed.
-            if (_pairCount == _pairCapacity)
-            {
+            if (_pairCount == _pairCapacity) {
                 Pair[] oldBuffer = _pairBuffer;
                 _pairCapacity *= 2;
                 _pairBuffer = new Pair[_pairCapacity];
@@ -203,8 +186,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="proxyId">The proxy id.</param>
         /// <param name="aabb">The aabb.</param>
-        public void GetFatAABB(int proxyId, out AABB aabb)
-        {
+        public void GetFatAABB(int proxyId, out AABB aabb) {
             _tree.GetFatAABB(proxyId, out aabb);
         }
 
@@ -213,18 +195,15 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="proxyId">The proxy id.</param>
         /// <returns></returns>
-        public FixtureProxy GetProxy(int proxyId)
-        {
+        public FixtureProxy GetProxy(int proxyId) {
             return _tree.GetUserData(proxyId);
         }
 
-        public int GetDebugParent(int node)
-        {
+        public int GetDebugParent(int node) {
             return _tree.GetDebugParent(node);
         }
 
-        public AABB GetBoundAABB(int node)
-        {
+        public AABB GetBoundAABB(int node) {
             return _tree.GetAABB(node);
         }
 
@@ -234,8 +213,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="proxyIdA">The proxy id A.</param>
         /// <param name="proxyIdB">The proxy id B.</param>
         /// <returns></returns>
-        public bool TestOverlap(int proxyIdA, int proxyIdB)
-        {
+        public bool TestOverlap(int proxyIdA, int proxyIdB) {
             AABB aabbA, aabbB;
             _tree.GetFatAABB(proxyIdA, out aabbA);
             _tree.GetFatAABB(proxyIdB, out aabbB);
@@ -247,17 +225,14 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// todo.. remove
         /// </summary>
         /// <param name="callback">The callback.</param>
-        public void UpdatePairs(BroadphaseDelegate callback)
-        {
+        public void UpdatePairs(BroadphaseDelegate callback) {
             // Reset pair buffer
             _pairCount = 0;
 
             // Perform tree queries for all moving proxies.
-            for (int j = 0; j < _moveCount; ++j)
-            {
+            for (int j = 0; j < _moveCount; ++j) {
                 _queryProxyId = _moveBuffer[j];
-                if (_queryProxyId == NullProxy)
-                {
+                if (_queryProxyId == NullProxy) {
                     continue;
                 }
 
@@ -278,8 +253,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             // Send the pairs back to the client.
             int i = 0;
-            while (i < _pairCount)
-            {
+            while (i < _pairCount) {
                 Pair primaryPair = _pairBuffer[i];
                 FixtureProxy userDataA = _tree.GetUserData(primaryPair.ProxyIdA);
                 FixtureProxy userDataB = _tree.GetUserData(primaryPair.ProxyIdB);
@@ -288,13 +262,12 @@ namespace vFrame.Lockstep.Core.Physics2D
                 ++i;
 
                 // Skip any duplicate pairs.
-                while (i < _pairCount)
-                {
+                while (i < _pairCount) {
                     Pair pair = _pairBuffer[i];
-                    if (pair.ProxyIdA != primaryPair.ProxyIdA || pair.ProxyIdB != primaryPair.ProxyIdB)
-                    {
+                    if (pair.ProxyIdA != primaryPair.ProxyIdA || pair.ProxyIdB != primaryPair.ProxyIdB) {
                         break;
                     }
+
                     ++i;
                 }
             }
@@ -309,8 +282,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="callback">The callback.</param>
         /// <param name="aabb">The aabb.</param>
-        public void Query(Func<int, bool> callback, ref AABB aabb)
-        {
+        public void Query(Func<int, bool> callback, ref AABB aabb) {
             _tree.Query(callback, ref aabb);
         }
 
@@ -323,42 +295,37 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="callback">A callback class that is called for each proxy that is hit by the ray.</param>
         /// <param name="input">The ray-cast input data. The ray extends from p1 to p1 + maxFraction * (p2 - p1).</param>
-        public void RayCast(Func<RayCastInput, int, int, FixedPoint> callback, ref RayCastInput input, int layerMask)
-        {
+        public void RayCast(Func<RayCastInput, int, int, FixedPoint> callback, ref RayCastInput input, int layerMask) {
             _tree.RayCast(callback, ref input, layerMask);
         }
 
-        public void CircleCast(Func<CircleCastInput, int, int, FixedPoint> callback, ref CircleCastInput input, int layerMask)
-        {
+        public void CircleCast(Func<CircleCastInput, int, int, FixedPoint> callback, ref CircleCastInput input,
+            int layerMask) {
             _tree.CircleCast(callback, ref input, layerMask);
         }
 
-        public void ShiftOrigin(TSVector2 newOrigin)
-        {
+        public void ShiftOrigin(TSVector2 newOrigin) {
             _tree.ShiftOrigin(newOrigin);
         }
 
         /// <summary>
         /// Get the tree quality based on the area of the tree.
         /// </summary>
-        public FixedPoint TreeQuality
-        {
+        public FixedPoint TreeQuality {
             get { return _tree.AreaRatio; }
         }
 
         /// <summary>
         /// Gets the balance of the tree.
         /// </summary>
-        public int TreeBalance
-        {
+        public int TreeBalance {
             get { return _tree.MaxBalance; }
         }
 
         /// <summary>
         /// Gets the height of the tree.
         /// </summary>
-        public int TreeHeight
-        {
+        public int TreeHeight {
             get { return _tree.Height; }
         }
     }

@@ -21,20 +21,21 @@ using System;
 
 namespace vFrame.Lockstep.Core
 {
-
     /// <summary>
     /// A Quaternion representing an orientation.
     /// </summary>
     [Serializable]
     public struct TSQuaternion
     {
-
         /// <summary>The X component of the quaternion.</summary>
         public FixedPoint x;
+
         /// <summary>The Y component of the quaternion.</summary>
         public FixedPoint y;
+
         /// <summary>The Z component of the quaternion.</summary>
         public FixedPoint z;
+
         /// <summary>The W component of the quaternion.</summary>
         public FixedPoint w;
 
@@ -51,8 +52,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="y">The Y component of the quaternion.</param>
         /// <param name="z">The Z component of the quaternion.</param>
         /// <param name="w">The W component of the quaternion.</param>
-        public TSQuaternion(FixedPoint x, FixedPoint y, FixedPoint z, FixedPoint w)
-        {
+        public TSQuaternion(FixedPoint x, FixedPoint y, FixedPoint z, FixedPoint w) {
             this.x = x;
             this.y = y;
             this.z = z;
@@ -112,9 +112,10 @@ namespace vFrame.Lockstep.Core
         /// <param name="quaternion1">The first quaternion.</param>
         /// <param name="quaternion2">The second quaternion.</param>
         /// <returns>The sum of both quaternions.</returns>
+
         #region public static JQuaternion Add(JQuaternion quaternion1, JQuaternion quaternion2)
-        public static TSQuaternion Add(TSQuaternion quaternion1, TSQuaternion quaternion2)
-        {
+
+        public static TSQuaternion Add(TSQuaternion quaternion1, TSQuaternion quaternion2) {
             TSQuaternion result;
             TSQuaternion.Add(ref quaternion1, ref quaternion2, out result);
             return result;
@@ -140,7 +141,9 @@ namespace vFrame.Lockstep.Core
 
             FixedPoint halfTheta = FixedPoint.Acos(dot);
 
-            return Multiply(Multiply(from, FixedPoint.Sin((1 - t) * halfTheta)) + Multiply(to, FixedPoint.Sin(t * halfTheta)), 1 / FixedPoint.Sin(halfTheta));
+            return Multiply(
+                Multiply(from, FixedPoint.Sin((1 - t) * halfTheta)) + Multiply(to, FixedPoint.Sin(t * halfTheta)),
+                1 / FixedPoint.Sin(halfTheta));
         }
 
         public static TSQuaternion RotateTowards(TSQuaternion from, TSQuaternion to, FixedPoint maxDegreesDelta) {
@@ -162,7 +165,9 @@ namespace vFrame.Lockstep.Core
 
             maxDegreesDelta /= theta;
 
-            return Multiply(Multiply(from, FixedPoint.Sin((1 - maxDegreesDelta) * halfTheta)) + Multiply(to, FixedPoint.Sin(maxDegreesDelta * halfTheta)), 1 / FixedPoint.Sin(halfTheta));
+            return Multiply(
+                Multiply(from, FixedPoint.Sin((1 - maxDegreesDelta) * halfTheta)) +
+                Multiply(to, FixedPoint.Sin(maxDegreesDelta * halfTheta)), 1 / FixedPoint.Sin(halfTheta));
         }
 
         public static TSQuaternion Euler(FixedPoint x, FixedPoint y, FixedPoint z) {
@@ -197,8 +202,8 @@ namespace vFrame.Lockstep.Core
             return rotation;
         }
 
-        public static void CreateFromYawPitchRoll(FixedPoint yaw, FixedPoint pitch, FixedPoint roll, out TSQuaternion result)
-        {
+        public static void CreateFromYawPitchRoll(FixedPoint yaw, FixedPoint pitch, FixedPoint roll,
+            out TSQuaternion result) {
             FixedPoint num9 = roll * FixedPoint.Half;
             FixedPoint num6 = FixedPoint.Sin(num9);
             FixedPoint num5 = FixedPoint.Cos(num9);
@@ -220,17 +225,16 @@ namespace vFrame.Lockstep.Core
         /// <param name="quaternion1">The first quaternion.</param>
         /// <param name="quaternion2">The second quaternion.</param>
         /// <param name="result">The sum of both quaternions.</param>
-        public static void Add(ref TSQuaternion quaternion1, ref TSQuaternion quaternion2, out TSQuaternion result)
-        {
+        public static void Add(ref TSQuaternion quaternion1, ref TSQuaternion quaternion2, out TSQuaternion result) {
             result.x = quaternion1.x + quaternion2.x;
             result.y = quaternion1.y + quaternion2.y;
             result.z = quaternion1.z + quaternion2.z;
             result.w = quaternion1.w + quaternion2.w;
         }
+
         #endregion
 
-        public static TSQuaternion Conjugate(TSQuaternion value)
-        {
+        public static TSQuaternion Conjugate(TSQuaternion value) {
             TSQuaternion quaternion;
             quaternion.x = -value.x;
             quaternion.y = -value.y;
@@ -244,7 +248,8 @@ namespace vFrame.Lockstep.Core
         }
 
         public static TSQuaternion Inverse(TSQuaternion rotation) {
-            FixedPoint invNorm = FixedPoint.One / ((rotation.x * rotation.x) + (rotation.y * rotation.y) + (rotation.z * rotation.z) + (rotation.w * rotation.w));
+            FixedPoint invNorm = FixedPoint.One / ((rotation.x * rotation.x) + (rotation.y * rotation.y) +
+                                                   (rotation.z * rotation.z) + (rotation.w * rotation.w));
             return TSQuaternion.Multiply(TSQuaternion.Conjugate(rotation), invNorm);
         }
 
@@ -276,9 +281,10 @@ namespace vFrame.Lockstep.Core
         /// <param name="quaternion1">The first quaternion.</param>
         /// <param name="quaternion2">The second quaternion.</param>
         /// <returns>The difference of both quaternions.</returns>
+
         #region public static JQuaternion Subtract(JQuaternion quaternion1, JQuaternion quaternion2)
-        public static TSQuaternion Subtract(TSQuaternion quaternion1, TSQuaternion quaternion2)
-        {
+
+        public static TSQuaternion Subtract(TSQuaternion quaternion1, TSQuaternion quaternion2) {
             TSQuaternion result;
             TSQuaternion.Subtract(ref quaternion1, ref quaternion2, out result);
             return result;
@@ -290,13 +296,14 @@ namespace vFrame.Lockstep.Core
         /// <param name="quaternion1">The first quaternion.</param>
         /// <param name="quaternion2">The second quaternion.</param>
         /// <param name="result">The difference of both quaternions.</param>
-        public static void Subtract(ref TSQuaternion quaternion1, ref TSQuaternion quaternion2, out TSQuaternion result)
-        {
+        public static void Subtract(ref TSQuaternion quaternion1, ref TSQuaternion quaternion2,
+            out TSQuaternion result) {
             result.x = quaternion1.x - quaternion2.x;
             result.y = quaternion1.y - quaternion2.y;
             result.z = quaternion1.z - quaternion2.z;
             result.w = quaternion1.w - quaternion2.w;
         }
+
         #endregion
 
         /// <summary>
@@ -305,9 +312,10 @@ namespace vFrame.Lockstep.Core
         /// <param name="quaternion1">The first quaternion.</param>
         /// <param name="quaternion2">The second quaternion.</param>
         /// <returns>The product of both quaternions.</returns>
+
         #region public static JQuaternion Multiply(JQuaternion quaternion1, JQuaternion quaternion2)
-        public static TSQuaternion Multiply(TSQuaternion quaternion1, TSQuaternion quaternion2)
-        {
+
+        public static TSQuaternion Multiply(TSQuaternion quaternion1, TSQuaternion quaternion2) {
             TSQuaternion result;
             TSQuaternion.Multiply(ref quaternion1, ref quaternion2, out result);
             return result;
@@ -319,8 +327,8 @@ namespace vFrame.Lockstep.Core
         /// <param name="quaternion1">The first quaternion.</param>
         /// <param name="quaternion2">The second quaternion.</param>
         /// <param name="result">The product of both quaternions.</param>
-        public static void Multiply(ref TSQuaternion quaternion1, ref TSQuaternion quaternion2, out TSQuaternion result)
-        {
+        public static void Multiply(ref TSQuaternion quaternion1, ref TSQuaternion quaternion2,
+            out TSQuaternion result) {
             FixedPoint x = quaternion1.x;
             FixedPoint y = quaternion1.y;
             FixedPoint z = quaternion1.z;
@@ -338,6 +346,7 @@ namespace vFrame.Lockstep.Core
             result.z = ((z * num) + (num2 * w)) + num10;
             result.w = (w * num) - num9;
         }
+
         #endregion
 
         /// <summary>
@@ -346,9 +355,10 @@ namespace vFrame.Lockstep.Core
         /// <param name="quaternion1">The quaternion to scale.</param>
         /// <param name="scaleFactor">Scale factor.</param>
         /// <returns>The scaled quaternion.</returns>
+
         #region public static JQuaternion Multiply(JQuaternion quaternion1, FP scaleFactor)
-        public static TSQuaternion Multiply(TSQuaternion quaternion1, FixedPoint scaleFactor)
-        {
+
+        public static TSQuaternion Multiply(TSQuaternion quaternion1, FixedPoint scaleFactor) {
             TSQuaternion result;
             TSQuaternion.Multiply(ref quaternion1, scaleFactor, out result);
             return result;
@@ -360,21 +370,22 @@ namespace vFrame.Lockstep.Core
         /// <param name="quaternion1">The quaternion to scale.</param>
         /// <param name="scaleFactor">Scale factor.</param>
         /// <param name="result">The scaled quaternion.</param>
-        public static void Multiply(ref TSQuaternion quaternion1, FixedPoint scaleFactor, out TSQuaternion result)
-        {
+        public static void Multiply(ref TSQuaternion quaternion1, FixedPoint scaleFactor, out TSQuaternion result) {
             result.x = quaternion1.x * scaleFactor;
             result.y = quaternion1.y * scaleFactor;
             result.z = quaternion1.z * scaleFactor;
             result.w = quaternion1.w * scaleFactor;
         }
+
         #endregion
 
         /// <summary>
         /// Sets the length of the quaternion to one.
         /// </summary>
+
         #region public void Normalize()
-        public void Normalize()
-        {
+
+        public void Normalize() {
             FixedPoint num2 = (((this.x * this.x) + (this.y * this.y)) + (this.z * this.z)) + (this.w * this.w);
             FixedPoint num = 1 / (FixedPoint.Sqrt(num2));
             this.x *= num;
@@ -382,6 +393,7 @@ namespace vFrame.Lockstep.Core
             this.z *= num;
             this.w *= num;
         }
+
         #endregion
 
         /// <summary>
@@ -389,9 +401,10 @@ namespace vFrame.Lockstep.Core
         /// </summary>
         /// <param name="matrix">A matrix representing an orientation.</param>
         /// <returns>JQuaternion representing an orientation.</returns>
+
         #region public static JQuaternion CreateFromMatrix(JMatrix matrix)
-        public static TSQuaternion CreateFromMatrix(TSMatrix matrix)
-        {
+
+        public static TSQuaternion CreateFromMatrix(TSMatrix matrix) {
             TSQuaternion result;
             TSQuaternion.CreateFromMatrix(ref matrix, out result);
             return result;
@@ -402,11 +415,9 @@ namespace vFrame.Lockstep.Core
         /// </summary>
         /// <param name="matrix">A matrix representing an orientation.</param>
         /// <param name="result">JQuaternion representing an orientation.</param>
-        public static void CreateFromMatrix(ref TSMatrix matrix, out TSQuaternion result)
-        {
+        public static void CreateFromMatrix(ref TSMatrix matrix, out TSQuaternion result) {
             FixedPoint num8 = (matrix.M11 + matrix.M22) + matrix.M33;
-            if (num8 > FixedPoint.Zero)
-            {
+            if (num8 > FixedPoint.Zero) {
                 FixedPoint num = FixedPoint.Sqrt((num8 + FixedPoint.One));
                 result.w = num * FixedPoint.Half;
                 num = FixedPoint.Half / num;
@@ -414,8 +425,7 @@ namespace vFrame.Lockstep.Core
                 result.y = (matrix.M31 - matrix.M13) * num;
                 result.z = (matrix.M12 - matrix.M21) * num;
             }
-            else if ((matrix.M11 >= matrix.M22) && (matrix.M11 >= matrix.M33))
-            {
+            else if ((matrix.M11 >= matrix.M22) && (matrix.M11 >= matrix.M33)) {
                 FixedPoint num7 = FixedPoint.Sqrt((((FixedPoint.One + matrix.M11) - matrix.M22) - matrix.M33));
                 FixedPoint num4 = FixedPoint.Half / num7;
                 result.x = FixedPoint.Half * num7;
@@ -423,8 +433,7 @@ namespace vFrame.Lockstep.Core
                 result.z = (matrix.M13 + matrix.M31) * num4;
                 result.w = (matrix.M23 - matrix.M32) * num4;
             }
-            else if (matrix.M22 > matrix.M33)
-            {
+            else if (matrix.M22 > matrix.M33) {
                 FixedPoint num6 = FixedPoint.Sqrt((((FixedPoint.One + matrix.M22) - matrix.M11) - matrix.M33));
                 FixedPoint num3 = FixedPoint.Half / num6;
                 result.x = (matrix.M21 + matrix.M12) * num3;
@@ -432,8 +441,7 @@ namespace vFrame.Lockstep.Core
                 result.z = (matrix.M32 + matrix.M23) * num3;
                 result.w = (matrix.M31 - matrix.M13) * num3;
             }
-            else
-            {
+            else {
                 FixedPoint num5 = FixedPoint.Sqrt((((FixedPoint.One + matrix.M33) - matrix.M11) - matrix.M22));
                 FixedPoint num2 = FixedPoint.Half / num5;
                 result.x = (matrix.M31 + matrix.M13) * num2;
@@ -442,6 +450,7 @@ namespace vFrame.Lockstep.Core
                 result.w = (matrix.M12 - matrix.M21) * num2;
             }
         }
+
         #endregion
 
         /// <summary>
@@ -450,13 +459,15 @@ namespace vFrame.Lockstep.Core
         /// <param name="value1">The first quaternion.</param>
         /// <param name="value2">The second quaternion.</param>
         /// <returns>The product of both quaternions.</returns>
+
         #region public static FP operator *(JQuaternion value1, JQuaternion value2)
-        public static TSQuaternion operator *(TSQuaternion value1, TSQuaternion value2)
-        {
+
+        public static TSQuaternion operator *(TSQuaternion value1, TSQuaternion value2) {
             TSQuaternion result;
-            TSQuaternion.Multiply(ref value1, ref value2,out result);
+            TSQuaternion.Multiply(ref value1, ref value2, out result);
             return result;
         }
+
         #endregion
 
         /// <summary>
@@ -465,13 +476,15 @@ namespace vFrame.Lockstep.Core
         /// <param name="value1">The first quaternion.</param>
         /// <param name="value2">The second quaternion.</param>
         /// <returns>The sum of both quaternions.</returns>
+
         #region public static FP operator +(JQuaternion value1, JQuaternion value2)
-        public static TSQuaternion operator +(TSQuaternion value1, TSQuaternion value2)
-        {
+
+        public static TSQuaternion operator +(TSQuaternion value1, TSQuaternion value2) {
             TSQuaternion result;
             TSQuaternion.Add(ref value1, ref value2, out result);
             return result;
         }
+
         #endregion
 
         /// <summary>
@@ -480,13 +493,15 @@ namespace vFrame.Lockstep.Core
         /// <param name="value1">The first quaternion.</param>
         /// <param name="value2">The second quaternion.</param>
         /// <returns>The difference of both quaternions.</returns>
+
         #region public static FP operator -(JQuaternion value1, JQuaternion value2)
-        public static TSQuaternion operator -(TSQuaternion value1, TSQuaternion value2)
-        {
+
+        public static TSQuaternion operator -(TSQuaternion value1, TSQuaternion value2) {
             TSQuaternion result;
             TSQuaternion.Subtract(ref value1, ref value2, out result);
             return result;
         }
+
         #endregion
 
         /**
@@ -515,7 +530,8 @@ namespace vFrame.Lockstep.Core
         }
 
         public override string ToString() {
-            return string.Format("({0:f1}, {1:f1}, {2:f1}, {3:f1})", x.AsFloat(), y.AsFloat(), z.AsFloat(), w.AsFloat());
+            return string.Format("({0:f1}, {1:f1}, {2:f1}, {3:f1})", x.AsFloat(), y.AsFloat(), z.AsFloat(),
+                w.AsFloat());
         }
 
         public static TSQuaternion Left90Rotate = Euler(0, -90, 0);

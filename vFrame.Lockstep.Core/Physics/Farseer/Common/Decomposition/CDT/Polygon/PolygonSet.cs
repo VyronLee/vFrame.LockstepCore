@@ -43,22 +43,18 @@ namespace vFrame.Lockstep.Core.Physics2D
     {
         protected List<Polygon> _polygons = new List<Polygon>();
 
-        public PolygonSet()
-        {
+        public PolygonSet() {
         }
 
-        public PolygonSet(Polygon poly)
-        {
+        public PolygonSet(Polygon poly) {
             _polygons.Add(poly);
         }
 
-        public IEnumerable<Polygon> Polygons
-        {
+        public IEnumerable<Polygon> Polygons {
             get { return _polygons; }
         }
 
-        public void Add(Polygon p)
-        {
+        public void Add(Polygon p) {
             _polygons.Add(p);
         }
     }

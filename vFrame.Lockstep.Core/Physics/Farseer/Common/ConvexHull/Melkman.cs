@@ -1,5 +1,4 @@
-﻿
-namespace vFrame.Lockstep.Core.Physics2D
+﻿namespace vFrame.Lockstep.Core.Physics2D
 {
     /// <summary>
     /// Creates a convex hull.
@@ -19,8 +18,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Returns a convex hull from the given vertices.
         /// </summary>
         /// <returns>A convex hull in counter clockwise winding order.</returns>
-        public static Vertices GetConvexHull(Vertices vertices)
-        {
+        public static Vertices GetConvexHull(Vertices vertices) {
             if (vertices.Count <= 3)
                 return vertices;
 
@@ -32,8 +30,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             //Start by placing first 3 vertices in convex CCW order
             int startIndex = 3;
             FixedPoint k = MathUtils.Area(vertices[0], vertices[1], vertices[2]);
-            if (k == 0)
-            {
+            if (k == 0) {
                 //Vertices are collinear.
                 deque[0] = vertices[0];
                 deque[1] = vertices[2]; //We can skip vertex 1 because it should be between 0 and 2
@@ -41,25 +38,21 @@ namespace vFrame.Lockstep.Core.Physics2D
                 qf = 2;
 
                 //Go until the end of the collinear sequence of vertices
-                for (startIndex = 3; startIndex < vertices.Count; startIndex++)
-                {
+                for (startIndex = 3; startIndex < vertices.Count; startIndex++) {
                     TSVector2 tmp = vertices[startIndex];
                     if (MathUtils.Area(ref deque[0], ref deque[1], ref tmp) == 0) //This point is also collinear
                         deque[1] = vertices[startIndex];
                     else break;
                 }
             }
-            else
-            {
+            else {
                 deque[0] = deque[3] = vertices[2];
-                if (k > 0)
-                {
+                if (k > 0) {
                     //Is Left.  Set deque = {2, 0, 1, 2}
                     deque[1] = vertices[0];
                     deque[2] = vertices[1];
                 }
-                else
-                {
+                else {
                     //Is Right. Set deque = {2, 1, 0, 2}
                     deque[1] = vertices[1];
                     deque[2] = vertices[0];
@@ -70,17 +63,16 @@ namespace vFrame.Lockstep.Core.Physics2D
             int qbm1 = qb == deque.Length - 1 ? 0 : qb + 1;
 
             //Add vertices one at a time and adjust convex hull as needed
-            for (int i = startIndex; i < vertices.Count; i++)
-            {
+            for (int i = startIndex; i < vertices.Count; i++) {
                 TSVector2 nextPt = vertices[i];
 
                 //Ignore if it is already within the convex hull we have constructed
-                if (MathUtils.Area(ref deque[qfm1], ref deque[qf], ref nextPt) > 0 && MathUtils.Area(ref deque[qb], ref deque[qbm1], ref nextPt) > 0)
+                if (MathUtils.Area(ref deque[qfm1], ref deque[qf], ref nextPt) > 0 &&
+                    MathUtils.Area(ref deque[qb], ref deque[qbm1], ref nextPt) > 0)
                     continue;
 
                 //Pop front until convex
-                while (!(MathUtils.Area(ref deque[qfm1], ref deque[qf], ref nextPt) > 0))
-                {
+                while (!(MathUtils.Area(ref deque[qfm1], ref deque[qf], ref nextPt) > 0)) {
                     //Pop the front element from the queue
                     qf = qfm1; //qf--;
                     qfm1 = qf == 0 ? deque.Length - 1 : qf - 1; //qfm1 = qf - 1;
@@ -92,12 +84,12 @@ namespace vFrame.Lockstep.Core.Physics2D
                 deque[qf] = nextPt;
 
                 //Pop back until convex
-                while (!(MathUtils.Area(ref deque[qb], ref deque[qbm1], ref nextPt) > 0))
-                {
+                while (!(MathUtils.Area(ref deque[qb], ref deque[qbm1], ref nextPt) > 0)) {
                     //Pop the back element from the queue
                     qb = qbm1; //qb++;
                     qbm1 = qb == deque.Length - 1 ? 0 : qb + 1; //qbm1 = qb + 1;
                 }
+
                 //Add vertex to the back of the queue
                 qb = qb == 0 ? deque.Length - 1 : qb - 1; //qb--;
                 qbm1 = qb == deque.Length - 1 ? 0 : qb + 1; //qbm1 = qb + 1;
@@ -105,8 +97,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
 
             //Create the convex hull from what is left in the deque
-            if (qb < qf)
-            {
+            if (qb < qf) {
                 Vertices convexHull = new Vertices(qf);
 
                 for (int i = qb; i < qf; i++)
@@ -114,8 +105,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
                 return convexHull;
             }
-            else
-            {
+            else {
                 Vertices convexHull = new Vertices(qf + deque.Length);
 
                 for (int i = 0; i < qf; i++)

@@ -3,13 +3,13 @@
 /**
 * @brief Interface to a world physics manager.
 **/
-public interface IPhysicsManager : IPhysicsManagerBase {
-
+public interface IPhysicsManager : IPhysicsManagerBase
+{
     TSVector Gravity { get; set; }
 
     bool SpeculativeContacts { get; set; }
 
-    FixedPoint LockedTimeStep { get;  set; }
+    FixedPoint LockedTimeStep { get; set; }
 
     /**
     * @brief Returns the layer related to a {@link IBody}.
@@ -24,5 +24,4 @@ public interface IPhysicsManager : IPhysicsManagerBase {
     void AddBody(ICollider iCollider);
 
     void OnRemoveBody(System.Action<IBody> OnRemoveBody);
-
 }

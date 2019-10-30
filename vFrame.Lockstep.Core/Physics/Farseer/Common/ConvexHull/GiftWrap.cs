@@ -1,5 +1,4 @@
-﻿
-namespace vFrame.Lockstep.Core.Physics2D
+﻿namespace vFrame.Lockstep.Core.Physics2D
 {
     /// <summary>
     /// Giftwrap convex hull algorithm.
@@ -15,19 +14,16 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Returns the convex hull from the given vertices.
         /// </summary>
         /// <param name="vertices">The vertices.</param>
-        public static Vertices GetConvexHull(Vertices vertices)
-        {
+        public static Vertices GetConvexHull(Vertices vertices) {
             if (vertices.Count <= 3)
                 return vertices;
 
             // Find the right most point on the hull
             int i0 = 0;
             FixedPoint x0 = vertices[0].x;
-            for (int i = 1; i < vertices.Count; ++i)
-            {
+            for (int i = 1; i < vertices.Count; ++i) {
                 FixedPoint x = vertices[i].x;
-                if (x > x0 || (x == x0 && vertices[i].y < vertices[i0].y))
-                {
+                if (x > x0 || (x == x0 && vertices[i].y < vertices[i0].y)) {
                     i0 = i;
                     x0 = x;
                 }
@@ -37,15 +33,12 @@ namespace vFrame.Lockstep.Core.Physics2D
             int m = 0;
             int ih = i0;
 
-            for (; ; )
-            {
+            for (;;) {
                 hull[m] = ih;
 
                 int ie = 0;
-                for (int j = 1; j < vertices.Count; ++j)
-                {
-                    if (ie == ih)
-                    {
+                for (int j = 1; j < vertices.Count; ++j) {
+                    if (ie == ih) {
                         ie = j;
                         continue;
                     }
@@ -53,14 +46,12 @@ namespace vFrame.Lockstep.Core.Physics2D
                     TSVector2 r = vertices[ie] - vertices[hull[m]];
                     TSVector2 v = vertices[j] - vertices[hull[m]];
                     FixedPoint c = MathUtils.Cross(ref r, ref v);
-                    if (c < FixedPoint.Zero)
-                    {
+                    if (c < FixedPoint.Zero) {
                         ie = j;
                     }
 
                     // Collinearity check
-                    if (c == FixedPoint.Zero && v.LengthSquared() > r.LengthSquared())
-                    {
+                    if (c == FixedPoint.Zero && v.LengthSquared() > r.LengthSquared()) {
                         ie = j;
                     }
                 }
@@ -68,8 +59,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 ++m;
                 ih = ie;
 
-                if (ie == i0)
-                {
+                if (ie == i0) {
                     break;
                 }
             }
@@ -77,10 +67,10 @@ namespace vFrame.Lockstep.Core.Physics2D
             Vertices result = new Vertices(m);
 
             // Copy vertices.
-            for (int i = 0; i < m; ++i)
-            {
+            for (int i = 0; i < m; ++i) {
                 result.Add(vertices[hull[i]]);
             }
+
             return result;
         }
     }

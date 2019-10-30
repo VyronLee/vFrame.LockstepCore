@@ -5,7 +5,6 @@ namespace vFrame.Lockstep.Core.Physics2D
 {
     public static class PolygonTools
     {
-
         public static void TransformVertices(Vertices vertices, TSVector2 center, FixedPoint angle) {
             Transform xf = new Transform();
             xf.p = center;
@@ -22,8 +21,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="hx">the half-width.</param>
         /// <param name="hy">the half-height.</param>
-        public static Vertices CreateRectangle(FixedPoint hx, FixedPoint hy)
-        {
+        public static Vertices CreateRectangle(FixedPoint hx, FixedPoint hy) {
             Vertices vertices = new Vertices(4);
             vertices.Add(new TSVector2(-hx, -hy));
             vertices.Add(new TSVector2(hx, -hy));
@@ -40,8 +38,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="hy">the half-height.</param>
         /// <param name="center">the center of the box in local coordinates.</param>
         /// <param name="angle">the rotation of the box in local coordinates.</param>
-        public static Vertices CreateRectangle(FixedPoint hx, FixedPoint hy, TSVector2 center, FixedPoint angle)
-        {
+        public static Vertices CreateRectangle(FixedPoint hx, FixedPoint hy, TSVector2 center, FixedPoint angle) {
             Vertices vertices = CreateRectangle(hx, hy);
 
             Transform xf = new Transform();
@@ -49,8 +46,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             xf.q.Set(angle);
 
             // Transform vertices
-            for (int i = 0; i < 4; ++i)
-            {
+            for (int i = 0; i < 4; ++i) {
                 vertices[i] = MathUtils.Mul(ref xf, vertices[i]) - center;
             }
 
@@ -68,9 +64,9 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="yRadius">The rounding Y radius.</param>
         /// <param name="segments">The number of segments to subdivide the edges.</param>
         /// <returns></returns>
-        public static Vertices CreateRoundedRectangle(FixedPoint width, FixedPoint height, FixedPoint xRadius, FixedPoint yRadius,
-                                                      int segments)
-        {
+        public static Vertices CreateRoundedRectangle(FixedPoint width, FixedPoint height, FixedPoint xRadius,
+            FixedPoint yRadius,
+            int segments) {
             if (yRadius > height / 2 || xRadius > width / 2)
                 throw new Exception("Rounding amount can't be more than half the height and width respectively.");
             if (segments < 0)
@@ -80,8 +76,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             Debug.Assert(Settings.MaxPolygonVertices >= 8);
 
             Vertices vertices = new Vertices();
-            if (segments == 0)
-            {
+            if (segments == 0) {
                 vertices.Add(new TSVector2(width * FixedPoint.Half - xRadius, -height * FixedPoint.Half));
                 vertices.Add(new TSVector2(width * FixedPoint.Half, -height * FixedPoint.Half + yRadius));
 
@@ -94,8 +89,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 vertices.Add(new TSVector2(-width * FixedPoint.Half, -height * FixedPoint.Half + yRadius));
                 vertices.Add(new TSVector2(-width * FixedPoint.Half + xRadius, -height * FixedPoint.Half));
             }
-            else
-            {
+            else {
                 int numberOfEdges = (segments * 4 + 8);
 
                 FixedPoint stepSize = FixedPoint.PiTimes2 / (numberOfEdges - 4);
@@ -104,21 +98,18 @@ namespace vFrame.Lockstep.Core.Physics2D
                 TSVector2 posOffset = new TSVector2(width / 2 - xRadius, height / 2 - yRadius);
                 vertices.Add(posOffset + new TSVector2(xRadius, -yRadius + yRadius));
                 short phase = 0;
-                for (int i = 1; i < numberOfEdges; i++)
-                {
-                    if (i - perPhase == 0 || i - perPhase * 3 == 0)
-                    {
+                for (int i = 1; i < numberOfEdges; i++) {
+                    if (i - perPhase == 0 || i - perPhase * 3 == 0) {
                         posOffset.x *= -1;
                         phase--;
                     }
-                    else if (i - perPhase * 2 == 0)
-                    {
+                    else if (i - perPhase * 2 == 0) {
                         posOffset.y *= -1;
                         phase--;
                     }
 
                     vertices.Add(posOffset + new TSVector2(xRadius * FixedPoint.Cos(stepSize * -(i + phase)),
-                                                         -yRadius * FixedPoint.Sin(stepSize * -(i + phase))));
+                                     -yRadius * FixedPoint.Sin(stepSize * -(i + phase))));
                 }
             }
 
@@ -130,8 +121,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="start">The first point.</param>
         /// <param name="end">The second point.</param>
-        public static Vertices CreateLine(TSVector2 start, TSVector2 end)
-        {
+        public static Vertices CreateLine(TSVector2 start, TSVector2 end) {
             Vertices vertices = new Vertices(2);
             vertices.Add(start);
             vertices.Add(end);
@@ -145,8 +135,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="radius">The radius.</param>
         /// <param name="numberOfEdges">The number of edges. The more edges, the more it resembles a circle</param>
         /// <returns></returns>
-        public static Vertices CreateCircle(FixedPoint radius, int numberOfEdges)
-        {
+        public static Vertices CreateCircle(FixedPoint radius, int numberOfEdges) {
             return CreateEllipse(radius, radius, numberOfEdges);
         }
 
@@ -157,8 +146,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="yRadius">Height of the ellipse.</param>
         /// <param name="numberOfEdges">The number of edges. The more edges, the more it resembles an ellipse</param>
         /// <returns></returns>
-        public static Vertices CreateEllipse(FixedPoint xRadius, FixedPoint yRadius, int numberOfEdges)
-        {
+        public static Vertices CreateEllipse(FixedPoint xRadius, FixedPoint yRadius, int numberOfEdges) {
             Vertices vertices = new Vertices();
 
             FixedPoint stepSize = FixedPoint.PiTimes2 / numberOfEdges;
@@ -166,13 +154,12 @@ namespace vFrame.Lockstep.Core.Physics2D
             vertices.Add(new TSVector2(xRadius, 0));
             for (int i = numberOfEdges - 1; i > 0; --i)
                 vertices.Add(new TSVector2(xRadius * FixedPoint.Cos(stepSize * i),
-                                         -yRadius * FixedPoint.Sin(stepSize * i)));
+                    -yRadius * FixedPoint.Sin(stepSize * i)));
 
             return vertices;
         }
 
-        public static Vertices CreateArc(FixedPoint radians, int sides, FixedPoint radius)
-        {
+        public static Vertices CreateArc(FixedPoint radians, int sides, FixedPoint radius) {
             Debug.Assert(radians > 0, "The arc needs to be larger than 0");
             Debug.Assert(sides > 1, "The arc needs to have more than 1 sides");
             Debug.Assert(radius > 0, "The arc needs to have a radius larger than 0");
@@ -180,10 +167,9 @@ namespace vFrame.Lockstep.Core.Physics2D
             Vertices vertices = new Vertices();
 
             FixedPoint stepSize = radians / sides;
-            for (int i = sides - 1; i > 0; i--)
-            {
+            for (int i = sides - 1; i > 0; i--) {
                 vertices.Add(new TSVector2(radius * FixedPoint.Cos(stepSize * i),
-                                         radius * FixedPoint.Sin(stepSize * i)));
+                    radius * FixedPoint.Sin(stepSize * i)));
             }
 
             return vertices;
@@ -199,8 +185,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="endRadius">Radius of the capsule ends.</param>
         /// <param name="edges">The number of edges of the capsule ends. The more edges, the more it resembles an capsule</param>
         /// <returns></returns>
-        public static Vertices CreateCapsule(FixedPoint height, FixedPoint endRadius, int edges)
-        {
+        public static Vertices CreateCapsule(FixedPoint height, FixedPoint endRadius, int edges) {
             if (endRadius >= height / 2)
                 throw new ArgumentException(
                     "The radius must be lower than height / 2. Higher values of radius would create a circle, and not a half circle.",
@@ -219,9 +204,9 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="bottomRadius">Radius of bottom.</param>
         /// <param name="bottomEdges">The number of edges of the bottom. The more edges, the more it resembles an capsule</param>
         /// <returns></returns>
-        public static Vertices CreateCapsule(FixedPoint height, FixedPoint topRadius, int topEdges, FixedPoint bottomRadius,
-                                             int bottomEdges)
-        {
+        public static Vertices CreateCapsule(FixedPoint height, FixedPoint topRadius, int topEdges,
+            FixedPoint bottomRadius,
+            int bottomEdges) {
             if (height <= 0)
                 throw new ArgumentException("Height must be longer than 0", "height");
 
@@ -255,10 +240,9 @@ namespace vFrame.Lockstep.Core.Physics2D
             vertices.Add(new TSVector2(topRadius, newHeight));
 
             FixedPoint stepSize = FixedPoint.Pi / topEdges;
-            for (int i = 1; i < topEdges; i++)
-            {
+            for (int i = 1; i < topEdges; i++) {
                 vertices.Add(new TSVector2(topRadius * FixedPoint.Cos(stepSize * i),
-                                         topRadius * FixedPoint.Sin(stepSize * i) + newHeight));
+                    topRadius * FixedPoint.Sin(stepSize * i) + newHeight));
             }
 
             vertices.Add(new TSVector2(-topRadius, newHeight));
@@ -267,10 +251,9 @@ namespace vFrame.Lockstep.Core.Physics2D
             vertices.Add(new TSVector2(-bottomRadius, -newHeight));
 
             stepSize = FixedPoint.Pi / bottomEdges;
-            for (int i = 1; i < bottomEdges; i++)
-            {
+            for (int i = 1; i < bottomEdges; i++) {
                 vertices.Add(new TSVector2(-bottomRadius * FixedPoint.Cos(stepSize * i),
-                                         -bottomRadius * FixedPoint.Sin(stepSize * i) - newHeight));
+                    -bottomRadius * FixedPoint.Sin(stepSize * i) - newHeight));
             }
 
             vertices.Add(new TSVector2(bottomRadius, -newHeight));
@@ -286,8 +269,8 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="tipPercentage">The tip percentage.</param>
         /// <param name="toothHeight">Height of the tooth.</param>
         /// <returns></returns>
-        public static Vertices CreateGear(FixedPoint radius, int numberOfTeeth, FixedPoint tipPercentage, FixedPoint toothHeight)
-        {
+        public static Vertices CreateGear(FixedPoint radius, int numberOfTeeth, FixedPoint tipPercentage,
+            FixedPoint toothHeight) {
             Vertices vertices = new Vertices();
 
             FixedPoint stepSize = FixedPoint.PiTimes2 / numberOfTeeth;
@@ -297,35 +280,31 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             FixedPoint toothAngleStepSize = (stepSize - (toothTipStepSize * 2)) / 2;
 
-            for (int i = numberOfTeeth - 1; i >= 0; --i)
-            {
-                if (toothTipStepSize > FixedPoint.Zero)
-                {
+            for (int i = numberOfTeeth - 1; i >= 0; --i) {
+                if (toothTipStepSize > FixedPoint.Zero) {
                     vertices.Add(
                         new TSVector2(radius *
-                                    FixedPoint.Cos(stepSize * i + toothAngleStepSize * 2 + toothTipStepSize),
-                                    -radius *
-                                    FixedPoint.Sin(stepSize * i + toothAngleStepSize * 2 + toothTipStepSize)));
+                                      FixedPoint.Cos(stepSize * i + toothAngleStepSize * 2 + toothTipStepSize),
+                            -radius *
+                            FixedPoint.Sin(stepSize * i + toothAngleStepSize * 2 + toothTipStepSize)));
 
                     vertices.Add(
                         new TSVector2((radius + toothHeight) *
-                                    FixedPoint.Cos(stepSize * i + toothAngleStepSize + toothTipStepSize),
-                                    -(radius + toothHeight) *
-                                    FixedPoint.Sin(stepSize * i + toothAngleStepSize + toothTipStepSize)));
+                                      FixedPoint.Cos(stepSize * i + toothAngleStepSize + toothTipStepSize),
+                            -(radius + toothHeight) *
+                            FixedPoint.Sin(stepSize * i + toothAngleStepSize + toothTipStepSize)));
                 }
 
                 vertices.Add(new TSVector2((radius + toothHeight) *
-                                         FixedPoint.Cos(stepSize * i + toothAngleStepSize),
-                                         -(radius + toothHeight) *
-                                         FixedPoint.Sin(stepSize * i + toothAngleStepSize)));
+                                           FixedPoint.Cos(stepSize * i + toothAngleStepSize),
+                    -(radius + toothHeight) *
+                    FixedPoint.Sin(stepSize * i + toothAngleStepSize)));
 
                 vertices.Add(new TSVector2(radius * FixedPoint.Cos(stepSize * i),
-                                         -radius * FixedPoint.Sin(stepSize * i)));
+                    -radius * FixedPoint.Sin(stepSize * i)));
             }
 
             return vertices;
         }
-
     }
-
 }

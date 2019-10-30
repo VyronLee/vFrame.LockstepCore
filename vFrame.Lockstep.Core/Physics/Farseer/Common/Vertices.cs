@@ -53,12 +53,13 @@ namespace vFrame.Lockstep.Core.Physics2D
 #endif
     public class Vertices : List<TSVector2>
     {
-        public Vertices() { }
+        public Vertices() {
+        }
 
-        public Vertices(int capacity) : base(capacity) { }
+        public Vertices(int capacity) : base(capacity) {
+        }
 
-        public Vertices(IEnumerable<TSVector2> vertices)
-        {
+        public Vertices(IEnumerable<TSVector2> vertices) {
             AddRange(vertices);
         }
 
@@ -74,8 +75,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Gets the next index. Used for iterating all the edges with wrap-around.
         /// </summary>
         /// <param name="index">The current index</param>
-        public int NextIndex(int index)
-        {
+        public int NextIndex(int index) {
             return (index + 1 > Count - 1) ? 0 : index + 1;
         }
 
@@ -83,8 +83,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Gets the next vertex. Used for iterating all the edges with wrap-around.
         /// </summary>
         /// <param name="index">The current index</param>
-        public TSVector2 NextVertex(int index)
-        {
+        public TSVector2 NextVertex(int index) {
             return this[NextIndex(index)];
         }
 
@@ -92,8 +91,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Gets the previous index. Used for iterating all the edges with wrap-around.
         /// </summary>
         /// <param name="index">The current index</param>
-        public int PreviousIndex(int index)
-        {
+        public int PreviousIndex(int index) {
             return index - 1 < 0 ? Count - 1 : index - 1;
         }
 
@@ -101,8 +99,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Gets the previous vertex. Used for iterating all the edges with wrap-around.
         /// </summary>
         /// <param name="index">The current index</param>
-        public TSVector2 PreviousVertex(int index)
-        {
+        public TSVector2 PreviousVertex(int index) {
             return this[PreviousIndex(index)];
         }
 
@@ -111,8 +108,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// If the area is less than 0, it indicates that the polygon is clockwise winded.
         /// </summary>
         /// <returns>The signed area</returns>
-        public FixedPoint GetSignedArea()
-        {
+        public FixedPoint GetSignedArea() {
             //The simplest polygon which can exist in the Euclidean plane has 3 sides.
             if (Count < 3)
                 return 0;
@@ -120,8 +116,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             int i;
             FixedPoint area = 0;
 
-            for (i = 0; i < Count; i++)
-            {
+            for (i = 0; i < Count; i++) {
                 int j = (i + 1) % Count;
 
                 TSVector2 vi = this[i];
@@ -130,6 +125,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 area += vi.x * vj.y;
                 area -= vi.y * vj.x;
             }
+
             area /= 2;
             return area;
         }
@@ -138,8 +134,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Gets the area.
         /// </summary>
         /// <returns></returns>
-        public FixedPoint GetArea()
-        {
+        public FixedPoint GetArea() {
             FixedPoint area = GetSignedArea();
             return (area < 0 ? -area : area);
         }
@@ -148,8 +143,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Gets the centroid.
         /// </summary>
         /// <returns></returns>
-        public TSVector2 GetCentroid()
-        {
+        public TSVector2 GetCentroid() {
             //The simplest polygon which can exist in the Euclidean plane has 3 sides.
             if (Count < 3)
                 return new TSVector2(FixedPoint.NaN, FixedPoint.NaN);
@@ -159,8 +153,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             FixedPoint area = FixedPoint.Zero;
             FixedPoint inv3 = FixedPoint.One / 3;
 
-            for (int i = 0; i < Count; ++i)
-            {
+            for (int i = 0; i < Count; ++i) {
                 // Triangle vertices.
                 TSVector2 current = this[i];
                 TSVector2 next = (i + 1 < Count ? this[i + 1] : this[0]);
@@ -180,29 +173,25 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <summary>
         /// Returns an AABB that fully contains this polygon.
         /// </summary>
-        public AABB GetAABB()
-        {
+        public AABB GetAABB() {
             AABB aabb;
             TSVector2 lowerBound = new TSVector2(FixedPoint.MaxValue, FixedPoint.MaxValue);
             TSVector2 upperBound = new TSVector2(FixedPoint.MinValue, FixedPoint.MinValue);
 
-            for (int i = 0; i < Count; ++i)
-            {
-                if (this[i].x < lowerBound.x)
-                {
+            for (int i = 0; i < Count; ++i) {
+                if (this[i].x < lowerBound.x) {
                     lowerBound.x = this[i].x;
                 }
-                if (this[i].x > upperBound.x)
-                {
+
+                if (this[i].x > upperBound.x) {
                     upperBound.x = this[i].x;
                 }
 
-                if (this[i].y < lowerBound.y)
-                {
+                if (this[i].y < lowerBound.y) {
                     lowerBound.y = this[i].y;
                 }
-                if (this[i].y > upperBound.y)
-                {
+
+                if (this[i].y > upperBound.y) {
                     upperBound.y = this[i].y;
                 }
             }
@@ -217,8 +206,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Translates the vertices with the specified vector.
         /// </summary>
         /// <param name="value">The value.</param>
-        public void Translate(TSVector2 value)
-        {
+        public void Translate(TSVector2 value) {
             Translate(ref value);
         }
 
@@ -226,17 +214,15 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Translates the vertices with the specified vector.
         /// </summary>
         /// <param name="value">The vector.</param>
-        public void Translate(ref TSVector2 value)
-        {
-            Debug.Assert(!AttachedToBody, "Translating vertices that are used by a Body can result in unstable behavior. Use Body.Position instead.");
+        public void Translate(ref TSVector2 value) {
+            Debug.Assert(!AttachedToBody,
+                "Translating vertices that are used by a Body can result in unstable behavior. Use Body.Position instead.");
 
             for (int i = 0; i < Count; i++)
                 this[i] = TSVector2.Add(this[i], value);
 
-            if (Holes != null && Holes.Count > 0)
-            {
-                foreach (Vertices hole in Holes)
-                {
+            if (Holes != null && Holes.Count > 0) {
+                foreach (Vertices hole in Holes) {
                     hole.Translate(ref value);
                 }
             }
@@ -246,8 +232,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Scales the vertices with the specified vector.
         /// </summary>
         /// <param name="value">The Value.</param>
-        public void Scale(TSVector2 value)
-        {
+        public void Scale(TSVector2 value) {
             Scale(ref value);
         }
 
@@ -255,17 +240,14 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Scales the vertices with the specified vector.
         /// </summary>
         /// <param name="value">The Value.</param>
-        public void Scale(ref TSVector2 value)
-        {
+        public void Scale(ref TSVector2 value) {
             Debug.Assert(!AttachedToBody, "Scaling vertices that are used by a Body can result in unstable behavior.");
 
             for (int i = 0; i < Count; i++)
                 this[i] = TSVector2.Multiply(this[i], value);
 
-            if (Holes != null && Holes.Count > 0)
-            {
-                foreach (Vertices hole in Holes)
-                {
+            if (Holes != null && Holes.Count > 0) {
+                foreach (Vertices hole in Holes) {
                     hole.Scale(ref value);
                 }
             }
@@ -278,23 +260,20 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// will cause problems with collisions. Use Body.Rotation instead.
         /// </summary>
         /// <param name="value">The amount to rotate by in radians.</param>
-        public void Rotate(FixedPoint value)
-        {
+        public void Rotate(FixedPoint value) {
             Debug.Assert(!AttachedToBody, "Rotating vertices that are used by a Body can result in unstable behavior.");
 
             FixedPoint num1 = FixedPoint.Cos(value);
             FixedPoint num2 = FixedPoint.Sin(value);
 
-            for (int i = 0; i < Count; i++)
-            {
+            for (int i = 0; i < Count; i++) {
                 TSVector2 position = this[i];
-                this[i] = new TSVector2((position.x * num1 + position.y * -num2), (position.x * num2 + position.y * num1));
+                this[i] = new TSVector2((position.x * num1 + position.y * -num2),
+                    (position.x * num2 + position.y * num1));
             }
 
-            if (Holes != null && Holes.Count > 0)
-            {
-                foreach (Vertices hole in Holes)
-                {
+            if (Holes != null && Holes.Count > 0) {
+                foreach (Vertices hole in Holes) {
                     hole.Rotate(value);
                 }
             }
@@ -311,8 +290,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <returns>
         /// 	<c>true</c> if it is convex; otherwise, <c>false</c>.
         /// </returns>
-        public bool IsConvex()
-        {
+        public bool IsConvex() {
             //The simplest polygon which can exist in the Euclidean plane has 3 sides.
             if (Count < 3)
                 return false;
@@ -322,13 +300,11 @@ namespace vFrame.Lockstep.Core.Physics2D
                 return true;
 
             // Checks the polygon is convex and the interior is to the left of each edge.
-            for (int i = 0; i < Count; ++i)
-            {
+            for (int i = 0; i < Count; ++i) {
                 int next = i + 1 < Count ? i + 1 : 0;
                 TSVector2 edge = this[next] - this[i];
 
-                for (int j = 0; j < Count; ++j)
-                {
+                for (int j = 0; j < Count; ++j) {
                     // Don't check vertices on the current edge.
                     if (j == i || j == next)
                         continue;
@@ -341,6 +317,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                         return false;
                 }
             }
+
             return true;
         }
 
@@ -348,8 +325,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Indicates if the vertices are in counter clockwise order.
         /// Warning: If the area of the polygon is 0, it is unable to determine the winding.
         /// </summary>
-        public bool IsCounterClockWise()
-        {
+        public bool IsCounterClockWise() {
             //The simplest polygon which can exist in the Euclidean plane has 3 sides.
             if (Count < 3)
                 return false;
@@ -360,8 +336,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <summary>
         /// Forces the vertices to be counter clock wise order.
         /// </summary>
-        public void ForceCounterClockWise()
-        {
+        public void ForceCounterClockWise() {
             //The simplest polygon which can exist in the Euclidean plane has 3 sides.
             if (Count < 3)
                 return;
@@ -373,18 +348,15 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <summary>
         /// Checks if the vertices forms an simple polygon by checking for edge crossings.
         /// </summary>
-        public bool IsSimple()
-        {
+        public bool IsSimple() {
             //The simplest polygon which can exist in the Euclidean plane has 3 sides.
             if (Count < 3)
                 return false;
 
-            for (int i = 0; i < Count; ++i)
-            {
+            for (int i = 0; i < Count; ++i) {
                 TSVector2 a1 = this[i];
                 TSVector2 a2 = NextVertex(i);
-                for (int j = i + 1; j < Count; ++j)
-                {
+                for (int j = i + 1; j < Count; ++j) {
                     TSVector2 b1 = this[j];
                     TSVector2 b2 = NextVertex(j);
 
@@ -394,6 +366,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                         return false;
                 }
             }
+
             return true;
         }
 
@@ -406,8 +379,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// From Eric Jordan's convex decomposition library
         /// </summary>
         /// <returns>PolygonError.NoError if there were no error.</returns>
-        public PolygonError CheckPolygon()
-        {
+        public PolygonError CheckPolygon() {
             if (Count < 3 || Count > Settings.MaxPolygonVertices)
                 return PolygonError.InvalidAmountOfVertices;
 
@@ -421,12 +393,10 @@ namespace vFrame.Lockstep.Core.Physics2D
                 return PolygonError.NotConvex;
 
             //Check if the sides are of adequate length.
-            for (int i = 0; i < Count; ++i)
-            {
+            for (int i = 0; i < Count; ++i) {
                 int next = i + 1 < Count ? i + 1 : 0;
                 TSVector2 edge = this[next] - this[i];
-                if (edge.LengthSquared() <= Settings.EpsilonSqr)
-                {
+                if (edge.LengthSquared() <= Settings.EpsilonSqr) {
                     return PolygonError.SideTooSmall;
                 }
             }
@@ -443,24 +413,19 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="axis">The axis.</param>
         /// <param name="min">The min.</param>
         /// <param name="max">The max.</param>
-        public void ProjectToAxis(ref TSVector2 axis, out FixedPoint min, out FixedPoint max)
-        {
+        public void ProjectToAxis(ref TSVector2 axis, out FixedPoint min, out FixedPoint max) {
             // To project a point on an axis use the dot product
             FixedPoint dotProduct = TSVector2.Dot(axis, this[0]);
             min = dotProduct;
             max = dotProduct;
 
-            for (int i = 0; i < Count; i++)
-            {
+            for (int i = 0; i < Count; i++) {
                 dotProduct = TSVector2.Dot(this[i], axis);
-                if (dotProduct < min)
-                {
+                if (dotProduct < min) {
                     min = dotProduct;
                 }
-                else
-                {
-                    if (dotProduct > max)
-                    {
+                else {
+                    if (dotProduct > max) {
                         max = dotProduct;
                     }
                 }
@@ -475,14 +440,12 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <returns>-1 if the winding number is zero and the point is outside
         /// the polygon, 1 if the point is inside the polygon, and 0 if the point
         /// is on the polygons edge.</returns>
-        public int PointInPolygon(ref TSVector2 point)
-        {
+        public int PointInPolygon(ref TSVector2 point) {
             // Winding number
             int wn = 0;
 
             // Iterate through polygon's edges
-            for (int i = 0; i < Count; i++)
-            {
+            for (int i = 0; i < Count; i++) {
                 // Get points
                 TSVector2 p1 = this[i];
                 TSVector2 p2 = this[NextIndex(i)];
@@ -490,26 +453,24 @@ namespace vFrame.Lockstep.Core.Physics2D
                 // Test if a point is directly on the edge
                 TSVector2 edge = p2 - p1;
                 FixedPoint area = MathUtils.Area(ref p1, ref p2, ref point);
-                if (area == FixedPoint.Zero && TSVector2.Dot(point - p1, edge) >= FixedPoint.Zero && TSVector2.Dot(point - p2, edge) <= FixedPoint.Zero)
-                {
+                if (area == FixedPoint.Zero && TSVector2.Dot(point - p1, edge) >= FixedPoint.Zero &&
+                    TSVector2.Dot(point - p2, edge) <= FixedPoint.Zero) {
                     return 0;
                 }
+
                 // Test edge for intersection with ray from point
-                if (p1.y <= point.y)
-                {
-                    if (p2.y > point.y && area > FixedPoint.Zero)
-                    {
+                if (p1.y <= point.y) {
+                    if (p2.y > point.y && area > FixedPoint.Zero) {
                         ++wn;
                     }
                 }
-                else
-                {
-                    if (p2.y <= point.y && area < FixedPoint.Zero)
-                    {
+                else {
+                    if (p2.y <= point.y && area < FixedPoint.Zero) {
                         --wn;
                     }
                 }
             }
+
             return (wn == 0 ? -1 : 1);
         }
 
@@ -518,13 +479,11 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// If this sum is 2pi then the point is an interior point, if 0 then the point is an exterior point. 
         /// ref: http://ozviz.wasp.uwa.edu.au/~pbourke/geometry/insidepoly/  - Solution 2 
         /// </summary>
-        public bool PointInPolygonAngle(ref TSVector2 point)
-        {
+        public bool PointInPolygonAngle(ref TSVector2 point) {
             FixedPoint angle = 0;
 
             // Iterate through polygon's edges
-            for (int i = 0; i < Count; i++)
-            {
+            for (int i = 0; i < Count; i++) {
                 // Get points
                 TSVector2 p1 = this[i] - point;
                 TSVector2 p2 = this[NextIndex(i)] - point;
@@ -532,8 +491,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 angle += MathUtils.VectorAngle(ref p1, ref p2);
             }
 
-            if (FixedPoint.Abs(angle) < FixedPoint.Pi)
-            {
+            if (FixedPoint.Abs(angle) < FixedPoint.Pi) {
                 return false;
             }
 
@@ -553,7 +511,8 @@ namespace vFrame.Lockstep.Core.Physics2D
 
         #region Vertex
 
-        struct Vertex {
+        struct Vertex
+        {
             public readonly TSVector2 Position;
             public readonly short Index;
 
@@ -565,7 +524,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             public override bool Equals(object obj) {
                 if (obj.GetType() != typeof(Vertex))
                     return false;
-                return Equals((Vertex)obj);
+                return Equals((Vertex) obj);
             }
 
             public bool Equals(Vertex obj) {
@@ -582,11 +541,13 @@ namespace vFrame.Lockstep.Core.Physics2D
                 return string.Format("{0} ({1})", Position, Index);
             }
         }
+
         #endregion
 
         #region LineSegment
 
-        struct LineSegment {
+        struct LineSegment
+        {
             public Vertex A;
             public Vertex B;
 
@@ -597,7 +558,8 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             public FixedPoint? IntersectsWithRay(TSVector2 origin, TSVector2 direction) {
                 FixedPoint largestDistance = TSMath.Max(A.Position.x - origin.x, B.Position.x - origin.x) * 2;
-                LineSegment raySegment = new LineSegment(new Vertex(origin, 0), new Vertex(origin + (direction * largestDistance), 0));
+                LineSegment raySegment = new LineSegment(new Vertex(origin, 0),
+                    new Vertex(origin + (direction * largestDistance), 0));
 
                 TSVector2? intersection = FindIntersection(this, raySegment);
                 FixedPoint? value = null;
@@ -626,7 +588,8 @@ namespace vFrame.Lockstep.Core.Physics2D
                 FixedPoint ua = uaNum / denom;
                 FixedPoint ub = ubNum / denom;
 
-                if (TSMath.Clamp(ua, FixedPoint.Zero, FixedPoint.One) != ua || TSMath.Clamp(ub, FixedPoint.Zero, FixedPoint.One) != ub)
+                if (TSMath.Clamp(ua, FixedPoint.Zero, FixedPoint.One) != ua ||
+                    TSMath.Clamp(ub, FixedPoint.Zero, FixedPoint.One) != ub)
                     return null;
 
                 return a.A.Position + (a.B.Position - a.A.Position) * ua;
@@ -640,7 +603,8 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <summary>
         /// A basic triangle structure that holds the three vertices that make up a given triangle.
         /// </summary>
-        struct Triangle {
+        struct Triangle
+        {
             public readonly Vertex A;
             public readonly Vertex B;
             public readonly Vertex C;
@@ -691,7 +655,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             public override bool Equals(object obj) {
                 if (obj.GetType() != typeof(Triangle))
                     return false;
-                return Equals((Triangle)obj);
+                return Equals((Triangle) obj);
             }
 
             public bool Equals(Triangle obj) {
@@ -707,14 +671,17 @@ namespace vFrame.Lockstep.Core.Physics2D
                 }
             }
         }
+
         #endregion
 
         #region CyclicalList
+
         /// <summary>
         /// Implements a List structure as a cyclical list where indices are wrapped.
         /// </summary>
         /// <typeparam name="T">The Type to hold in the list.</typeparam>
-        class CyclicalList<T> : List<T> {
+        class CyclicalList<T> : List<T>
+        {
             public new T this[int index] {
                 get {
                     //perform the index wrapping
@@ -727,15 +694,18 @@ namespace vFrame.Lockstep.Core.Physics2D
                 }
             }
         }
+
         #endregion
 
         #region IndexableCyclicalLinkedList
+
         /// <summary>
         /// Implements a LinkedList that is both indexable as well as cyclical. Thus
         /// indexing into the list with an out-of-bounds index will automatically cycle
         /// around the list to find a valid node.
         /// </summary>
-        class IndexableCyclicalLinkedList<T> : LinkedList<T> {
+        class IndexableCyclicalLinkedList<T> : LinkedList<T>
+        {
             /// <summary>
             /// Gets the LinkedListNode at a particular index.
             /// </summary>
@@ -779,6 +749,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 return -1;
             }
         }
+
         #endregion
 
         #region Public Methods
@@ -805,7 +776,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             if (DetermineWindingOrder(inputVertices) == WindingOrder.Clockwise)
                 outputVertices = ReverseWindingOrder(inputVertices);
             else
-                outputVertices = (TSVector2[])inputVertices.Clone();
+                outputVertices = (TSVector2[]) inputVertices.Clone();
 
             //clear all of the lists
             polygonVertices.Clear();
@@ -815,7 +786,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             //generate the cyclical list of vertices in the polygon
             for (int i = 0; i < outputVertices.Length; i++)
-                polygonVertices.AddLast(new Vertex(outputVertices[i], (short)i));
+                polygonVertices.AddLast(new Vertex(outputVertices[i], (short) i));
 
             //categorize all of the vertices as convex, reflex, and ear
             FindConvexAndReflexVertices();
@@ -843,7 +814,8 @@ namespace vFrame.Lockstep.Core.Physics2D
                     indices[(i * 3) + 1] = triangles[i].B.Index;
                     indices[(i * 3) + 2] = triangles[i].C.Index;
                 }
-            } else {
+            }
+            else {
                 for (int i = 0; i < triangles.Count; i++) {
                     indices[(i * 3)] = triangles[i].C.Index;
                     indices[(i * 3) + 1] = triangles[i].B.Index;
@@ -877,11 +849,11 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             //generate the cyclical list of vertices in the polygon
             for (int i = 0; i < shapeVerts.Length; i++)
-                polygonVertices.AddLast(new Vertex(shapeVerts[i], (short)i));
+                polygonVertices.AddLast(new Vertex(shapeVerts[i], (short) i));
 
             CyclicalList<Vertex> holePolygon = new CyclicalList<Vertex>();
             for (int i = 0; i < holeVerts.Length; i++)
-                holePolygon.Add(new Vertex(holeVerts[i], (short)(i + polygonVertices.Count)));
+                holePolygon.Add(new Vertex(holeVerts[i], (short) (i + polygonVertices.Count)));
 
 #if DEBUG
             StringBuilder vString = new StringBuilder();
@@ -913,8 +885,10 @@ namespace vFrame.Lockstep.Core.Physics2D
                 Vertex b = polygonVertices[i + 1].Value;
 
                 if ((a.Position.x > rightMostHoleVertex.Position.x || b.Position.x > rightMostHoleVertex.Position.x) &&
-                    ((a.Position.y >= rightMostHoleVertex.Position.y && b.Position.y <= rightMostHoleVertex.Position.y) ||
-                    (a.Position.y <= rightMostHoleVertex.Position.y && b.Position.y >= rightMostHoleVertex.Position.y)))
+                    ((a.Position.y >= rightMostHoleVertex.Position.y &&
+                      b.Position.y <= rightMostHoleVertex.Position.y) ||
+                     (a.Position.y <= rightMostHoleVertex.Position.y &&
+                      b.Position.y >= rightMostHoleVertex.Position.y)))
                     segmentsToTest.Add(new LineSegment(a, b));
             }
 
@@ -983,6 +957,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 Log("Inserting vertex {0} after vertex {1}.", holePolygon[i], polygonVertices[injectPoint].Value);
                 polygonVertices.AddAfter(polygonVertices[injectPoint++], holePolygon[i]);
             }
+
             polygonVertices.AddAfter(polygonVertices[injectPoint], P);
 
 #if DEBUG
@@ -1142,7 +1117,8 @@ namespace vFrame.Lockstep.Core.Physics2D
                     reflexVertices.Remove(vertex);
                     convexVertices.Add(vertex);
                     //Log("Vertex: {0} now convex", vertex);
-                } else {
+                }
+                else {
                     //Log("Vertex: {0} still reflex", vertex);
                 }
             }
@@ -1154,10 +1130,12 @@ namespace vFrame.Lockstep.Core.Physics2D
                 if (wasEar && !isEar) {
                     earVertices.Remove(vertex);
                     //Log("Vertex: {0} no longer ear", vertex);
-                } else if (!wasEar && isEar) {
+                }
+                else if (!wasEar && isEar) {
                     earVertices.AddFirst(vertex);
                     //Log("Vertex: {0} now ear", vertex);
-                } else {
+                }
+                else {
                     //Log("Vertex: {0} still ear", vertex);
                 }
             }
@@ -1174,7 +1152,8 @@ namespace vFrame.Lockstep.Core.Physics2D
                 if (IsConvex(v)) {
                     convexVertices.Add(v);
                     //Log("Convex: {0}", v);
-                } else {
+                }
+                else {
                     reflexVertices.Add(v);
                     //Log("Reflex: {0}", v);
                 }
@@ -1260,7 +1239,8 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <summary>
         /// Specifies a desired winding order for the shape vertices.
         /// </summary>
-        public enum WindingOrder {
+        public enum WindingOrder
+        {
             Clockwise,
             CounterClockwise
         }
@@ -1269,17 +1249,15 @@ namespace vFrame.Lockstep.Core.Physics2D
 
         #endregion
 
-        public override string ToString()
-        {
+        public override string ToString() {
             StringBuilder builder = new StringBuilder();
-            for (int i = 0; i < Count; i++)
-            {
+            for (int i = 0; i < Count; i++) {
                 builder.Append(this[i].ToString());
-                if (i < Count - 1)
-                {
+                if (i < Count - 1) {
                     builder.Append(" ");
                 }
             }
+
             return builder.ToString();
         }
     }

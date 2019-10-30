@@ -47,8 +47,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="combine"></param>
         /// <returns></returns>
         public static List<Vertices> DetectSquares(AABB domain, FixedPoint cellWidth, FixedPoint cellHeight, sbyte[,] f,
-                                                   int lerpCount, bool combine)
-        {
+            int lerpCount, bool combine) {
             CxFastList<GeomPoly> ret = new CxFastList<GeomPoly>();
 
             List<Vertices> verticesList = new List<Vertices>();
@@ -57,9 +56,9 @@ namespace vFrame.Lockstep.Core.Physics2D
             List<GeomPoly> polyList;
             GeomPoly gp;
 
-            int xn = (int)(domain.Extents.x * 2 / cellWidth);
+            int xn = (int) (domain.Extents.x * 2 / cellWidth);
             bool xp = xn == (domain.Extents.x * 2 / cellWidth);
-            int yn = (int)(domain.Extents.y * 2 / cellHeight);
+            int yn = (int) (domain.Extents.y * 2 / cellHeight);
             bool yp = yn == (domain.Extents.y * 2 / cellHeight);
             if (!xp) xn++;
             if (!yp) yn++;
@@ -68,30 +67,26 @@ namespace vFrame.Lockstep.Core.Physics2D
             GeomPolyVal[,] ps = new GeomPolyVal[xn + 1, yn + 1];
 
             //populate shared function lookups.
-            for (int x = 0; x < xn + 1; x++)
-            {
+            for (int x = 0; x < xn + 1; x++) {
                 int x0;
-                if (x == xn) x0 = (int)domain.UpperBound.x;
-                else x0 = (int)(x * cellWidth + domain.LowerBound.x);
-                for (int y = 0; y < yn + 1; y++)
-                {
+                if (x == xn) x0 = (int) domain.UpperBound.x;
+                else x0 = (int) (x * cellWidth + domain.LowerBound.x);
+                for (int y = 0; y < yn + 1; y++) {
                     int y0;
-                    if (y == yn) y0 = (int)domain.UpperBound.y;
-                    else y0 = (int)(y * cellHeight + domain.LowerBound.y);
+                    if (y == yn) y0 = (int) domain.UpperBound.y;
+                    else y0 = (int) (y * cellHeight + domain.LowerBound.y);
                     fs[x, y] = f[x0, y0];
                 }
             }
 
             //generate sub-polys and combine to scan lines
-            for (int y = 0; y < yn; y++)
-            {
+            for (int y = 0; y < yn; y++) {
                 FixedPoint y0 = y * cellHeight + domain.LowerBound.y;
                 FixedPoint y1;
                 if (y == yn - 1) y1 = domain.UpperBound.y;
                 else y1 = y0 + cellHeight;
                 GeomPoly pre = null;
-                for (int x = 0; x < xn; x++)
-                {
+                for (int x = 0; x < xn; x++) {
                     FixedPoint x0 = x * cellWidth + domain.LowerBound.x;
                     FixedPoint x1;
                     if (x == xn - 1) x1 = domain.UpperBound.x;
@@ -100,28 +95,27 @@ namespace vFrame.Lockstep.Core.Physics2D
                     gp = new GeomPoly();
 
                     int key = MarchSquare(f, fs, ref gp, x, y, x0, y0, x1, y1, lerpCount);
-                    if (gp.Length != 0)
-                    {
-                        if (combine && pre != null && (key & 9) != 0)
-                        {
+                    if (gp.Length != 0) {
+                        if (combine && pre != null && (key & 9) != 0) {
                             combLeft(ref pre, ref gp);
                             gp = pre;
                         }
                         else
                             ret.Add(gp);
+
                         ps[x, y] = new GeomPolyVal(gp, key);
                     }
                     else
                         gp = null;
+
                     pre = gp;
                 }
             }
-            if (!combine)
-            {
+
+            if (!combine) {
                 polyList = ret.GetListOfElements();
 
-                foreach (GeomPoly poly in polyList)
-                {
+                foreach (GeomPoly poly in polyList) {
                     verticesList.Add(new Vertices(poly.Points.GetListOfElements()));
                 }
 
@@ -129,38 +123,32 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
 
             //combine scan lines together
-            for (int y = 1; y < yn; y++)
-            {
+            for (int y = 1; y < yn; y++) {
                 int x = 0;
-                while (x < xn)
-                {
+                while (x < xn) {
                     GeomPolyVal p = ps[x, y];
 
                     //skip along scan line if no polygon exists at this point
-                    if (p == null)
-                    {
+                    if (p == null) {
                         x++;
                         continue;
                     }
 
                     //skip along if current polygon cannot be combined above.
-                    if ((p.Key & 12) == 0)
-                    {
+                    if ((p.Key & 12) == 0) {
                         x++;
                         continue;
                     }
 
                     //skip along if no polygon exists above.
                     GeomPolyVal u = ps[x, y - 1];
-                    if (u == null)
-                    {
+                    if (u == null) {
                         x++;
                         continue;
                     }
 
                     //skip along if polygon above cannot be combined with.
-                    if ((u.Key & 3) == 0)
-                    {
+                    if ((u.Key & 3) == 0) {
                         x++;
                         continue;
                     }
@@ -172,8 +160,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                     CxFastList<TSVector2> ap = u.GeomP.Points;
 
                     //skip if it's already been combined with above polygon
-                    if (u.GeomP == p.GeomP)
-                    {
+                    if (u.GeomP == p.GeomP) {
                         x++;
                         continue;
                     }
@@ -185,76 +172,73 @@ namespace vFrame.Lockstep.Core.Physics2D
                     //NOTE: Unused
                     //Vector2 b0 = bi.elem();
                     TSVector2 b1 = bi.Next().Elem();
-                    if (Square(b1.y - ay) > Settings.Epsilon)
-                    {
+                    if (Square(b1.y - ay) > Settings.Epsilon) {
                         x++;
                         continue;
                     }
 
                     bool brk = true;
                     CxFastListNode<TSVector2> ai = ap.Begin();
-                    while (ai != ap.End())
-                    {
-                        if (VecDsq(ai.Elem(), b1) < Settings.Epsilon)
-                        {
+                    while (ai != ap.End()) {
+                        if (VecDsq(ai.Elem(), b1) < Settings.Epsilon) {
                             brk = false;
                             break;
                         }
+
                         ai = ai.Next();
                     }
-                    if (brk)
-                    {
+
+                    if (brk) {
                         x++;
                         continue;
                     }
 
                     CxFastListNode<TSVector2> bj = bi.Next().Next();
                     if (bj == bp.End()) bj = bp.Begin();
-                    while (bj != bi)
-                    {
+                    while (bj != bi) {
                         ai = ap.Insert(ai, bj.Elem()); // .clone()
                         bj = bj.Next();
                         if (bj == bp.End()) bj = bp.Begin();
                         u.GeomP.Length++;
                     }
+
                     //u.p.simplify(FP.Epsilon,FP.Epsilon);
                     //
                     ax = x + 1;
-                    while (ax < xn)
-                    {
-                        GeomPolyVal p2 = ps[(int)ax, y];
-                        if (p2 == null || p2.GeomP != p.GeomP)
-                        {
+                    while (ax < xn) {
+                        GeomPolyVal p2 = ps[(int) ax, y];
+                        if (p2 == null || p2.GeomP != p.GeomP) {
                             ax += 1;
                             continue;
                         }
+
                         p2.GeomP = u.GeomP;
                         ax += 1;
                     }
+
                     ax = x - 1;
-                    while (ax >= 0)
-                    {
-                        GeomPolyVal p2 = ps[(int)ax, y];
-                        if (p2 == null || p2.GeomP != p.GeomP)
-                        {
+                    while (ax >= 0) {
+                        GeomPolyVal p2 = ps[(int) ax, y];
+                        if (p2 == null || p2.GeomP != p.GeomP) {
                             ax -= 1;
                             continue;
                         }
+
                         p2.GeomP = u.GeomP;
                         ax -= 1;
                     }
+
                     ret.Remove(p.GeomP);
                     p.GeomP = u.GeomP;
 
-                    x = (int)((bi.Next().Elem().x - domain.LowerBound.x) / cellWidth) + 1;
+                    x = (int) ((bi.Next().Elem().x - domain.LowerBound.x) / cellWidth) + 1;
                     //x++; this was already commented out!
                 }
             }
 
             polyList = ret.GetListOfElements();
 
-            foreach (GeomPoly poly in polyList)
-            {
+            foreach (GeomPoly poly in polyList) {
                 verticesList.Add(new Vertices(poly.Points.GetListOfElements()));
             }
 
@@ -270,16 +254,15 @@ namespace vFrame.Lockstep.Core.Physics2D
         **/
 
         private static int[] _lookMarch = {
-                                              0x00, 0xE0, 0x38, 0xD8, 0x0E, 0xEE, 0x36, 0xD6, 0x83, 0x63, 0xBB, 0x5B, 0x8D,
-                                              0x6D, 0xB5, 0x55
-                                          };
+            0x00, 0xE0, 0x38, 0xD8, 0x0E, 0xEE, 0x36, 0xD6, 0x83, 0x63, 0xBB, 0x5B, 0x8D,
+            0x6D, 0xB5, 0x55
+        };
 
-        private static FixedPoint Lerp(FixedPoint x0, FixedPoint x1, FixedPoint v0, FixedPoint v1)
-        {
+        private static FixedPoint Lerp(FixedPoint x0, FixedPoint x1, FixedPoint v0, FixedPoint v1) {
             FixedPoint dv = v0 - v1;
             FixedPoint t;
             if (dv * dv < Settings.Epsilon)
-                t = 5*FixedPoint.EN1;
+                t = 5 * FixedPoint.EN1;
             else t = v0 / dv;
             return x0 + t * (x1 - x0);
         }
@@ -288,13 +271,13 @@ namespace vFrame.Lockstep.Core.Physics2D
 
         /** Recursive linear interpolation for use in marching squares **/
 
-        private static FixedPoint Xlerp(FixedPoint x0, FixedPoint x1, FixedPoint y, FixedPoint v0, FixedPoint v1, sbyte[,] f, int c)
-        {
+        private static FixedPoint Xlerp(FixedPoint x0, FixedPoint x1, FixedPoint y, FixedPoint v0, FixedPoint v1,
+            sbyte[,] f, int c) {
             FixedPoint xm = Lerp(x0, x1, v0, v1);
             if (c == 0)
                 return xm;
 
-            sbyte vm = f[(int)xm, (int)y];
+            sbyte vm = f[(int) xm, (int) y];
 
             if (v0 * vm < 0)
                 return Xlerp(x0, xm, y, v0, vm, f, c - 1);
@@ -304,13 +287,13 @@ namespace vFrame.Lockstep.Core.Physics2D
 
         /** Recursive linear interpolation for use in marching squares **/
 
-        private static FixedPoint Ylerp(FixedPoint y0, FixedPoint y1, FixedPoint x, FixedPoint v0, FixedPoint v1, sbyte[,] f, int c)
-        {
+        private static FixedPoint Ylerp(FixedPoint y0, FixedPoint y1, FixedPoint x, FixedPoint v0, FixedPoint v1,
+            sbyte[,] f, int c) {
             FixedPoint ym = Lerp(y0, y1, v0, v1);
             if (c == 0)
                 return ym;
 
-            sbyte vm = f[(int)x, (int)ym];
+            sbyte vm = f[(int) x, (int) ym];
 
             if (v0 * vm < 0)
                 return Ylerp(y0, ym, x, v0, vm, f, c - 1);
@@ -320,19 +303,16 @@ namespace vFrame.Lockstep.Core.Physics2D
 
         /** Square value for use in marching squares **/
 
-        private static FixedPoint Square(FixedPoint x)
-        {
+        private static FixedPoint Square(FixedPoint x) {
             return x * x;
         }
 
-        private static FixedPoint VecDsq(TSVector2 a, TSVector2 b)
-        {
+        private static FixedPoint VecDsq(TSVector2 a, TSVector2 b) {
             TSVector2 d = a - b;
             return d.x * d.x + d.y * d.y;
         }
 
-        private static FixedPoint VecCross(TSVector2 a, TSVector2 b)
-        {
+        private static FixedPoint VecCross(TSVector2 a, TSVector2 b) {
             return a.x * b.y - a.y * b.x;
         }
 
@@ -346,9 +326,9 @@ namespace vFrame.Lockstep.Core.Physics2D
             coordinates of 'ax' 'ay' in the marching squares mesh.
         **/
 
-        private static int MarchSquare(sbyte[,] f, sbyte[,] fs, ref GeomPoly poly, int ax, int ay, FixedPoint x0, FixedPoint y0,
-                                       FixedPoint x1, FixedPoint y1, int bin)
-        {
+        private static int MarchSquare(sbyte[,] f, sbyte[,] fs, ref GeomPoly poly, int ax, int ay, FixedPoint x0,
+            FixedPoint y0,
+            FixedPoint x1, FixedPoint y1, int bin) {
             //key lookup
             int key = 0;
             sbyte v0 = fs[ax, ay];
@@ -361,18 +341,14 @@ namespace vFrame.Lockstep.Core.Physics2D
             if (v3 < 0) key |= 1;
 
             int val = _lookMarch[key];
-            if (val != 0)
-            {
+            if (val != 0) {
                 CxFastListNode<TSVector2> pi = null;
-                for (int i = 0; i < 8; i++)
-                {
+                for (int i = 0; i < 8; i++) {
                     TSVector2 p;
-                    if ((val & (1 << i)) != 0)
-                    {
+                    if ((val & (1 << i)) != 0) {
                         if (i == 7 && (val & 1) == 0)
                             poly.Points.Add(p = new TSVector2(x0, Ylerp(y0, y1, x0, v0, v3, f, bin)));
-                        else
-                        {
+                        else {
                             if (i == 0) p = new TSVector2(x0, y0);
                             else if (i == 2) p = new TSVector2(x1, y0);
                             else if (i == 4) p = new TSVector2(x1, y1);
@@ -386,11 +362,14 @@ namespace vFrame.Lockstep.Core.Physics2D
 
                             pi = poly.Points.Insert(pi, p);
                         }
+
                         poly.Length++;
                     }
                 }
+
                 //poly.simplify(FP.Epsilon,FP.Epsilon);
             }
+
             return key;
         }
 
@@ -398,8 +377,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             Combining polya and polyb into one super-polygon stored in polya.
         **/
 
-        private static void combLeft(ref GeomPoly polya, ref GeomPoly polyb)
-        {
+        private static void combLeft(ref GeomPoly polya, ref GeomPoly polyb) {
             CxFastList<TSVector2> ap = polya.Points;
             CxFastList<TSVector2> bp = polyb.Points;
             CxFastListNode<TSVector2> ai = ap.Begin();
@@ -407,14 +385,11 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             TSVector2 b = bi.Elem();
             CxFastListNode<TSVector2> prea = null;
-            while (ai != ap.End())
-            {
+            while (ai != ap.End()) {
                 TSVector2 a = ai.Elem();
-                if (VecDsq(a, b) < Settings.Epsilon)
-                {
+                if (VecDsq(a, b) < Settings.Epsilon) {
                     //ignore shared vertex if parallel
-                    if (prea != null)
-                    {
+                    if (prea != null) {
                         TSVector2 a0 = prea.Elem();
                         b = bi.Next().Elem();
 
@@ -423,8 +398,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                         TSVector2 v = b - a;
                         //vec_new(v); vec_sub(b.p.p, a.p.p, v);
                         FixedPoint dot = VecCross(u, v);
-                        if (dot * dot < Settings.Epsilon)
-                        {
+                        if (dot * dot < Settings.Epsilon) {
                             ap.Erase(prea, ai);
                             polya.Length--;
                             ai = prea;
@@ -434,16 +408,15 @@ namespace vFrame.Lockstep.Core.Physics2D
                     //insert polyb into polya
                     bool fst = true;
                     CxFastListNode<TSVector2> preb = null;
-                    while (!bp.Empty())
-                    {
+                    while (!bp.Empty()) {
                         TSVector2 bb = bp.Front();
                         bp.Pop();
-                        if (!fst && !bp.Empty())
-                        {
+                        if (!fst && !bp.Empty()) {
                             ai = ap.Insert(ai, bb);
                             polya.Length++;
                             preb = ai;
                         }
+
                         fst = false;
                     }
 
@@ -459,14 +432,14 @@ namespace vFrame.Lockstep.Core.Physics2D
                     TSVector2 vv = a2 - a1;
                     //vec_new(v); vec_sub(a2.p, a1.p, v);
                     FixedPoint dot1 = VecCross(uu, vv);
-                    if (dot1 * dot1 < Settings.Epsilon)
-                    {
+                    if (dot1 * dot1 < Settings.Epsilon) {
                         ap.Erase(preb, preb.Next());
                         polya.Length--;
                     }
 
                     return;
                 }
+
                 prea = ai;
                 ai = ai.Next();
             }
@@ -490,40 +463,36 @@ namespace vFrame.Lockstep.Core.Physics2D
             /// <summary>
             /// Iterator to start of list (O(1))
             /// </summary>
-            public CxFastListNode<T> Begin()
-            {
+            public CxFastListNode<T> Begin() {
                 return _head;
             }
 
             /// <summary>
             /// Iterator to end of list (O(1))
             /// </summary>
-            public CxFastListNode<T> End()
-            {
+            public CxFastListNode<T> End() {
                 return null;
             }
 
             /// <summary>
             /// Returns first element of list (O(1))
             /// </summary>
-            public T Front()
-            {
+            public T Front() {
                 return _head.Elem();
             }
 
             /// <summary>
             /// add object to list (O(1))
             /// </summary>
-            public CxFastListNode<T> Add(T value)
-            {
+            public CxFastListNode<T> Add(T value) {
                 CxFastListNode<T> newNode = new CxFastListNode<T>(value);
-                if (_head == null)
-                {
+                if (_head == null) {
                     newNode._next = null;
                     _head = newNode;
                     _count++;
                     return newNode;
                 }
+
                 newNode._next = _head;
                 _head = newNode;
 
@@ -535,44 +504,39 @@ namespace vFrame.Lockstep.Core.Physics2D
             /// <summary>
             /// remove object from list, returns true if an element was removed (O(n))
             /// </summary>
-            public bool Remove(T value)
-            {
+            public bool Remove(T value) {
                 CxFastListNode<T> head = _head;
                 CxFastListNode<T> prev = _head;
 
                 EqualityComparer<T> comparer = EqualityComparer<T>.Default;
 
-                if (head != null)
-                {
-                    if (value != null)
-                    {
-                        do
-                        {
+                if (head != null) {
+                    if (value != null) {
+                        do {
                             // if we are on the value to be removed
-                            if (comparer.Equals(head._elt, value))
-                            {
+                            if (comparer.Equals(head._elt, value)) {
                                 // then we need to patch the list
                                 // check to see if we are removing the _head
-                                if (head == _head)
-                                {
+                                if (head == _head) {
                                     _head = head._next;
                                     _count--;
                                     return true;
                                 }
-                                else
-                                {
+                                else {
                                     // were not at the head
                                     prev._next = head._next;
                                     _count--;
                                     return true;
                                 }
                             }
+
                             // cache the current as the previous for the next go around
                             prev = head;
                             head = head._next;
                         } while (head != null);
                     }
                 }
+
                 return false;
             }
 
@@ -583,20 +547,18 @@ namespace vFrame.Lockstep.Core.Physics2D
             /// through pop or else that object may suddenly be used by another piece of code which 
             /// retrieves it from the object pool.
             /// </summary>
-            public CxFastListNode<T> Pop()
-            {
+            public CxFastListNode<T> Pop() {
                 return Erase(null, _head);
             }
 
             /// <summary>
             /// insert object after 'node' returning an iterator to the inserted object.
             /// </summary>
-            public CxFastListNode<T> Insert(CxFastListNode<T> node, T value)
-            {
-                if (node == null)
-                {
+            public CxFastListNode<T> Insert(CxFastListNode<T> node, T value) {
+                if (node == null) {
                     return Add(value);
                 }
+
                 CxFastListNode<T> newNode = new CxFastListNode<T>(value);
                 CxFastListNode<T> nextNode = node._next;
                 newNode._next = nextNode;
@@ -611,8 +573,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             /// removes the element pointed to by 'node' with 'prev' being the previous iterator, 
             /// returning an iterator to the element following that of 'node' (O(1))
             /// </summary>
-            public CxFastListNode<T> Erase(CxFastListNode<T> prev, CxFastListNode<T> node)
-            {
+            public CxFastListNode<T> Erase(CxFastListNode<T> prev, CxFastListNode<T> node) {
                 // cache the node after the node to be removed
                 CxFastListNode<T> nextNode = node._next;
                 if (prev != null)
@@ -629,8 +590,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             /// <summary>
             /// whether the list is empty (O(1))
             /// </summary>
-            public bool Empty()
-            {
+            public bool Empty() {
                 if (_head == null)
                     return true;
                 return false;
@@ -639,13 +599,11 @@ namespace vFrame.Lockstep.Core.Physics2D
             /// <summary>
             /// computes size of list (O(n))
             /// </summary>
-            public int Size()
-            {
+            public int Size() {
                 CxFastListNode<T> i = Begin();
                 int count = 0;
 
-                do
-                {
+                do {
                     count++;
                 } while (i.Next() != null);
 
@@ -655,15 +613,14 @@ namespace vFrame.Lockstep.Core.Physics2D
             /// <summary>
             /// empty the list (O(1) if CxMixList, O(n) otherwise)
             /// </summary>
-            public void Clear()
-            {
+            public void Clear() {
                 CxFastListNode<T> head = _head;
-                while (head != null)
-                {
+                while (head != null) {
                     CxFastListNode<T> node2 = head;
                     head = head._next;
                     node2._next = null;
                 }
+
                 _head = null;
                 _count = 0;
             }
@@ -671,59 +628,51 @@ namespace vFrame.Lockstep.Core.Physics2D
             /// <summary>
             /// returns true if 'value' is an element of the list (O(n))
             /// </summary>
-            public bool Has(T value)
-            {
+            public bool Has(T value) {
                 return (Find(value) != null);
             }
 
             // Non CxFastList Methods 
-            public CxFastListNode<T> Find(T value)
-            {
+            public CxFastListNode<T> Find(T value) {
                 // start at head
                 CxFastListNode<T> head = _head;
                 EqualityComparer<T> comparer = EqualityComparer<T>.Default;
-                if (head != null)
-                {
-                    if (value != null)
-                    {
-                        do
-                        {
-                            if (comparer.Equals(head._elt, value))
-                            {
+                if (head != null) {
+                    if (value != null) {
+                        do {
+                            if (comparer.Equals(head._elt, value)) {
                                 return head;
                             }
+
                             head = head._next;
                         } while (head != _head);
                     }
-                    else
-                    {
-                        do
-                        {
-                            if (head._elt == null)
-                            {
+                    else {
+                        do {
+                            if (head._elt == null) {
                                 return head;
                             }
+
                             head = head._next;
                         } while (head != _head);
                     }
                 }
+
                 return null;
             }
 
-            public List<T> GetListOfElements()
-            {
+            public List<T> GetListOfElements() {
                 List<T> list = new List<T>();
 
                 CxFastListNode<T> iter = Begin();
 
-                if (iter != null)
-                {
-                    do
-                    {
+                if (iter != null) {
+                    do {
                         list.Add(iter._elt);
                         iter = iter._next;
                     } while (iter != null);
                 }
+
                 return list;
             }
         }
@@ -737,18 +686,15 @@ namespace vFrame.Lockstep.Core.Physics2D
             internal T _elt;
             internal CxFastListNode<T> _next;
 
-            public CxFastListNode(T obj)
-            {
+            public CxFastListNode(T obj) {
                 _elt = obj;
             }
 
-            public T Elem()
-            {
+            public T Elem() {
                 return _elt;
             }
 
-            public CxFastListNode<T> Next()
-            {
+            public CxFastListNode<T> Next() {
                 return _next;
             }
         }
@@ -766,8 +712,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             public int Length;
             public CxFastList<TSVector2> Points;
 
-            public GeomPoly()
-            {
+            public GeomPoly() {
                 Points = new CxFastList<TSVector2>();
                 Length = 0;
             }
@@ -784,8 +729,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             public int Key;
             public GeomPoly GeomP;
 
-            public GeomPolyVal(GeomPoly geomP, int K)
-            {
+            public GeomPolyVal(GeomPoly geomP, int K) {
                 GeomP = geomP;
                 Key = K;
             }

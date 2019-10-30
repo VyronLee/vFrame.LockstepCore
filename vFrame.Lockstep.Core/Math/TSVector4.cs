@@ -27,83 +27,84 @@ namespace vFrame.Lockstep.Core
     [Serializable]
     public struct TSVector4
     {
-
         private static FixedPoint ZeroEpsilonSq = TSMath.Epsilon;
         internal static TSVector4 InternalZero;
 
         /// <summary>The X component of the vector.</summary>
         public FixedPoint x;
+
         /// <summary>The Y component of the vector.</summary>
         public FixedPoint y;
+
         /// <summary>The Z component of the vector.</summary>
         public FixedPoint z;
+
         /// <summary>The W component of the vector.</summary>
         public FixedPoint w;
 
         #region Static readonly variables
+
         /// <summary>
         /// A vector with components (0,0,0,0);
         /// </summary>
         public static readonly TSVector4 zero;
+
         /// <summary>
         /// A vector with components (1,1,1,1);
         /// </summary>
         public static readonly TSVector4 one;
+
         /// <summary>
         /// A vector with components 
         /// (FP.MinValue,FP.MinValue,FP.MinValue);
         /// </summary>
         public static readonly TSVector4 MinValue;
+
         /// <summary>
         /// A vector with components 
         /// (FP.MaxValue,FP.MaxValue,FP.MaxValue);
         /// </summary>
         public static readonly TSVector4 MaxValue;
+
         #endregion
 
         #region Private static constructor
-        static TSVector4()
-        {
+
+        static TSVector4() {
             one = new TSVector4(1, 1, 1, 1);
             zero = new TSVector4(0, 0, 0, 0);
             MinValue = new TSVector4(FixedPoint.MinValue);
             MaxValue = new TSVector4(FixedPoint.MaxValue);
             InternalZero = zero;
         }
+
         #endregion
 
-        public static TSVector4 Abs(TSVector4 other)
-        {
-            return new TSVector4(FixedPoint.Abs(other.x), FixedPoint.Abs(other.y), FixedPoint.Abs(other.z), FixedPoint.Abs(other.z));
+        public static TSVector4 Abs(TSVector4 other) {
+            return new TSVector4(FixedPoint.Abs(other.x), FixedPoint.Abs(other.y), FixedPoint.Abs(other.z),
+                FixedPoint.Abs(other.z));
         }
 
         /// <summary>
         /// Gets the squared length of the vector.
         /// </summary>
         /// <returns>Returns the squared length of the vector.</returns>
-        public FixedPoint sqrMagnitude
-        {
-            get
-            {
-                return (((this.x * this.x) + (this.y * this.y)) + (this.z * this.z) + (this.w * this.w));
-            }
+        public FixedPoint sqrMagnitude {
+            get { return (((this.x * this.x) + (this.y * this.y)) + (this.z * this.z) + (this.w * this.w)); }
         }
 
         /// <summary>
         /// Gets the length of the vector.
         /// </summary>
         /// <returns>Returns the length of the vector.</returns>
-        public FixedPoint magnitude
-        {
-            get
-            {
+        public FixedPoint magnitude {
+            get {
                 FixedPoint num = sqrMagnitude;
                 return FixedPoint.Sqrt(num);
             }
         }
 
-        public static TSVector4 ClampMagnitude(TSVector4 vector, FixedPoint maxLength)
-        {
+        public static TSVector4 ClampMagnitude(TSVector4 vector, FixedPoint maxLength) {
             return Normalize(vector) * maxLength;
         }
 
@@ -111,10 +112,8 @@ namespace vFrame.Lockstep.Core
         /// Gets a normalized version of the vector.
         /// </summary>
         /// <returns>Returns a normalized version of the vector.</returns>
-        public TSVector4 normalized
-        {
-            get
-            {
+        public TSVector4 normalized {
+            get {
                 TSVector4 result = new TSVector4(this.x, this.y, this.z, this.w);
                 result.Normalize();
 
@@ -129,16 +128,14 @@ namespace vFrame.Lockstep.Core
         /// <param name="y">The Y component of the vector.</param>
         /// <param name="z">The Z component of the vector.</param>
         /// <param name="w">The W component of the vector.</param>
-        public TSVector4(int x, int y, int z, int w)
-        {
-            this.x = (FixedPoint)x;
-            this.y = (FixedPoint)y;
-            this.z = (FixedPoint)z;
-            this.w = (FixedPoint)w;
+        public TSVector4(int x, int y, int z, int w) {
+            this.x = (FixedPoint) x;
+            this.y = (FixedPoint) y;
+            this.z = (FixedPoint) z;
+            this.w = (FixedPoint) w;
         }
 
-        public TSVector4(FixedPoint x, FixedPoint y, FixedPoint z, FixedPoint w)
-        {
+        public TSVector4(FixedPoint x, FixedPoint y, FixedPoint z, FixedPoint w) {
             this.x = x;
             this.y = y;
             this.z = z;
@@ -148,8 +145,7 @@ namespace vFrame.Lockstep.Core
         /// <summary>
         /// Multiplies each component of the vector by the same components of the provided vector.
         /// </summary>
-        public void Scale(TSVector4 other)
-        {
+        public void Scale(TSVector4 other) {
             this.x = x * other.x;
             this.y = y * other.y;
             this.z = z * other.z;
@@ -163,8 +159,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="y">The Y component of the vector.</param>
         /// <param name="z">The Z component of the vector.</param>
         /// <param name="w">The W component of the vector.</param>
-        public void Set(FixedPoint x, FixedPoint y, FixedPoint z, FixedPoint w)
-        {
+        public void Set(FixedPoint x, FixedPoint y, FixedPoint z, FixedPoint w) {
             this.x = x;
             this.y = y;
             this.z = z;
@@ -175,16 +170,14 @@ namespace vFrame.Lockstep.Core
         /// Constructor initializing a new instance of the structure
         /// </summary>
         /// <param name="xyz">All components of the vector are set to xyz</param>
-        public TSVector4(FixedPoint xyzw)
-        {
+        public TSVector4(FixedPoint xyzw) {
             this.x = xyzw;
             this.y = xyzw;
             this.z = xyzw;
             this.w = xyzw;
         }
 
-        public static TSVector4 Lerp(TSVector4 from, TSVector4 to, FixedPoint percent)
-        {
+        public static TSVector4 Lerp(TSVector4 from, TSVector4 to, FixedPoint percent) {
             return from + (to - from) * percent;
         }
 
@@ -192,11 +185,14 @@ namespace vFrame.Lockstep.Core
         /// Builds a string from the JVector.
         /// </summary>
         /// <returns>A string containing all three components.</returns>
+
         #region public override string ToString()
-        public override string ToString()
-        {
-            return string.Format("({0:f1}, {1:f1}, {2:f1}, {3:f1})", x.AsFloat(), y.AsFloat(), z.AsFloat(), w.AsFloat());
+
+        public override string ToString() {
+            return string.Format("({0:f1}, {1:f1}, {2:f1}, {3:f1})", x.AsFloat(), y.AsFloat(), z.AsFloat(),
+                w.AsFloat());
         }
+
         #endregion
 
         /// <summary>
@@ -204,21 +200,22 @@ namespace vFrame.Lockstep.Core
         /// </summary>
         /// <param name="obj">The object to test.</param>
         /// <returns>Returns true if they are euqal, otherwise false.</returns>
+
         #region public override bool Equals(object obj)
-        public override bool Equals(object obj)
-        {
+
+        public override bool Equals(object obj) {
             if (!(obj is TSVector4)) return false;
-            TSVector4 other = (TSVector4)obj;
+            TSVector4 other = (TSVector4) obj;
 
             return (((x == other.x) && (y == other.y)) && (z == other.z) && (w == other.w));
         }
+
         #endregion
 
         /// <summary>
         /// Multiplies each component of the vector by the same components of the provided vector.
         /// </summary>
-        public static TSVector4 Scale(TSVector4 vecA, TSVector4 vecB)
-        {
+        public static TSVector4 Scale(TSVector4 vecA, TSVector4 vecB) {
             TSVector4 result;
             result.x = vecA.x * vecB.x;
             result.y = vecA.y * vecB.y;
@@ -234,11 +231,14 @@ namespace vFrame.Lockstep.Core
         /// <param name="value1">The first value.</param>
         /// <param name="value2">The second value.</param>
         /// <returns>Returns true if both values are equal, otherwise false.</returns>
+
         #region public static bool operator ==(JVector value1, JVector value2)
-        public static bool operator ==(TSVector4 value1, TSVector4 value2)
-        {
-            return (((value1.x == value2.x) && (value1.y == value2.y)) && (value1.z == value2.z) && (value1.w == value2.w));
+
+        public static bool operator ==(TSVector4 value1, TSVector4 value2) {
+            return (((value1.x == value2.x) && (value1.y == value2.y)) && (value1.z == value2.z) &&
+                    (value1.w == value2.w));
         }
+
         #endregion
 
         /// <summary>
@@ -247,15 +247,17 @@ namespace vFrame.Lockstep.Core
         /// <param name="value1">The first value.</param>
         /// <param name="value2">The second value.</param>
         /// <returns>Returns false if both values are equal, otherwise true.</returns>
+
         #region public static bool operator !=(JVector value1, JVector value2)
-        public static bool operator !=(TSVector4 value1, TSVector4 value2)
-        {
-            if ((value1.x == value2.x) && (value1.y == value2.y) && (value1.z == value2.z))
-            {
+
+        public static bool operator !=(TSVector4 value1, TSVector4 value2) {
+            if ((value1.x == value2.x) && (value1.y == value2.y) && (value1.z == value2.z)) {
                 return (value1.w != value2.w);
             }
+
             return true;
         }
+
         #endregion
 
         /// <summary>
@@ -264,10 +266,10 @@ namespace vFrame.Lockstep.Core
         /// <param name="value1">The first value.</param>
         /// <param name="value2">The second value.</param>
         /// <returns>A vector with the minimum x,y and z values of both vectors.</returns>
+
         #region public static JVector Min(JVector value1, JVector value2)
 
-        public static TSVector4 Min(TSVector4 value1, TSVector4 value2)
-        {
+        public static TSVector4 Min(TSVector4 value1, TSVector4 value2) {
             TSVector4 result;
             TSVector4.Min(ref value1, ref value2, out result);
             return result;
@@ -279,13 +281,13 @@ namespace vFrame.Lockstep.Core
         /// <param name="value1">The first value.</param>
         /// <param name="value2">The second value.</param>
         /// <param name="result">A vector with the minimum x,y and z values of both vectors.</param>
-        public static void Min(ref TSVector4 value1, ref TSVector4 value2, out TSVector4 result)
-        {
+        public static void Min(ref TSVector4 value1, ref TSVector4 value2, out TSVector4 result) {
             result.x = (value1.x < value2.x) ? value1.x : value2.x;
             result.y = (value1.y < value2.y) ? value1.y : value2.y;
             result.z = (value1.z < value2.z) ? value1.z : value2.z;
             result.w = (value1.w < value2.w) ? value1.w : value2.w;
         }
+
         #endregion
 
         /// <summary>
@@ -294,17 +296,18 @@ namespace vFrame.Lockstep.Core
         /// <param name="value1">The first value.</param>
         /// <param name="value2">The second value.</param>
         /// <returns>A vector with the maximum x,y and z values of both vectors.</returns>
+
         #region public static JVector Max(JVector value1, JVector value2)
-        public static TSVector4 Max(TSVector4 value1, TSVector4 value2)
-        {
+
+        public static TSVector4 Max(TSVector4 value1, TSVector4 value2) {
             TSVector4 result;
             TSVector4.Max(ref value1, ref value2, out result);
             return result;
         }
 
-        public static FixedPoint Distance(TSVector4 v1, TSVector4 v2)
-        {
-            return FixedPoint.Sqrt((v1.x - v2.x) * (v1.x - v2.x) + (v1.y - v2.y) * (v1.y - v2.y) + (v1.z - v2.z) * (v1.z - v2.z) + (v1.w - v2.w) * (v1.w - v2.w));
+        public static FixedPoint Distance(TSVector4 v1, TSVector4 v2) {
+            return FixedPoint.Sqrt((v1.x - v2.x) * (v1.x - v2.x) + (v1.y - v2.y) * (v1.y - v2.y) +
+                                   (v1.z - v2.z) * (v1.z - v2.z) + (v1.w - v2.w) * (v1.w - v2.w));
         }
 
         /// <summary>
@@ -313,35 +316,38 @@ namespace vFrame.Lockstep.Core
         /// <param name="value1">The first value.</param>
         /// <param name="value2">The second value.</param>
         /// <param name="result">A vector with the maximum x,y and z values of both vectors.</param>
-        public static void Max(ref TSVector4 value1, ref TSVector4 value2, out TSVector4 result)
-        {
+        public static void Max(ref TSVector4 value1, ref TSVector4 value2, out TSVector4 result) {
             result.x = (value1.x > value2.x) ? value1.x : value2.x;
             result.y = (value1.y > value2.y) ? value1.y : value2.y;
             result.z = (value1.z > value2.z) ? value1.z : value2.z;
             result.w = (value1.w > value2.w) ? value1.w : value2.w;
         }
+
         #endregion
 
         /// <summary>
         /// Sets the length of the vector to zero.
         /// </summary>
+
         #region public void MakeZero()
-        public void MakeZero()
-        {
+
+        public void MakeZero() {
             x = FixedPoint.Zero;
             y = FixedPoint.Zero;
             z = FixedPoint.Zero;
             w = FixedPoint.Zero;
         }
+
         #endregion
 
         /// <summary>
         /// Checks if the length of the vector is zero.
         /// </summary>
         /// <returns>Returns true if the vector is zero, otherwise false.</returns>
+
         #region public bool IsZero()
-        public bool IsZero()
-        {
+
+        public bool IsZero() {
             return (this.sqrMagnitude == FixedPoint.Zero);
         }
 
@@ -349,10 +355,10 @@ namespace vFrame.Lockstep.Core
         /// Checks if the length of the vector is nearly zero.
         /// </summary>
         /// <returns>Returns true if the vector is nearly zero, otherwise false.</returns>
-        public bool IsNearlyZero()
-        {
+        public bool IsNearlyZero() {
             return (this.sqrMagnitude < ZeroEpsilonSq);
         }
+
         #endregion
 
         /// <summary>
@@ -361,16 +367,16 @@ namespace vFrame.Lockstep.Core
         /// <param name="position">The vector to transform.</param>
         /// <param name="matrix">The transform matrix.</param>
         /// <returns>The transformed vector.</returns>
+
         #region public static JVector Transform(JVector position, JMatrix matrix)
-        public static TSVector4 Transform(TSVector4 position, TSMatrix4x4 matrix)
-        {
+
+        public static TSVector4 Transform(TSVector4 position, TSMatrix4x4 matrix) {
             TSVector4 result;
             TSVector4.Transform(ref position, ref matrix, out result);
             return result;
         }
 
-        public static TSVector4 Transform(TSVector position, TSMatrix4x4 matrix)
-        {
+        public static TSVector4 Transform(TSVector position, TSMatrix4x4 matrix) {
             TSVector4 result;
             TSVector4.Transform(ref position, ref matrix, out result);
             return result;
@@ -382,21 +388,20 @@ namespace vFrame.Lockstep.Core
         /// <param name="vector">The vector to transform.</param>
         /// <param name="matrix">The transform matrix.</param>
         /// <param name="result">The transformed vector.</param>
-        public static void Transform(ref TSVector vector, ref TSMatrix4x4 matrix, out TSVector4 result)
-        {
+        public static void Transform(ref TSVector vector, ref TSMatrix4x4 matrix, out TSVector4 result) {
             result.x = vector.x * matrix.M11 + vector.y * matrix.M12 + vector.z * matrix.M13 + matrix.M14;
             result.y = vector.x * matrix.M21 + vector.y * matrix.M22 + vector.z * matrix.M23 + matrix.M24;
             result.z = vector.x * matrix.M31 + vector.y * matrix.M32 + vector.z * matrix.M33 + matrix.M34;
             result.w = vector.x * matrix.M41 + vector.y * matrix.M42 + vector.z * matrix.M43 + matrix.M44;
         }
 
-        public static void Transform(ref TSVector4 vector, ref TSMatrix4x4 matrix, out TSVector4 result)
-        {
+        public static void Transform(ref TSVector4 vector, ref TSMatrix4x4 matrix, out TSVector4 result) {
             result.x = vector.x * matrix.M11 + vector.y * matrix.M12 + vector.z * matrix.M13 + vector.w * matrix.M14;
             result.y = vector.x * matrix.M21 + vector.y * matrix.M22 + vector.z * matrix.M23 + vector.w * matrix.M24;
             result.z = vector.x * matrix.M31 + vector.y * matrix.M32 + vector.z * matrix.M33 + vector.w * matrix.M34;
             result.w = vector.x * matrix.M41 + vector.y * matrix.M42 + vector.z * matrix.M43 + vector.w * matrix.M44;
         }
+
         #endregion
 
         /// <summary>
@@ -405,9 +410,10 @@ namespace vFrame.Lockstep.Core
         /// <param name="vector1">The first vector.</param>
         /// <param name="vector2">The second vector.</param>
         /// <returns>Returns the dot product of both vectors.</returns>
+
         #region public static FP Dot(JVector vector1, JVector vector2)
-        public static FixedPoint Dot(TSVector4 vector1, TSVector4 vector2)
-        {
+
+        public static FixedPoint Dot(TSVector4 vector1, TSVector4 vector2) {
             return TSVector4.Dot(ref vector1, ref vector2);
         }
 
@@ -418,10 +424,11 @@ namespace vFrame.Lockstep.Core
         /// <param name="vector1">The first vector.</param>
         /// <param name="vector2">The second vector.</param>
         /// <returns>Returns the dot product of both vectors.</returns>
-        public static FixedPoint Dot(ref TSVector4 vector1, ref TSVector4 vector2)
-        {
-            return ((vector1.x * vector2.x) + (vector1.y * vector2.y)) + (vector1.z * vector2.z) + (vector1.w * vector2.w);
+        public static FixedPoint Dot(ref TSVector4 vector1, ref TSVector4 vector2) {
+            return ((vector1.x * vector2.x) + (vector1.y * vector2.y)) + (vector1.z * vector2.z) +
+                   (vector1.w * vector2.w);
         }
+
         #endregion
 
         /// <summary>
@@ -430,9 +437,10 @@ namespace vFrame.Lockstep.Core
         /// <param name="value1">The first vector.</param>
         /// <param name="value2">The second vector.</param>
         /// <returns>The sum of both vectors.</returns>
+
         #region public static void Add(JVector value1, JVector value2)
-        public static TSVector4 Add(TSVector4 value1, TSVector4 value2)
-        {
+
+        public static TSVector4 Add(TSVector4 value1, TSVector4 value2) {
             TSVector4 result;
             TSVector4.Add(ref value1, ref value2, out result);
             return result;
@@ -444,13 +452,13 @@ namespace vFrame.Lockstep.Core
         /// <param name="value1">The first vector.</param>
         /// <param name="value2">The second vector.</param>
         /// <param name="result">The sum of both vectors.</param>
-        public static void Add(ref TSVector4 value1, ref TSVector4 value2, out TSVector4 result)
-        {
+        public static void Add(ref TSVector4 value1, ref TSVector4 value2, out TSVector4 result) {
             result.x = value1.x + value2.x;
             result.y = value1.y + value2.y;
             result.z = value1.z + value2.z;
             result.w = value1.w + value2.w;
         }
+
         #endregion
 
         /// <summary>
@@ -459,8 +467,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="value1">The vector to divide.</param>
         /// <param name="scaleFactor">The scale factor.</param>
         /// <returns>Returns the scaled vector.</returns>
-        public static TSVector4 Divide(TSVector4 value1, FixedPoint scaleFactor)
-        {
+        public static TSVector4 Divide(TSVector4 value1, FixedPoint scaleFactor) {
             TSVector4 result;
             TSVector4.Divide(ref value1, scaleFactor, out result);
             return result;
@@ -472,8 +479,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="value1">The vector to divide.</param>
         /// <param name="scaleFactor">The scale factor.</param>
         /// <param name="result">Returns the scaled vector.</param>
-        public static void Divide(ref TSVector4 value1, FixedPoint scaleFactor, out TSVector4 result)
-        {
+        public static void Divide(ref TSVector4 value1, FixedPoint scaleFactor, out TSVector4 result) {
             result.x = value1.x / scaleFactor;
             result.y = value1.y / scaleFactor;
             result.z = value1.z / scaleFactor;
@@ -486,9 +492,10 @@ namespace vFrame.Lockstep.Core
         /// <param name="value1">The first vector.</param>
         /// <param name="value2">The second vector.</param>
         /// <returns>The difference of both vectors.</returns>
+
         #region public static JVector Subtract(JVector value1, JVector value2)
-        public static TSVector4 Subtract(TSVector4 value1, TSVector4 value2)
-        {
+
+        public static TSVector4 Subtract(TSVector4 value1, TSVector4 value2) {
             TSVector4 result;
             TSVector4.Subtract(ref value1, ref value2, out result);
             return result;
@@ -500,32 +507,35 @@ namespace vFrame.Lockstep.Core
         /// <param name="value1">The first vector.</param>
         /// <param name="value2">The second vector.</param>
         /// <param name="result">The difference of both vectors.</param>
-        public static void Subtract(ref TSVector4 value1, ref TSVector4 value2, out TSVector4 result)
-        {
+        public static void Subtract(ref TSVector4 value1, ref TSVector4 value2, out TSVector4 result) {
             result.x = value1.x - value2.x;
             result.y = value1.y - value2.y;
             result.z = value1.z - value2.z;
             result.w = value1.w - value2.w;
         }
+
         #endregion
 
         /// <summary>
         /// Gets the hashcode of the vector.
         /// </summary>
         /// <returns>Returns the hashcode of the vector.</returns>
+
         #region public override int GetHashCode()
-        public override int GetHashCode()
-        {
+
+        public override int GetHashCode() {
             return x.GetHashCode() ^ y.GetHashCode() ^ z.GetHashCode() ^ w.GetHashCode();
         }
+
         #endregion
 
         /// <summary>
         /// Inverses the direction of the vector.
         /// </summary>
+
         #region public static JVector Negate(JVector value)
-        public void Negate()
-        {
+
+        public void Negate() {
             this.x = -this.x;
             this.y = -this.y;
             this.z = -this.z;
@@ -537,8 +547,7 @@ namespace vFrame.Lockstep.Core
         /// </summary>
         /// <param name="value">The vector to inverse.</param>
         /// <returns>The negated vector.</returns>
-        public static TSVector4 Negate(TSVector4 value)
-        {
+        public static TSVector4 Negate(TSVector4 value) {
             TSVector4 result;
             TSVector4.Negate(ref value, out result);
             return result;
@@ -549,13 +558,13 @@ namespace vFrame.Lockstep.Core
         /// </summary>
         /// <param name="value">The vector to inverse.</param>
         /// <param name="result">The negated vector.</param>
-        public static void Negate(ref TSVector4 value, out TSVector4 result)
-        {
+        public static void Negate(ref TSVector4 value, out TSVector4 result) {
             result.x = -value.x;
             result.y = -value.y;
             result.z = -value.z;
             result.w = -value.w;
         }
+
         #endregion
 
         /// <summary>
@@ -563,9 +572,10 @@ namespace vFrame.Lockstep.Core
         /// </summary>
         /// <param name="value">The vector which should be normalized.</param>
         /// <returns>A normalized vector.</returns>
+
         #region public static JVector Normalize(JVector value)
-        public static TSVector4 Normalize(TSVector4 value)
-        {
+
+        public static TSVector4 Normalize(TSVector4 value) {
             TSVector4 result;
             TSVector4.Normalize(ref value, out result);
             return result;
@@ -574,8 +584,7 @@ namespace vFrame.Lockstep.Core
         /// <summary>
         /// Normalizes this vector.
         /// </summary>
-        public void Normalize()
-        {
+        public void Normalize() {
             FixedPoint num2 = ((this.x * this.x) + (this.y * this.y)) + (this.z * this.z) + (this.w * this.w);
             FixedPoint num = FixedPoint.One / FixedPoint.Sqrt(num2);
             this.x *= num;
@@ -589,8 +598,7 @@ namespace vFrame.Lockstep.Core
         /// </summary>
         /// <param name="value">The vector which should be normalized.</param>
         /// <param name="result">A normalized vector.</param>
-        public static void Normalize(ref TSVector4 value, out TSVector4 result)
-        {
+        public static void Normalize(ref TSVector4 value, out TSVector4 result) {
             FixedPoint num2 = ((value.x * value.x) + (value.y * value.y)) + (value.z * value.z) + (value.w * value.w);
             FixedPoint num = FixedPoint.One / FixedPoint.Sqrt(num2);
             result.x = value.x * num;
@@ -598,6 +606,7 @@ namespace vFrame.Lockstep.Core
             result.z = value.z * num;
             result.w = value.w * num;
         }
+
         #endregion
 
         #region public static void Swap(ref JVector vector1, ref JVector vector2)
@@ -607,8 +616,7 @@ namespace vFrame.Lockstep.Core
         /// </summary>
         /// <param name="vector1">The first vector to swap with the second.</param>
         /// <param name="vector2">The second vector to swap with the first.</param>
-        public static void Swap(ref TSVector4 vector1, ref TSVector4 vector2)
-        {
+        public static void Swap(ref TSVector4 vector1, ref TSVector4 vector2) {
             FixedPoint temp;
 
             temp = vector1.x;
@@ -627,6 +635,7 @@ namespace vFrame.Lockstep.Core
             vector1.w = vector2.w;
             vector2.w = temp;
         }
+
         #endregion
 
         /// <summary>
@@ -635,9 +644,10 @@ namespace vFrame.Lockstep.Core
         /// <param name="value1">The vector to multiply.</param>
         /// <param name="scaleFactor">The scale factor.</param>
         /// <returns>Returns the multiplied vector.</returns>
+
         #region public static JVector Multiply(JVector value1, FP scaleFactor)
-        public static TSVector4 Multiply(TSVector4 value1, FixedPoint scaleFactor)
-        {
+
+        public static TSVector4 Multiply(TSVector4 value1, FixedPoint scaleFactor) {
             TSVector4 result;
             TSVector4.Multiply(ref value1, scaleFactor, out result);
             return result;
@@ -649,13 +659,13 @@ namespace vFrame.Lockstep.Core
         /// <param name="value1">The vector to multiply.</param>
         /// <param name="scaleFactor">The scale factor.</param>
         /// <param name="result">Returns the multiplied vector.</param>
-        public static void Multiply(ref TSVector4 value1, FixedPoint scaleFactor, out TSVector4 result)
-        {
+        public static void Multiply(ref TSVector4 value1, FixedPoint scaleFactor, out TSVector4 result) {
             result.x = value1.x * scaleFactor;
             result.y = value1.y * scaleFactor;
             result.z = value1.z * scaleFactor;
             result.w = value1.w * scaleFactor;
         }
+
         #endregion
 
         /// <summary>
@@ -664,11 +674,13 @@ namespace vFrame.Lockstep.Core
         /// <param name="value1">The first vector.</param>
         /// <param name="value2">The second vector.</param>
         /// <returns>Returns the dot product of both.</returns>
+
         #region public static FP operator *(JVector value1, JVector value2)
-        public static FixedPoint operator *(TSVector4 value1, TSVector4 value2)
-        {
+
+        public static FixedPoint operator *(TSVector4 value1, TSVector4 value2) {
             return TSVector4.Dot(ref value1, ref value2);
         }
+
         #endregion
 
         /// <summary>
@@ -677,13 +689,15 @@ namespace vFrame.Lockstep.Core
         /// <param name="value1">The vector to scale.</param>
         /// <param name="value2">The scale factor.</param>
         /// <returns>Returns the scaled vector.</returns>
+
         #region public static JVector operator *(JVector value1, FP value2)
-        public static TSVector4 operator *(TSVector4 value1, FixedPoint value2)
-        {
+
+        public static TSVector4 operator *(TSVector4 value1, FixedPoint value2) {
             TSVector4 result;
             TSVector4.Multiply(ref value1, value2, out result);
             return result;
         }
+
         #endregion
 
         /// <summary>
@@ -692,13 +706,15 @@ namespace vFrame.Lockstep.Core
         /// <param name="value2">The vector to scale.</param>
         /// <param name="value1">The scale factor.</param>
         /// <returns>Returns the scaled vector.</returns>
+
         #region public static JVector operator *(FP value1, JVector value2)
-        public static TSVector4 operator *(FixedPoint value1, TSVector4 value2)
-        {
+
+        public static TSVector4 operator *(FixedPoint value1, TSVector4 value2) {
             TSVector4 result;
             TSVector4.Multiply(ref value2, value1, out result);
             return result;
         }
+
         #endregion
 
         /// <summary>
@@ -707,12 +723,15 @@ namespace vFrame.Lockstep.Core
         /// <param name="value1">The first vector.</param>
         /// <param name="value2">The second vector.</param>
         /// <returns>The difference of both vectors.</returns>
+
         #region public static JVector operator -(JVector value1, JVector value2)
-        public static TSVector4 operator -(TSVector4 value1, TSVector4 value2)
-        {
-            TSVector4 result; TSVector4.Subtract(ref value1, ref value2, out result);
+
+        public static TSVector4 operator -(TSVector4 value1, TSVector4 value2) {
+            TSVector4 result;
+            TSVector4.Subtract(ref value1, ref value2, out result);
             return result;
         }
+
         #endregion
 
         /// <summary>
@@ -721,12 +740,15 @@ namespace vFrame.Lockstep.Core
         /// <param name="value1">The first vector.</param>
         /// <param name="value2">The second vector.</param>
         /// <returns>The sum of both vectors.</returns>
+
         #region public static JVector operator +(JVector value1, JVector value2)
-        public static TSVector4 operator +(TSVector4 value1, TSVector4 value2)
-        {
-            TSVector4 result; TSVector4.Add(ref value1, ref value2, out result);
+
+        public static TSVector4 operator +(TSVector4 value1, TSVector4 value2) {
+            TSVector4 result;
+            TSVector4.Add(ref value1, ref value2, out result);
             return result;
         }
+
         #endregion
 
         /// <summary>
@@ -735,22 +757,18 @@ namespace vFrame.Lockstep.Core
         /// <param name="value1">The vector to divide.</param>
         /// <param name="scaleFactor">The scale factor.</param>
         /// <returns>Returns the scaled vector.</returns>
-        public static TSVector4 operator /(TSVector4 value1, FixedPoint value2)
-        {
+        public static TSVector4 operator /(TSVector4 value1, FixedPoint value2) {
             TSVector4 result;
             TSVector4.Divide(ref value1, value2, out result);
             return result;
         }
 
-        public TSVector2 ToTSVector2()
-        {
+        public TSVector2 ToTSVector2() {
             return new TSVector2(this.x, this.y);
         }
 
-        public TSVector ToTSVector()
-        {
+        public TSVector ToTSVector() {
             return new TSVector(this.x, this.y, this.z);
         }
     }
-
 }

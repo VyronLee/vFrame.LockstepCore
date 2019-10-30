@@ -14,8 +14,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="y">The Y value the rect is measured from.</param>
         /// <param name="width">The width of the rectangle.</param>
         /// <param name="height">The height of the rectangle.</param>
-        public TSRect(float x, float y, float width, float height)
-        {
+        public TSRect(float x, float y, float width, float height) {
             this.x = x;
             this.y = y;
             this.width = width;
@@ -29,8 +28,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="y">The Y value the rect is measured from.</param>
         /// <param name="width">The width of the rectangle.</param>
         /// <param name="height">The height of the rectangle.</param>
-        public TSRect(FixedPoint x, FixedPoint y, FixedPoint width, FixedPoint height)
-        {
+        public TSRect(FixedPoint x, FixedPoint y, FixedPoint width, FixedPoint height) {
             this.x = x;
             this.y = y;
             this.width = width;
@@ -42,8 +40,7 @@ namespace vFrame.Lockstep.Core
         /// </summary>
         /// <param name="position">The position of the minimum corner of the rect.</param>
         /// <param name="size">The width and height of the rect.</param>
-        public TSRect(TSVector2 position, TSVector2 size)
-        {
+        public TSRect(TSVector2 position, TSVector2 size) {
             x = position.x;
             y = position.y;
             width = size.x;
@@ -54,8 +51,7 @@ namespace vFrame.Lockstep.Core
         ///     <para></para>
         /// </summary>
         /// <param name="source"></param>
-        public TSRect(TSRect source)
-        {
+        public TSRect(TSRect source) {
             x = source.x;
             y = source.y;
             width = source.width;
@@ -78,8 +74,7 @@ namespace vFrame.Lockstep.Core
         ///     <para>A rectangle matching the specified coordinates.</para>
         /// </returns>
         public static TSRect MinMaxRect(FixedPoint xmin, FixedPoint ymin, FixedPoint xmax,
-            FixedPoint ymax)
-        {
+            FixedPoint ymax) {
             return new TSRect(xmin, ymin, xmax - xmin, ymax - ymin);
         }
 
@@ -90,8 +85,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="y"></param>
         /// <param name="width"></param>
         /// <param name="height"></param>
-        public void Set(FixedPoint x, FixedPoint y, FixedPoint width, FixedPoint height)
-        {
+        public void Set(FixedPoint x, FixedPoint y, FixedPoint width, FixedPoint height) {
             this.x = x;
             this.y = y;
             this.width = width;
@@ -111,11 +105,9 @@ namespace vFrame.Lockstep.Core
         /// <summary>
         ///     <para>The X and Y position of the rectangle.</para>
         /// </summary>
-        public TSVector2 position
-        {
+        public TSVector2 position {
             get { return new TSVector2(x, y); }
-            set
-            {
+            set {
                 x = value.x;
                 y = value.y;
             }
@@ -124,11 +116,9 @@ namespace vFrame.Lockstep.Core
         /// <summary>
         ///     <para>The position of the center of the rectangle.</para>
         /// </summary>
-        public TSVector2 center
-        {
+        public TSVector2 center {
             get { return new TSVector2(x + width / 2f, y + height / 2f); }
-            set
-            {
+            set {
                 x = value.x - width / 2f;
                 y = value.y - height / 2f;
             }
@@ -137,11 +127,9 @@ namespace vFrame.Lockstep.Core
         /// <summary>
         ///     <para>The position of the minimum corner of the rectangle.</para>
         /// </summary>
-        public TSVector2 min
-        {
+        public TSVector2 min {
             get { return new TSVector2(xMin, yMin); }
-            set
-            {
+            set {
                 xMin = value.x;
                 yMin = value.y;
             }
@@ -150,11 +138,9 @@ namespace vFrame.Lockstep.Core
         /// <summary>
         ///     <para>The position of the maximum corner of the rectangle.</para>
         /// </summary>
-        public TSVector2 max
-        {
+        public TSVector2 max {
             get { return new TSVector2(xMax, yMax); }
-            set
-            {
+            set {
                 xMax = value.x;
                 yMax = value.y;
             }
@@ -173,11 +159,9 @@ namespace vFrame.Lockstep.Core
         /// <summary>
         ///     <para>The width and height of the rectangle.</para>
         /// </summary>
-        public TSVector2 size
-        {
+        public TSVector2 size {
             get { return new TSVector2(width, height); }
-            set
-            {
+            set {
                 width = value.x;
                 height = value.y;
             }
@@ -186,11 +170,9 @@ namespace vFrame.Lockstep.Core
         /// <summary>
         ///     <para>The minimum X coordinate of the rectangle.</para>
         /// </summary>
-        public FixedPoint xMin
-        {
+        public FixedPoint xMin {
             get { return x; }
-            set
-            {
+            set {
                 var xMax = this.xMax;
                 x = value;
                 width = xMax - x;
@@ -200,11 +182,9 @@ namespace vFrame.Lockstep.Core
         /// <summary>
         ///     <para>The minimum Y coordinate of the rectangle.</para>
         /// </summary>
-        public FixedPoint yMin
-        {
+        public FixedPoint yMin {
             get { return y; }
-            set
-            {
+            set {
                 var yMax = this.yMax;
                 y = value;
                 height = yMax - y;
@@ -214,8 +194,7 @@ namespace vFrame.Lockstep.Core
         /// <summary>
         ///     <para>The maximum X coordinate of the rectangle.</para>
         /// </summary>
-        public FixedPoint xMax
-        {
+        public FixedPoint xMax {
             get { return width + x; }
             set { width = value - x; }
         }
@@ -223,8 +202,7 @@ namespace vFrame.Lockstep.Core
         /// <summary>
         ///     <para>The maximum Y coordinate of the rectangle.</para>
         /// </summary>
-        public FixedPoint yMax
-        {
+        public FixedPoint yMax {
             get { return height + y; }
             set { height = value - y; }
         }
@@ -245,8 +223,7 @@ namespace vFrame.Lockstep.Core
         /// <returns>
         ///     <para>True if the point lies within the specified rectangle.</para>
         /// </returns>
-        public bool Contains(TSVector2 point)
-        {
+        public bool Contains(TSVector2 point) {
             return (double) point.x >= xMin && (double) point.x < xMax &&
                    (double) point.y >= yMin && (double) point.y < yMax;
         }
@@ -267,8 +244,7 @@ namespace vFrame.Lockstep.Core
         /// <returns>
         ///     <para>True if the point lies within the specified rectangle.</para>
         /// </returns>
-        public bool Contains(TSVector point)
-        {
+        public bool Contains(TSVector point) {
             return (double) point.x >= xMin && (double) point.x < xMax &&
                    (double) point.y >= yMin && (double) point.y < yMax;
         }
@@ -289,8 +265,7 @@ namespace vFrame.Lockstep.Core
         /// <returns>
         ///     <para>True if the point lies within the specified rectangle.</para>
         /// </returns>
-        public bool Contains(TSVector point, bool allowInverse)
-        {
+        public bool Contains(TSVector point, bool allowInverse) {
             if (!allowInverse)
                 return Contains(point);
             var flag = false;
@@ -304,17 +279,14 @@ namespace vFrame.Lockstep.Core
                     (double) point.y >= yMin && (double) point.y < yMax);
         }
 
-        private static TSRect OrderMinMax(TSRect rect)
-        {
-            if (rect.xMin > (double) rect.xMax)
-            {
+        private static TSRect OrderMinMax(TSRect rect) {
+            if (rect.xMin > (double) rect.xMax) {
                 var xMin = rect.xMin;
                 rect.xMin = rect.xMax;
                 rect.xMax = xMin;
             }
 
-            if (rect.yMin > (double) rect.yMax)
-            {
+            if (rect.yMin > (double) rect.yMax) {
                 var yMin = rect.yMin;
                 rect.yMin = rect.yMax;
                 rect.yMax = yMin;
@@ -336,8 +308,7 @@ namespace vFrame.Lockstep.Core
         ///     Does the test allow the widths and heights of the
         ///     TSRects to be negative?
         /// </param>
-        public bool Overlaps(TSRect other)
-        {
+        public bool Overlaps(TSRect other) {
             return other.xMax > (double) xMin && other.xMin < (double) xMax &&
                    other.yMax > (double) yMin && other.yMin < (double) yMax;
         }
@@ -355,11 +326,9 @@ namespace vFrame.Lockstep.Core
         ///     Does the test allow the widths and heights of the
         ///     TSRects to be negative?
         /// </param>
-        public bool Overlaps(TSRect other, bool allowInverse)
-        {
+        public bool Overlaps(TSRect other, bool allowInverse) {
             var rect = this;
-            if (allowInverse)
-            {
+            if (allowInverse) {
                 rect = OrderMinMax(rect);
                 other = OrderMinMax(other);
             }
@@ -377,8 +346,7 @@ namespace vFrame.Lockstep.Core
         /// </param>
         public static TSVector2 NormalizedToPoint(
             TSRect rectangle,
-            TSVector2 normalizedTSRectCoordinates)
-        {
+            TSVector2 normalizedTSRectCoordinates) {
             return new TSVector2(
                 TSMath.Lerp(rectangle.x, rectangle.xMax,
                     normalizedTSRectCoordinates.x),
@@ -395,40 +363,34 @@ namespace vFrame.Lockstep.Core
         ///     for.
         /// </param>
         public static TSVector2 PointToNormalized(TSRect rectangle,
-            TSVector2 point)
-        {
+            TSVector2 point) {
             return new TSVector2(
                 TSMath.InverseLerp(rectangle.x, rectangle.xMax, point.x),
                 TSMath.InverseLerp(rectangle.y, rectangle.yMax, point.y));
         }
 
-        public static bool operator !=(TSRect lhs, TSRect rhs)
-        {
+        public static bool operator !=(TSRect lhs, TSRect rhs) {
             return !(lhs == rhs);
         }
 
-        public static bool operator ==(TSRect lhs, TSRect rhs)
-        {
+        public static bool operator ==(TSRect lhs, TSRect rhs) {
             return lhs.x == (double) rhs.x && lhs.y == (double) rhs.y &&
                    lhs.width == (double) rhs.width &&
                    lhs.height == (double) rhs.height;
         }
 
-        public override int GetHashCode()
-        {
+        public override int GetHashCode() {
             return x.GetHashCode() ^ (width.GetHashCode() << 2) ^
                    (y.GetHashCode() >> 2) ^ (height.GetHashCode() >> 1);
         }
 
-        public override bool Equals(object other)
-        {
+        public override bool Equals(object other) {
             if (!(other is TSRect))
                 return false;
             return Equals((TSRect) other);
         }
 
-        public bool Equals(TSRect other)
-        {
+        public bool Equals(TSRect other) {
             return x.Equals(other.x) && y.Equals(other.y) &&
                    width.Equals(other.width) && height.Equals(other.height);
         }
@@ -437,8 +399,7 @@ namespace vFrame.Lockstep.Core
         ///     <para>Returns a nicely formatted string for this TSRect.</para>
         /// </summary>
         /// <param name="format"></param>
-        public override string ToString()
-        {
+        public override string ToString() {
             return string.Format(
                 "(x:{0:F2}, y:{1:F2}, width:{2:F2}, height:{3:F2})", (object) x,
                 (object) y, (object) width, (object) height);
@@ -448,8 +409,7 @@ namespace vFrame.Lockstep.Core
         ///     <para>Returns a nicely formatted string for this TSRect.</para>
         /// </summary>
         /// <param name="format"></param>
-        public string ToString(string format)
-        {
+        public string ToString(string format) {
             return string.Format("(x:{0}, y:{1}, width:{2}, height:{3})",
                 (object) x.ToString(format), (object) y.ToString(format),
                 (object) width.ToString(format),

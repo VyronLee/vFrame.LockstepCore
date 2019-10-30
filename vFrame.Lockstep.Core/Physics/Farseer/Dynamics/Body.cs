@@ -1,23 +1,23 @@
 ﻿/*
 * Farseer Physics Engine:
 * Copyright (c) 2012 Ian Qvist
-* 
+*
 * Original source Box2D:
-* Copyright (c) 2006-2011 Erin Catto http://www.box2d.org 
-* 
-* This software is provided 'as-is', without any express or implied 
-* warranty.  In no event will the authors be held liable for any damages 
-* arising from the use of this software. 
-* Permission is granted to anyone to use this software for any purpose, 
-* including commercial applications, and to alter it and redistribute it 
-* freely, subject to the following restrictions: 
-* 1. The origin of this software must not be misrepresented; you must not 
-* claim that you wrote the original software. If you use this software 
-* in a product, an acknowledgment in the product documentation would be 
-* appreciated but is not required. 
-* 2. Altered source versions must be plainly marked as such, and must not be 
-* misrepresented as being the original software. 
-* 3. This notice may not be removed or altered from any source distribution. 
+* Copyright (c) 2006-2011 Erin Catto http://www.box2d.org
+*
+* This software is provided 'as-is', without any express or implied
+* warranty.  In no event will the authors be held liable for any damages
+* arising from the use of this software.
+* Permission is granted to anyone to use this software for any purpose,
+* including commercial applications, and to alter it and redistribute it
+* freely, subject to the following restrictions:
+* 1. The origin of this software must not be misrepresented; you must not
+* claim that you wrote the original software. If you use this software
+* in a product, an acknowledgment in the product documentation would be
+* appreciated but is not required.
+* 2. Altered source versions must be plainly marked as such, and must not be
+* misrepresented as being the original software.
+* 3. This notice may not be removed or altered from any source distribution.
 */
 //#define USE_AWAKE_BODY_SET
 
@@ -27,8 +27,8 @@ using System.Diagnostics;
 
 namespace vFrame.Lockstep.Core.Physics2D
 {
-
-    public enum BodySpecialSensor {
+    public enum BodySpecialSensor
+    {
         None,
         ActiveOnce,
         ActiveAll
@@ -43,6 +43,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Zero velocity, may be manually moved. Note: even static bodies have mass.
         /// </summary>
         Static,
+
         /// <summary>
         /// Positive mass, non-zero velocity determined by forces, moved by solver
         /// </summary>
@@ -51,8 +52,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
     public class Body : IDisposable, IBody2D
     {
-        [ThreadStatic]
-        internal static int _bodyIdCounter;
+        [ThreadStatic] internal static int _bodyIdCounter;
 
         internal BodySpecialSensor _specialSensor = BodySpecialSensor.None;
         public int SpecialSensorMask = -1;
@@ -60,9 +60,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         public List<Body> _specialSensorResults;
 
         public BodySpecialSensor SpecialSensor {
-            get {
-                return _specialSensor;
-            }
+            get { return _specialSensor; }
             set {
                 _specialSensor = value;
 
@@ -73,7 +71,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         }
 
         internal BodyType _bodyType;
-        
+
         internal bool _sleepingAllowed = true;
         internal bool _awake = true;
 
@@ -85,14 +83,13 @@ namespace vFrame.Lockstep.Core.Physics2D
         internal Transform _xf; // the body origin transform
 
         internal bool disabled;
-        
+
         public List<IBodyConstraint> bodyConstraints;
 
         public PhysicsLogicFilter PhysicsLogicFilter;
 
         // TS - public Body(World world, Vector2? position = null, FP rotation = 0, object userdata = null)
-        public Body(World world, TSVector2? position, TSVector2 forward, object userdata = null)
-        {
+        public Body(World world, TSVector2? position, TSVector2 forward, object userdata = null) {
             FixtureList = new List<Fixture>();
             bodyConstraints = new List<IBodyConstraint>();
             BodyId = _bodyIdCounter++;
@@ -105,8 +102,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             _xf.q.Set(forward);
 
-            if (position.HasValue)
-            {
+            if (position.HasValue) {
                 _xf.p = position.Value;
                 _sweep.C0 = _xf.p;
                 _sweep.C = _xf.p;
@@ -116,16 +112,14 @@ namespace vFrame.Lockstep.Core.Physics2D
             world.AddBody(this); //FPE note: bodies can't live without a World
         }
 
-        private FixedPoint GetAngle(TSVector2 dir)
-        {
+        private FixedPoint GetAngle(TSVector2 dir) {
             var ret = TSMath.Atan2(dir.y, dir.x);
             var pi2 = TSMath.Pi * 2;
-            if (ret > pi2)
-            {
+            if (ret > pi2) {
                 ret -= pi2;
             }
-            if (ret < 0)
-            {
+
+            if (ret < 0) {
                 ret += pi2;
             }
 
@@ -150,17 +144,15 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <value>The user data.</value>
         public object UserData { get; set; }
-        
+
         /// <summary>
         /// Gets or sets the body type.
         /// Warning: Calling this mid-update might cause a crash.
         /// </summary>
         /// <value>The type of body.</value>
-        public BodyType BodyType
-        {
+        public BodyType BodyType {
             get { return _bodyType; }
-            set
-            {
+            set {
                 if (_bodyType == value)
                     return;
 
@@ -169,29 +161,25 @@ namespace vFrame.Lockstep.Core.Physics2D
                 _bodyType = value;
                 SynchronizeFixtures();
                 Awake = true;
-                
+
                 // Touch the proxies so that new contacts will be created (when appropriate)
                 IBroadPhase broadPhase = _world.BroadPhase;
-                foreach (Fixture fixture in FixtureList)
-                {
+                foreach (Fixture fixture in FixtureList) {
                     int proxyCount = fixture.ProxyCount;
-                    for (int j = 0; j < proxyCount; j++)
-                    {
+                    for (int j = 0; j < proxyCount; j++) {
                         broadPhase.TouchProxy(fixture.Proxies[j].ProxyId);
                     }
                 }
             }
         }
-        
+
         /// <summary>
         /// You can disable sleeping on this body. If you disable sleeping, the
         /// body will be woken.
         /// </summary>
         /// <value><c>true</c> if sleeping is allowed; otherwise, <c>false</c>.</value>
-        public bool SleepingAllowed
-        {
-            set
-            {
+        public bool SleepingAllowed {
+            set {
                 if (!value)
                     Awake = true;
 
@@ -205,14 +193,10 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// low CPU cost.
         /// </summary>
         /// <value><c>true</c> if awake; otherwise, <c>false</c>.</value>
-        public bool Awake
-        {
-            set
-            {
-                if (value)
-                {
-                    if (!_awake)
-                    {
+        public bool Awake {
+            set {
+                if (value) {
+                    if (!_awake) {
                         _sleepTime = FixedPoint.Zero;
 
 #if USE_AWAKE_BODY_SET
@@ -223,8 +207,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 #endif
                     }
                 }
-                else
-                {
+                else {
 #if USE_AWAKE_BODY_SET
 					// Check even for BodyType.Static because if this body had just been changed to Static it will have
 					// set Awake = false in the process.
@@ -258,31 +241,25 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// in the body list.
         /// </summary>
         /// <value><c>true</c> if active; otherwise, <c>false</c>.</value>
-        public bool Enabled
-        {
-            set
-            {
+        public bool Enabled {
+            set {
                 if (value == _enabled)
                     return;
 
-                if (value)
-                {
+                if (value) {
                     // Create all proxies.
                     IBroadPhase broadPhase = _world.BroadPhase;
-                    for (int i = 0; i < FixtureList.Count; i++)
-                    {
+                    for (int i = 0; i < FixtureList.Count; i++) {
                         FixtureList[i].CreateProxies(broadPhase, ref _xf);
                     }
 
                     // Contacts are created the next time step.
                 }
-                else
-                {
+                else {
                     // Destroy all proxies.
                     IBroadPhase broadPhase = _world.BroadPhase;
 
-                    for (int i = 0; i < FixtureList.Count; i++)
-                    {
+                    for (int i = 0; i < FixtureList.Count; i++) {
                         FixtureList[i].DestroyProxies(broadPhase);
                     }
                 }
@@ -291,22 +268,20 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
             get { return _enabled; }
         }
-        
+
         /// <summary>
         /// Gets all the fixtures attached to this body.
         /// </summary>
         /// <value>The fixture list.</value>
         public List<Fixture> FixtureList { get; internal set; }
-        
+
         /// <summary>
         /// Get the world body origin position.
         /// </summary>
         /// <returns>Return the world position of the body's origin.</returns>
-        public TSVector2 Position
-        {
+        public TSVector2 Position {
             get { return _xf.p; }
-            set
-            {
+            set {
                 Debug.Assert(!FixedPoint.IsNaN(value.x) && !FixedPoint.IsNaN(value.y));
 
                 var forward = Forward;
@@ -329,79 +304,56 @@ namespace vFrame.Lockstep.Core.Physics2D
         //    }
         //}
 
-        public TSVector2 Forward
-        {
-            get
-            {
-                return new TSVector2(_xf.q.c, _xf.q.s);
-            }
-            set
-            {
-                SetTransform(ref _xf.p, ref value);
-            }
+        public TSVector2 Forward {
+            get { return new TSVector2(_xf.q.c, _xf.q.s); }
+            set { SetTransform(ref _xf.p, ref value); }
         }
 
         /// <summary>
         /// Gets or sets a value indicating whether this body is static.
         /// </summary>
         /// <value><c>true</c> if this instance is static; otherwise, <c>false</c>.</value>
-        public bool IsStatic
-        {
+        public bool IsStatic {
             get { return _bodyType == BodyType.Static; }
             set { BodyType = value ? BodyType.Static : BodyType.Dynamic; }
         }
 
         public bool TSIsStatic {
-            get {
-                return IsStatic;
-            }
-            set {
-                this.IsStatic = value;
-            }
+            get { return IsStatic; }
+            set { this.IsStatic = value; }
         }
-        
-        public FixedPoint Friction
-        {
-            get
-            {
+
+        public FixedPoint Friction {
+            get {
                 FixedPoint res = 0;
 
-                for (int i = 0; i < FixtureList.Count; i++)
-                {
+                for (int i = 0; i < FixtureList.Count; i++) {
                     Fixture f = FixtureList[i];
                     res += f.Friction;
                 }
 
                 return FixtureList.Count > 0 ? res / FixtureList.Count : 0;
             }
-            set
-            {
-                for (int i = 0; i < FixtureList.Count; i++)
-                {
+            set {
+                for (int i = 0; i < FixtureList.Count; i++) {
                     Fixture f = FixtureList[i];
                     f.Friction = value;
                 }
             }
         }
 
-        public Category CollisionCategories
-        {
-            set
-            {
-                for (int i = 0; i < FixtureList.Count; i++)
-                {
+        public Category CollisionCategories {
+            set {
+                for (int i = 0; i < FixtureList.Count; i++) {
                     Fixture f = FixtureList[i];
                     f.CollisionCategories = value;
                 }
             }
         }
-        
-        public short CollisionGroup
-        {
-            set
-            {
-                for (int i = 0; i < FixtureList.Count; i++)
-                {
+
+        public short CollisionGroup {
+            set {
+                for (int i = 0; i < FixtureList.Count; i++) {
                     Fixture f = FixtureList[i];
                     f.CollisionGroup = value;
                 }
@@ -409,26 +361,21 @@ namespace vFrame.Lockstep.Core.Physics2D
         }
 
         public bool IsSensor {
-            get {
-                return FixtureList[0].IsSensor;
-            }
+            get { return FixtureList[0].IsSensor; }
 
-            set
-            {
-                for (int i = 0; i < FixtureList.Count; i++)
-                {
+            set {
+                for (int i = 0; i < FixtureList.Count; i++) {
                     Fixture f = FixtureList[i];
                     f.IsSensor = value;
                 }
             }
         }
-        
+
         /// <summary>
         /// Resets the dynamics of this body.
         /// Sets torque, force and linear/angular velocity to 0
         /// </summary>
-        public void ResetDynamics()
-        {
+        public void ResetDynamics() {
         }
 
         /// <summary>
@@ -440,8 +387,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="shape">The shape.</param>
         /// <param name="userData">Application specific data</param>
         /// <returns></returns>
-        public Fixture CreateFixture(Shape shape, object userData = null)
-        {
+        public Fixture CreateFixture(Shape shape, object userData = null) {
             return new Fixture(this, shape, userData);
         }
 
@@ -454,8 +400,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Warning: This function is locked during callbacks.
         /// </summary>
         /// <param name="fixture">The fixture to be removed.</param>
-        public void DestroyFixture(Fixture fixture)
-        {
+        public void DestroyFixture(Fixture fixture) {
             Debug.Assert(fixture.Body == this);
 
             // Remove the fixture from this body's singly linked list.
@@ -464,8 +409,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             // You tried to remove a fixture that not present in the fixturelist.
             Debug.Assert(FixtureList.Contains(fixture));
 
-            if (_enabled)
-            {
+            if (_enabled) {
                 IBroadPhase broadPhase = _world.BroadPhase;
                 fixture.DestroyProxies(broadPhase);
             }
@@ -482,23 +426,20 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="position">The world position of the body's local origin.</param>
         /// <param name="rotation">The world rotation in radians.</param>
-        public void SetTransform(ref TSVector2 position, FixedPoint rotation)
-        {
+        public void SetTransform(ref TSVector2 position, FixedPoint rotation) {
             SetTransformIgnoreContacts(ref position, rotation);
         }
 
-        public void SetTransform(ref TSVector2 position, ref TSVector2 forward)
-        {
+        public void SetTransform(ref TSVector2 position, ref TSVector2 forward) {
             SetTransformIgnoreContacts(ref position, ref forward);
         }
-        
+
         /// <summary>
         /// For teleporting a body without considering new contacts immediately.
         /// </summary>
         /// <param name="position">The position.</param>
         /// <param name="angle">The angle.</param>
-        public void SetTransformIgnoreContacts(ref TSVector2 position, FixedPoint angle)
-        {
+        public void SetTransformIgnoreContacts(ref TSVector2 position, FixedPoint angle) {
             _xf.q.Set(angle);
             _xf.p = position;
 
@@ -510,18 +451,15 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="position">The position.</param>
         /// <param name="angle">The angle.</param>
-        public void SetTransformIgnoreContacts(ref TSVector2 position, ref TSVector2 forward)
-        {
+        public void SetTransformIgnoreContacts(ref TSVector2 position, ref TSVector2 forward) {
             _xf.q.Set(forward);
             _xf.p = position;
             ApplyTransformChanged();
         }
 
-        private void ApplyTransformChanged()
-        {
+        private void ApplyTransformChanged() {
             IBroadPhase broadPhase = _world.BroadPhase;
-            for (int i = 0; i < FixtureList.Count; i++)
-            {
+            for (int i = 0; i < FixtureList.Count; i++) {
                 FixtureList[i].Synchronize(broadPhase, ref _xf);
             }
         }
@@ -530,18 +468,16 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Get the body transform for the body's origin.
         /// </summary>
         /// <param name="transform">The transform of the body's origin.</param>
-        public void GetTransform(out Transform transform)
-        {
+        public void GetTransform(out Transform transform) {
             transform = _xf;
         }
-        
+
         /// <summary>
         /// Get the world coordinates of a point given the local coordinates.
         /// </summary>
         /// <param name="localPoint">A point on the body measured relative the the body's origin.</param>
         /// <returns>The same point expressed in world coordinates.</returns>
-        public TSVector2 GetWorldPoint(ref TSVector2 localPoint)
-        {
+        public TSVector2 GetWorldPoint(ref TSVector2 localPoint) {
             return MathUtils.Mul(ref _xf, ref localPoint);
         }
 
@@ -550,8 +486,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="localPoint">A point on the body measured relative the the body's origin.</param>
         /// <returns>The same point expressed in world coordinates.</returns>
-        public TSVector2 GetWorldPoint(TSVector2 localPoint)
-        {
+        public TSVector2 GetWorldPoint(TSVector2 localPoint) {
             return GetWorldPoint(ref localPoint);
         }
 
@@ -561,8 +496,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="localVector">A vector fixed in the body.</param>
         /// <returns>The same vector expressed in world coordinates.</returns>
-        public TSVector2 GetWorldVector(ref TSVector2 localVector)
-        {
+        public TSVector2 GetWorldVector(ref TSVector2 localVector) {
             return MathUtils.Mul(_xf.q, localVector);
         }
 
@@ -571,8 +505,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="localVector">A vector fixed in the body.</param>
         /// <returns>The same vector expressed in world coordinates.</returns>
-        public TSVector2 GetWorldVector(TSVector2 localVector)
-        {
+        public TSVector2 GetWorldVector(TSVector2 localVector) {
             return GetWorldVector(ref localVector);
         }
 
@@ -582,8 +515,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="worldPoint">A point in world coordinates.</param>
         /// <returns>The corresponding local point relative to the body's origin.</returns>
-        public TSVector2 GetLocalPoint(ref TSVector2 worldPoint)
-        {
+        public TSVector2 GetLocalPoint(ref TSVector2 worldPoint) {
             return MathUtils.MulT(ref _xf, worldPoint);
         }
 
@@ -592,8 +524,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="worldPoint">A point in world coordinates.</param>
         /// <returns>The corresponding local point relative to the body's origin.</returns>
-        public TSVector2 GetLocalPoint(TSVector2 worldPoint)
-        {
+        public TSVector2 GetLocalPoint(TSVector2 worldPoint) {
             return GetLocalPoint(ref worldPoint);
         }
 
@@ -603,8 +534,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="worldVector">A vector in world coordinates.</param>
         /// <returns>The corresponding local vector.</returns>
-        public TSVector2 GetLocalVector(ref TSVector2 worldVector)
-        {
+        public TSVector2 GetLocalVector(ref TSVector2 worldVector) {
             return MathUtils.MulT(_xf.q, worldVector);
         }
 
@@ -614,16 +544,13 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="worldVector">A vector in world coordinates.</param>
         /// <returns>The corresponding local vector.</returns>
-        public TSVector2 GetLocalVector(TSVector2 worldVector)
-        {
+        public TSVector2 GetLocalVector(TSVector2 worldVector) {
             return GetLocalVector(ref worldVector);
         }
-        
-        internal void SynchronizeFixtures()
-        {
+
+        internal void SynchronizeFixtures() {
             IBroadPhase broadPhase = _world.BroadPhase;
-            for (int i = 0; i < FixtureList.Count; i++)
-            {
+            for (int i = 0; i < FixtureList.Count; i++) {
                 FixtureList[i].Synchronize(broadPhase, ref _xf);
             }
         }
@@ -631,32 +558,22 @@ namespace vFrame.Lockstep.Core.Physics2D
         #region IDisposable Members
 
         public bool IsDisposed { get; set; }
-        
-        public bool TSDisabled {
-            get {
-                return disabled;
-            }
 
-            set {
-                disabled = value;
-            }
+        public bool TSDisabled {
+            get { return disabled; }
+
+            set { disabled = value; }
         }
 
         public TSVector2 TSPosition {
-            get {
-                return Position;
-            }
+            get { return Position; }
 
-            set {
-                Position = value;
-            }
+            set { Position = value; }
         }
 
 
         public FixedPoint TSFriction {
-            get {
-                return FixtureList[0].Friction;
-            }
+            get { return FixtureList[0].Friction; }
 
             set {
                 List<Fixture> fixtures = FixtureList;
@@ -668,9 +585,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         }
 
         public FixedPoint TSRestitution {
-            get {
-                return FixtureList[0].Restitution;
-            }
+            get { return FixtureList[0].Restitution; }
 
             set {
                 List<Fixture> fixtures = FixtureList;
@@ -681,10 +596,8 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
         }
 
-        public void Dispose()
-        {
-            if (!IsDisposed)
-            {
+        public void Dispose() {
+            if (!IsDisposed) {
                 _world.RemoveBody(this);
                 IsDisposed = true;
                 GC.SuppressFinalize(this);
@@ -699,8 +612,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="world"></param>
         /// <returns></returns>
-        public Body Clone(World world = null)
-        {
+        public Body Clone(World world = null) {
             Body body = new Body(world ?? _world, Position, Forward, UserData);
             body._bodyType = _bodyType;
             body.GravityScale = GravityScale;
@@ -717,13 +629,11 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="world"></param>
         /// <returns></returns>
-        public Body DeepClone(World world = null)
-        {
+        public Body DeepClone(World world = null) {
             Body body = Clone(world ?? _world);
 
             int count = FixtureList.Count; //Make a copy of the count. Otherwise it causes an infinite loop.
-            for (int i = 0; i < count; i++)
-            {
+            for (int i = 0; i < count; i++) {
                 FixtureList[i].CloneOnto(body);
             }
 
@@ -734,5 +644,4 @@ namespace vFrame.Lockstep.Core.Physics2D
             return Position + "|" + Forward;
         }
     }
-
 }

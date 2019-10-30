@@ -9,8 +9,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         public List<Node> ParentList;
         protected Node RightChild;
 
-        protected Node(Node left, Node right)
-        {
+        protected Node(Node left, Node right) {
             ParentList = new List<Node>();
             LeftChild = left;
             RightChild = right;
@@ -25,16 +24,15 @@ namespace vFrame.Lockstep.Core.Physics2D
 
         // Replace a node in the graph with this node
         // Make sure parent pointers are updated
-        public void Replace(Node node)
-        {
-            foreach (Node parent in node.ParentList)
-            {
+        public void Replace(Node node) {
+            foreach (Node parent in node.ParentList) {
                 // Select the correct node to replace (left or right child)
                 if (parent.LeftChild == node)
                     parent.LeftChild = this;
                 else
                     parent.RightChild = this;
             }
+
             ParentList.AddRange(node.ParentList);
         }
     }

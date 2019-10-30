@@ -5,13 +5,11 @@
         private Edge _edge;
 
         public YNode(Edge edge, Node lChild, Node rChild)
-            : base(lChild, rChild)
-        {
+            : base(lChild, rChild) {
             _edge = edge;
         }
 
-        public override Sink Locate(Edge edge)
-        {
+        public override Sink Locate(Edge edge) {
             if (_edge.IsAbove(edge.P))
                 return RightChild.Locate(edge); // Move down the graph
 

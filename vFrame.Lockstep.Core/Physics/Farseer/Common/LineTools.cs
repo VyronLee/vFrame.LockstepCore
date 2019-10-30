@@ -1,5 +1,4 @@
-﻿
-namespace vFrame.Lockstep.Core.Physics2D
+﻿namespace vFrame.Lockstep.Core.Physics2D
 {
     /// <summary>
     /// Collection of helper methods for misc collisions.
@@ -7,8 +6,8 @@ namespace vFrame.Lockstep.Core.Physics2D
     /// </summary>
     public static class LineTools
     {
-        public static FixedPoint DistanceBetweenPointAndLineSegment(ref TSVector2 point, ref TSVector2 start, ref TSVector2 end)
-        {
+        public static FixedPoint DistanceBetweenPointAndLineSegment(ref TSVector2 point, ref TSVector2 start,
+            ref TSVector2 end) {
             if (start == end)
                 return TSVector2.Distance(point, start);
 
@@ -35,8 +34,8 @@ namespace vFrame.Lockstep.Core.Physics2D
         ///Grazing lines should not return true.
         /// 
         /// </summary>
-        public static bool LineIntersect2(ref TSVector2 a0, ref TSVector2 a1, ref TSVector2 b0, ref  TSVector2 b1, out TSVector2 intersectionPoint)
-        {
+        public static bool LineIntersect2(ref TSVector2 a0, ref TSVector2 a1, ref TSVector2 b0, ref TSVector2 b1,
+            out TSVector2 intersectionPoint) {
             intersectionPoint = TSVector2.zero;
 
             if (a0 == b0 || a0 == b1 || a1 == b0 || a1 == b1)
@@ -61,16 +60,15 @@ namespace vFrame.Lockstep.Core.Physics2D
             FixedPoint ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3));
             FixedPoint ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3));
             FixedPoint denom = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1);
-            if (FixedPoint.Abs(denom) < Settings.Epsilon)
-            {
+            if (FixedPoint.Abs(denom) < Settings.Epsilon) {
                 //Lines are too close to parallel to call
                 return false;
             }
+
             ua /= denom;
             ub /= denom;
 
-            if ((0 < ua) && (ua < 1) && (0 < ub) && (ub < 1))
-            {
+            if ((0 < ua) && (ua < 1) && (0 < ub) && (ub < 1)) {
                 intersectionPoint.x = (x1 + ua * (x2 - x1));
                 intersectionPoint.y = (y1 + ua * (y2 - y1));
                 return true;
@@ -80,8 +78,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         }
 
         //From Mark Bayazit's convex decomposition algorithm
-        public static TSVector2 LineIntersect(TSVector2 p1, TSVector2 p2, TSVector2 q1, TSVector2 q2)
-        {
+        public static TSVector2 LineIntersect(TSVector2 p1, TSVector2 p2, TSVector2 q1, TSVector2 q2) {
             TSVector2 i = TSVector2.zero;
             FixedPoint a1 = p2.y - p1.y;
             FixedPoint b1 = p1.x - p2.x;
@@ -91,12 +88,12 @@ namespace vFrame.Lockstep.Core.Physics2D
             FixedPoint c2 = a2 * q1.x + b2 * q1.y;
             FixedPoint det = a1 * b2 - a2 * b1;
 
-            if (!MathUtils.FPEquals(det, 0))
-            {
+            if (!MathUtils.FPEquals(det, 0)) {
                 // lines are not parallel
                 i.x = (b2 * c1 - b1 * c2) / det;
                 i.y = (a1 * c2 - a2 * c1) / det;
             }
+
             return i;
         }
 
@@ -124,8 +121,8 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="secondIsSegment">Set this to true to require that the
         /// intersection point be on the second line segment.</param>
         /// <returns>True if an intersection is detected, false otherwise.</returns>
-        public static bool LineIntersect(ref TSVector2 point1, ref TSVector2 point2, ref TSVector2 point3, ref TSVector2 point4, bool firstIsSegment, bool secondIsSegment, out TSVector2 point)
-        {
+        public static bool LineIntersect(ref TSVector2 point1, ref TSVector2 point2, ref TSVector2 point3,
+            ref TSVector2 point4, bool firstIsSegment, bool secondIsSegment, out TSVector2 point) {
             point = new TSVector2();
 
             // these are reused later.
@@ -140,8 +137,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             FixedPoint denom = (a * b) - (c * d);
 
             // if denominator is 0, then lines are parallel
-            if (!(denom >= -Settings.Epsilon && denom <= Settings.Epsilon))
-            {
+            if (!(denom >= -Settings.Epsilon && denom <= Settings.Epsilon)) {
                 FixedPoint e = point1.y - point3.y;
                 FixedPoint f = point1.x - point3.x;
                 FixedPoint oneOverDenom = FixedPoint.One / denom;
@@ -151,8 +147,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 ua *= oneOverDenom;
 
                 // check if intersection point of the two lines is on line segment 1
-                if (!firstIsSegment || ua >= FixedPoint.Zero && ua <= FixedPoint.One)
-                {
+                if (!firstIsSegment || ua >= FixedPoint.Zero && ua <= FixedPoint.One) {
                     // numerator of second equation
                     FixedPoint ub = (b * e) - (d * f);
                     ub *= oneOverDenom;
@@ -160,11 +155,9 @@ namespace vFrame.Lockstep.Core.Physics2D
                     // check if intersection point of the two lines is on line segment 2
                     // means the line segments intersect, since we know it is on
                     // segment 1 as well.
-                    if (!secondIsSegment || ub >= FixedPoint.Zero && ub <= FixedPoint.One)
-                    {
+                    if (!secondIsSegment || ub >= FixedPoint.Zero && ub <= FixedPoint.One) {
                         // check if they are coincident (no collision in this case)
-                        if (ua != FixedPoint.Zero || ub != FixedPoint.Zero)
-                        {
+                        if (ua != FixedPoint.Zero || ub != FixedPoint.Zero) {
                             //There is an intersection
                             point.x = point1.x + ua * b;
                             point.y = point1.y + ua * d;
@@ -201,9 +194,10 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="secondIsSegment">Set this to true to require that the
         /// intersection point be on the second line segment.</param>
         /// <returns>True if an intersection is detected, false otherwise.</returns>
-        public static bool LineIntersect(TSVector2 point1, TSVector2 point2, TSVector2 point3, TSVector2 point4, bool firstIsSegment, bool secondIsSegment, out TSVector2 intersectionPoint)
-        {
-            return LineIntersect(ref point1, ref point2, ref point3, ref point4, firstIsSegment, secondIsSegment, out intersectionPoint);
+        public static bool LineIntersect(TSVector2 point1, TSVector2 point2, TSVector2 point3, TSVector2 point4,
+            bool firstIsSegment, bool secondIsSegment, out TSVector2 intersectionPoint) {
+            return LineIntersect(ref point1, ref point2, ref point3, ref point4, firstIsSegment, secondIsSegment,
+                out intersectionPoint);
         }
 
         /// <summary>
@@ -220,8 +214,8 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="intersectionPoint">This is set to the intersection
         /// point if an intersection is detected.</param>
         /// <returns>True if an intersection is detected, false otherwise.</returns>
-        public static bool LineIntersect(ref TSVector2 point1, ref TSVector2 point2, ref TSVector2 point3, ref TSVector2 point4, out TSVector2 intersectionPoint)
-        {
+        public static bool LineIntersect(ref TSVector2 point1, ref TSVector2 point2, ref TSVector2 point3,
+            ref TSVector2 point4, out TSVector2 intersectionPoint) {
             return LineIntersect(ref point1, ref point2, ref point3, ref point4, true, true, out intersectionPoint);
         }
 
@@ -239,8 +233,8 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="intersectionPoint">This is set to the intersection
         /// point if an intersection is detected.</param>
         /// <returns>True if an intersection is detected, false otherwise.</returns>
-        public static bool LineIntersect(TSVector2 point1, TSVector2 point2, TSVector2 point3, TSVector2 point4, out TSVector2 intersectionPoint)
-        {
+        public static bool LineIntersect(TSVector2 point1, TSVector2 point2, TSVector2 point3, TSVector2 point4,
+            out TSVector2 intersectionPoint) {
             return LineIntersect(ref point1, ref point2, ref point3, ref point4, true, true, out intersectionPoint);
         }
 
@@ -254,15 +248,14 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="point1">The first point of the line segment to test</param>
         /// <param name="point2">The second point of the line segment to test.</param>
         /// <param name="vertices">The vertices, as described above</param>
-        public static Vertices LineSegmentVerticesIntersect(ref TSVector2 point1, ref TSVector2 point2, Vertices vertices)
-        {
+        public static Vertices LineSegmentVerticesIntersect(ref TSVector2 point1, ref TSVector2 point2,
+            Vertices vertices) {
             Vertices intersectionPoints = new Vertices();
 
-            for (int i = 0; i < vertices.Count; i++)
-            {
+            for (int i = 0; i < vertices.Count; i++) {
                 TSVector2 point;
-                if (LineIntersect(vertices[i], vertices[vertices.NextIndex(i)], point1, point2, true, true, out point))
-                {
+                if (LineIntersect(vertices[i], vertices[vertices.NextIndex(i)], point1, point2, true, true,
+                    out point)) {
                     intersectionPoints.Add(point);
                 }
             }
@@ -276,8 +269,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="point1">The first point of the line segment to test</param>
         /// <param name="point2">The second point of the line segment to test.</param>
         /// <param name="aabb">The AABB that is used for testing intersection.</param>
-        public static Vertices LineSegmentAABBIntersect(ref TSVector2 point1, ref TSVector2 point2, AABB aabb)
-        {
+        public static Vertices LineSegmentAABBIntersect(ref TSVector2 point1, ref TSVector2 point2, AABB aabb) {
             return LineSegmentVerticesIntersect(ref point1, ref point2, aabb.Vertices);
         }
     }

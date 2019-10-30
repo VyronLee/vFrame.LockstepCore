@@ -41,7 +41,7 @@ namespace vFrame.Lockstep.Core.Physics2D
     {
         // Inital triangle factor, seed triangle will extend 30% of 
         // PointSet width to both left and right.
-        private static readonly FixedPoint ALPHA = 3*FixedPoint.EN1;// 0.3f;
+        private static readonly FixedPoint ALPHA = 3 * FixedPoint.EN1; // 0.3f;
 
         public DTSweepBasin Basin = new DTSweepBasin();
         public DTSweepEdgeEvent EdgeEvent = new DTSweepEdgeEvent();
@@ -49,16 +49,14 @@ namespace vFrame.Lockstep.Core.Physics2D
         private DTSweepPointComparator _comparator = new DTSweepPointComparator();
         public AdvancingFront aFront;
 
-        public DTSweepContext()
-        {
+        public DTSweepContext() {
             Clear();
         }
 
         public TriangulationPoint Head { get; set; }
         public TriangulationPoint Tail { get; set; }
 
-        public void RemoveFromList(DelaunayTriangle triangle)
-        {
+        public void RemoveFromList(DelaunayTriangle triangle) {
             Triangles.Remove(triangle);
             // TODO: remove all neighbor pointers to this triangle
             //        for( int i=0; i<3; i++ )
@@ -71,54 +69,44 @@ namespace vFrame.Lockstep.Core.Physics2D
             //        triangle.clearNeighbors();
         }
 
-        public void MeshClean(DelaunayTriangle triangle)
-        {
+        public void MeshClean(DelaunayTriangle triangle) {
             MeshCleanReq(triangle);
         }
 
-        private void MeshCleanReq(DelaunayTriangle triangle)
-        {
-            if (triangle != null && !triangle.IsInterior)
-            {
+        private void MeshCleanReq(DelaunayTriangle triangle) {
+            if (triangle != null && !triangle.IsInterior) {
                 triangle.IsInterior = true;
                 Triangulatable.AddTriangle(triangle);
-                for (int i = 0; i < 3; i++)
-                {
-                    if (!triangle.EdgeIsConstrained[i])
-                    {
+                for (int i = 0; i < 3; i++) {
+                    if (!triangle.EdgeIsConstrained[i]) {
                         MeshCleanReq(triangle.Neighbors[i]);
                     }
                 }
             }
         }
 
-        public override void Clear()
-        {
+        public override void Clear() {
             base.Clear();
             Triangles.Clear();
         }
 
-        public void AddNode(AdvancingFrontNode node)
-        {
+        public void AddNode(AdvancingFrontNode node) {
             //        Console.WriteLine( "add:" + node.key + ":" + System.identityHashCode(node.key));
             //        m_nodeTree.put( node.getKey(), node );
             aFront.AddNode(node);
         }
 
-        public void RemoveNode(AdvancingFrontNode node)
-        {
+        public void RemoveNode(AdvancingFrontNode node) {
             //        Console.WriteLine( "remove:" + node.key + ":" + System.identityHashCode(node.key));
             //        m_nodeTree.delete( node.getKey() );
             aFront.RemoveNode(node);
         }
 
-        public AdvancingFrontNode LocateNode(TriangulationPoint point)
-        {
+        public AdvancingFrontNode LocateNode(TriangulationPoint point) {
             return aFront.LocateNode(point);
         }
 
-        public void CreateAdvancingFront()
-        {
+        public void CreateAdvancingFront() {
             AdvancingFrontNode head, tail, middle;
             // Initial triangle
             DelaunayTriangle iTriangle = new DelaunayTriangle(Points[0], Tail, Head);
@@ -145,24 +133,19 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Try to map a node to all sides of this triangle that don't have 
         /// a neighbor.
         /// </summary>
-        public void MapTriangleToNodes(DelaunayTriangle t)
-        {
+        public void MapTriangleToNodes(DelaunayTriangle t) {
             AdvancingFrontNode n;
-            for (int i = 0; i < 3; i++)
-            {
-                if (t.Neighbors[i] == null)
-                {
+            for (int i = 0; i < 3; i++) {
+                if (t.Neighbors[i] == null) {
                     n = aFront.LocatePoint(t.PointCW(t.Points[i]));
-                    if (n != null)
-                    {
+                    if (n != null) {
                         n.Triangle = t;
                     }
                 }
             }
         }
 
-        public override void PrepareTriangulation(Triangulatable t)
-        {
+        public override void PrepareTriangulation(Triangulatable t) {
             base.PrepareTriangulation(t);
 
             FixedPoint xmax, xmin;
@@ -172,8 +155,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             ymax = ymin = Points[0].Y;
 
             // Calculate bounds. Should be combined with the sorting
-            foreach (TriangulationPoint p in Points)
-            {
+            foreach (TriangulationPoint p in Points) {
                 if (p.X > xmax)
                     xmax = p.X;
                 if (p.X < xmin)
@@ -184,8 +166,8 @@ namespace vFrame.Lockstep.Core.Physics2D
                     ymin = p.Y;
             }
 
-            FixedPoint deltaX = ALPHA*(xmax - xmin);
-            FixedPoint deltaY = ALPHA*(ymax - ymin);
+            FixedPoint deltaX = ALPHA * (xmax - xmin);
+            FixedPoint deltaY = ALPHA * (ymax - ymin);
             TriangulationPoint p1 = new TriangulationPoint(xmax + deltaX, ymin - deltaY);
             TriangulationPoint p2 = new TriangulationPoint(xmin - deltaX, ymin - deltaY);
 
@@ -199,14 +181,12 @@ namespace vFrame.Lockstep.Core.Physics2D
         }
 
 
-        public void FinalizeTriangulation()
-        {
+        public void FinalizeTriangulation() {
             Triangulatable.AddTriangles(Triangles);
             Triangles.Clear();
         }
 
-        public override TriangulationConstraint NewConstraint(TriangulationPoint a, TriangulationPoint b)
-        {
+        public override TriangulationConstraint NewConstraint(TriangulationPoint a, TriangulationPoint b) {
             return new DTSweepConstraint(a, b);
         }
 

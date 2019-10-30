@@ -1,10 +1,10 @@
-﻿namespace vFrame.Lockstep.Core.Physics2D {
-
+﻿namespace vFrame.Lockstep.Core.Physics2D
+{
     /**
     * @brief A generic 2D shape clone.
     **/
-    public class GenericShapeClone2D {
-
+    public class GenericShapeClone2D
+    {
         private FixedPoint _radius;
         private FixedPoint _2radius;
 
@@ -18,22 +18,25 @@
             this._2radius = sh._2radius;
 
             if (sh is PolygonShape) {
-                ClonePolygon((PolygonShape)sh);
-            } else if (sh is CircleShape) {
-                CloneCircle((CircleShape)sh);
+                ClonePolygon((PolygonShape) sh);
+            }
+            else if (sh is CircleShape) {
+                CloneCircle((CircleShape) sh);
             }
         }
 
         private void ClonePolygon(PolygonShape sh) {
             if (this._vertices == null) {
                 this._vertices = new Vertices();
-            } else {
+            }
+            else {
                 this._vertices.Clear();
             }
 
             if (this._normals == null) {
                 this._normals = new Vertices();
-            } else {
+            }
+            else {
                 this._normals.Clear();
             }
 
@@ -50,9 +53,10 @@
             sh._2radius = this._2radius;
 
             if (sh is PolygonShape) {
-                RestorePolygon((PolygonShape)sh);
-            } else if (sh is CircleShape) {
-                RestoreCircle((CircleShape)sh);
+                RestorePolygon((PolygonShape) sh);
+            }
+            else if (sh is CircleShape) {
+                RestoreCircle((CircleShape) sh);
             }
         }
 
@@ -67,7 +71,5 @@
         private void RestoreCircle(CircleShape sh) {
             sh._position = this._position;
         }
-
     }
-
 }

@@ -22,11 +22,10 @@
 
 namespace vFrame.Lockstep.Core.Physics2D
 {
-
     public delegate void FixtureDelegate(Fixture fixture);
 
     public delegate void BodyDelegate(Body body);
-    
+
     public delegate bool CollisionFilterDelegate(Fixture fixtureA, Fixture fixtureB);
 
     public delegate void BroadphaseDelegate(ref FixtureProxy proxyA, ref FixtureProxy proxyB);

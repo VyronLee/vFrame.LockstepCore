@@ -28,7 +28,7 @@ namespace vFrame.Lockstep.Core.Physics2D
     public static class Settings
     {
         public static readonly FixedPoint MaxFP = FixedPoint.MaxValue;
-        public static readonly FixedPoint Epsilon = 119209 * FixedPoint.EN12;//2896e-07f;
+        public static readonly FixedPoint Epsilon = 119209 * FixedPoint.EN12; //2896e-07f;
         public static readonly FixedPoint EpsilonSqr = Epsilon * Epsilon;
         public static readonly FixedPoint Pi = FixedPoint.Pi;
 
@@ -165,12 +165,12 @@ namespace vFrame.Lockstep.Core.Physics2D
         public static readonly FixedPoint LinearSlop = 5 * FixedPoint.EN3;
 
         ///0.005f;
-
         /// <summary>
         /// A small angle used as a collision and constraint tolerance. Usually it is
         /// chosen to be numerically significant, but visually insignificant.
         /// </summary>
-        public static readonly FixedPoint AngularSlop = FixedPoint.One * 2 / 180 * FixedPoint.Pi;// (2.0f / 180.0f * Pi);
+        public static readonly FixedPoint
+            AngularSlop = FixedPoint.One * 2 / 180 * FixedPoint.Pi; // (2.0f / 180.0f * Pi);
 
         /// <summary>
         /// The radius of the polygon/edge shape skin. This should not be modified. Making
@@ -196,36 +196,38 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// The maximum linear position correction used when solving constraints. This helps to
         /// prevent overshoot.
         /// </summary>
-        public static readonly FixedPoint MaxLinearCorrection = 2*FixedPoint.EN1;//0.2f;
+        public static readonly FixedPoint MaxLinearCorrection = 2 * FixedPoint.EN1; //0.2f;
 
         /// <summary>
         /// The maximum angular position correction used when solving constraints. This helps to
         /// prevent overshoot.
         /// </summary>
-        public static readonly FixedPoint MaxAngularCorrection = FixedPoint.One * 8 / 180 * FixedPoint.Pi;// (8.0f / 180.0f * Pi);
+        public static readonly FixedPoint
+            MaxAngularCorrection = FixedPoint.One * 8 / 180 * FixedPoint.Pi; // (8.0f / 180.0f * Pi);
 
         /// <summary>
         /// This scale factor controls how fast overlap is resolved. Ideally this would be 1 so
         /// that overlap is removed in one time step. However using values close to 1 often lead
         /// to overshoot.
         /// </summary>
-        public static readonly FixedPoint Baumgarte = 2*FixedPoint.EN1;//0.2f;
+        public static readonly FixedPoint Baumgarte = 2 * FixedPoint.EN1; //0.2f;
 
         // Sleep
         /// <summary>
         /// The time that a body must be still before it will go to sleep.
         /// </summary>
-        public static readonly FixedPoint TimeToSleep = 5*FixedPoint.EN1;
+        public static readonly FixedPoint TimeToSleep = 5 * FixedPoint.EN1;
 
         /// <summary>
         /// A body cannot sleep if its linear velocity is above this tolerance.
         /// </summary>
-        public static readonly FixedPoint LinearSleepTolerance = FixedPoint.EN2;//0.01f;
+        public static readonly FixedPoint LinearSleepTolerance = FixedPoint.EN2; //0.01f;
 
         /// <summary>
         /// A body cannot sleep if its angular velocity is above this tolerance.
         /// </summary>
-        public static readonly FixedPoint AngularSleepTolerance = FixedPoint.One * 2 / 180 * FixedPoint.Pi;// (2.0f / 180.0f * Pi);
+        public static readonly FixedPoint
+            AngularSleepTolerance = FixedPoint.One * 2 / 180 * FixedPoint.Pi; // (2.0f / 180.0f * Pi);
 
         /// <summary>
         /// The maximum linear velocity of a body. This limit is very large and is used
@@ -239,7 +241,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// The maximum angular velocity of a body. This limit is very large and is used
         /// to prevent numerical problems. You shouldn't need to adjust this.
         /// </summary>
-        public static readonly FixedPoint MaxRotation = FixedPoint.Pi * FixedPoint.Half;// (0.5f * Pi);
+        public static readonly FixedPoint MaxRotation = FixedPoint.Pi * FixedPoint.Half; // (0.5f * Pi);
 
         public static readonly FixedPoint MaxRotationSquared = (MaxRotation * MaxRotation);
 
@@ -269,8 +271,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="friction1">The friction1.</param>
         /// <param name="friction2">The friction2.</param>
         /// <returns></returns>
-        public static FixedPoint MixFriction(FixedPoint friction1, FixedPoint friction2)
-        {
+        public static FixedPoint MixFriction(FixedPoint friction1, FixedPoint friction2) {
             return FixedPoint.Sqrt(friction1 * friction2);
         }
 
@@ -280,8 +281,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="restitution1">The restitution1.</param>
         /// <param name="restitution2">The restitution2.</param>
         /// <returns></returns>
-        public static FixedPoint MixRestitution(FixedPoint restitution1, FixedPoint restitution2)
-        {
+        public static FixedPoint MixRestitution(FixedPoint restitution1, FixedPoint restitution2) {
             return restitution1 > restitution2 ? restitution1 : restitution2;
         }
     }

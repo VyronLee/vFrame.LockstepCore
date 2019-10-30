@@ -17,8 +17,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Ignores the controller. The controller has no effect on this body.
         /// </summary>
         /// <param name="type">The logic type.</param>
-        public void IgnorePhysicsLogic(PhysicsLogicType type)
-        {
+        public void IgnorePhysicsLogic(PhysicsLogicType type) {
             ControllerIgnores |= type;
         }
 
@@ -26,8 +25,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Restore the controller. The controller affects this body.
         /// </summary>
         /// <param name="type">The logic type.</param>
-        public void RestorePhysicsLogic(PhysicsLogicType type)
-        {
+        public void RestorePhysicsLogic(PhysicsLogicType type) {
             ControllerIgnores &= ~type;
         }
 
@@ -38,8 +36,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <returns>
         /// 	<c>true</c> if the body has the specified flag; otherwise, <c>false</c>.
         /// </returns>
-        public bool IsPhysicsLogicIgnored(PhysicsLogicType type)
-        {
+        public bool IsPhysicsLogicIgnored(PhysicsLogicType type) {
             return (ControllerIgnores & type) == type;
         }
     }
@@ -49,16 +46,14 @@ namespace vFrame.Lockstep.Core.Physics2D
         private PhysicsLogicType _type;
         public World World;
 
-        public override bool IsActiveOn(Body body)
-        {
+        public override bool IsActiveOn(Body body) {
             if (body.PhysicsLogicFilter.IsPhysicsLogicIgnored(_type))
                 return false;
 
             return base.IsActiveOn(body);
         }
 
-        public PhysicsLogic(World world, PhysicsLogicType type)
-        {
+        public PhysicsLogic(World world, PhysicsLogicType type) {
             _type = type;
             World = world;
         }

@@ -19,7 +19,6 @@
 
 namespace vFrame.Lockstep.Core
 {
-
     /// <summary>
     /// 3x3 Matrix.
     /// </summary>
@@ -29,62 +28,77 @@ namespace vFrame.Lockstep.Core
         /// M11
         /// </summary>
         public FixedPoint M11; // 1st row vector
+
         /// <summary>
         /// M12
         /// </summary>
         public FixedPoint M12;
+
         /// <summary>
         /// M13
         /// </summary>
         public FixedPoint M13;
+
         /// <summary>
         /// M14
         /// </summary>
         public FixedPoint M14;
+
         /// <summary>
         /// M21
         /// </summary>
         public FixedPoint M21; // 2nd row vector
+
         /// <summary>
         /// M22
         /// </summary>
         public FixedPoint M22;
+
         /// <summary>
         /// M23
         /// </summary>
         public FixedPoint M23;
+
         /// <summary>
         /// M24
         /// </summary>
         public FixedPoint M24;
+
         /// <summary>
         /// M31
         /// </summary>
         public FixedPoint M31; // 3rd row vector
+
         /// <summary>
         /// M32
         /// </summary>
         public FixedPoint M32;
+
         /// <summary>
         /// M33
         /// </summary>
         public FixedPoint M33;
+
         /// <summary>
         /// M34
         /// </summary>
         public FixedPoint M34;
+
         /// <summary>
         /// M41
         /// </summary>
         public FixedPoint M41; // 4rd row vector
+
         /// <summary>
         /// M42
         /// </summary>
         public FixedPoint M42;
+
         /// <summary>
         /// M43
         /// </summary>
         public FixedPoint M43;
+
         /// <summary>
         /// M44
         /// </summary>
@@ -96,10 +110,10 @@ namespace vFrame.Lockstep.Core
         /// Identity matrix.
         /// </summary>
         public static readonly TSMatrix4x4 Identity;
+
         public static readonly TSMatrix4x4 Zero;
 
-        static TSMatrix4x4()
-        {
+        static TSMatrix4x4() {
             Zero = new TSMatrix4x4();
 
             Identity = new TSMatrix4x4();
@@ -110,6 +124,7 @@ namespace vFrame.Lockstep.Core
 
             InternalIdentity = Identity;
         }
+
         /// <summary>
         /// Initializes a new instance of the matrix structure.
         /// </summary>
@@ -132,8 +147,7 @@ namespace vFrame.Lockstep.Core
         public TSMatrix4x4(FixedPoint m11, FixedPoint m12, FixedPoint m13, FixedPoint m14,
             FixedPoint m21, FixedPoint m22, FixedPoint m23, FixedPoint m24,
             FixedPoint m31, FixedPoint m32, FixedPoint m33, FixedPoint m34,
-            FixedPoint m41, FixedPoint m42, FixedPoint m43, FixedPoint m44)
-        {
+            FixedPoint m41, FixedPoint m42, FixedPoint m43, FixedPoint m44) {
             this.M11 = m11;
             this.M12 = m12;
             this.M13 = m13;
@@ -158,8 +172,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="matrix1">The first matrix.</param>
         /// <param name="matrix2">The second matrix.</param>
         /// <returns>The product of both matrices.</returns>
-        public static TSMatrix4x4 Multiply(TSMatrix4x4 matrix1, TSMatrix4x4 matrix2)
-        {
+        public static TSMatrix4x4 Multiply(TSMatrix4x4 matrix1, TSMatrix4x4 matrix2) {
             TSMatrix4x4 result;
             TSMatrix4x4.Multiply(ref matrix1, ref matrix2, out result);
             return result;
@@ -171,31 +184,46 @@ namespace vFrame.Lockstep.Core
         /// <param name="matrix1">The first matrix.</param>
         /// <param name="matrix2">The second matrix.</param>
         /// <param name="result">The product of both matrices.</param>
-        public static void Multiply(ref TSMatrix4x4 matrix1, ref TSMatrix4x4 matrix2, out TSMatrix4x4 result)
-        {
+        public static void Multiply(ref TSMatrix4x4 matrix1, ref TSMatrix4x4 matrix2, out TSMatrix4x4 result) {
             // First row
-            result.M11 = matrix1.M11 * matrix2.M11 + matrix1.M12 * matrix2.M21 + matrix1.M13 * matrix2.M31 + matrix1.M14 * matrix2.M41;
-            result.M12 = matrix1.M11 * matrix2.M12 + matrix1.M12 * matrix2.M22 + matrix1.M13 * matrix2.M32 + matrix1.M14 * matrix2.M42;
-            result.M13 = matrix1.M11 * matrix2.M13 + matrix1.M12 * matrix2.M23 + matrix1.M13 * matrix2.M33 + matrix1.M14 * matrix2.M43;
-            result.M14 = matrix1.M11 * matrix2.M14 + matrix1.M12 * matrix2.M24 + matrix1.M13 * matrix2.M34 + matrix1.M14 * matrix2.M44;
+            result.M11 = matrix1.M11 * matrix2.M11 + matrix1.M12 * matrix2.M21 + matrix1.M13 * matrix2.M31 +
+                         matrix1.M14 * matrix2.M41;
+            result.M12 = matrix1.M11 * matrix2.M12 + matrix1.M12 * matrix2.M22 + matrix1.M13 * matrix2.M32 +
+                         matrix1.M14 * matrix2.M42;
+            result.M13 = matrix1.M11 * matrix2.M13 + matrix1.M12 * matrix2.M23 + matrix1.M13 * matrix2.M33 +
+                         matrix1.M14 * matrix2.M43;
+            result.M14 = matrix1.M11 * matrix2.M14 + matrix1.M12 * matrix2.M24 + matrix1.M13 * matrix2.M34 +
+                         matrix1.M14 * matrix2.M44;
 
             // Second row
-            result.M21 = matrix1.M21 * matrix2.M11 + matrix1.M22 * matrix2.M21 + matrix1.M23 * matrix2.M31 + matrix1.M24 * matrix2.M41;
-            result.M22 = matrix1.M21 * matrix2.M12 + matrix1.M22 * matrix2.M22 + matrix1.M23 * matrix2.M32 + matrix1.M24 * matrix2.M42;
-            result.M23 = matrix1.M21 * matrix2.M13 + matrix1.M22 * matrix2.M23 + matrix1.M23 * matrix2.M33 + matrix1.M24 * matrix2.M43;
-            result.M24 = matrix1.M21 * matrix2.M14 + matrix1.M22 * matrix2.M24 + matrix1.M23 * matrix2.M34 + matrix1.M24 * matrix2.M44;
+            result.M21 = matrix1.M21 * matrix2.M11 + matrix1.M22 * matrix2.M21 + matrix1.M23 * matrix2.M31 +
+                         matrix1.M24 * matrix2.M41;
+            result.M22 = matrix1.M21 * matrix2.M12 + matrix1.M22 * matrix2.M22 + matrix1.M23 * matrix2.M32 +
+                         matrix1.M24 * matrix2.M42;
+            result.M23 = matrix1.M21 * matrix2.M13 + matrix1.M22 * matrix2.M23 + matrix1.M23 * matrix2.M33 +
+                         matrix1.M24 * matrix2.M43;
+            result.M24 = matrix1.M21 * matrix2.M14 + matrix1.M22 * matrix2.M24 + matrix1.M23 * matrix2.M34 +
+                         matrix1.M24 * matrix2.M44;
 
             // Third row
-            result.M31 = matrix1.M31 * matrix2.M11 + matrix1.M32 * matrix2.M21 + matrix1.M33 * matrix2.M31 + matrix1.M34 * matrix2.M41;
-            result.M32 = matrix1.M31 * matrix2.M12 + matrix1.M32 * matrix2.M22 + matrix1.M33 * matrix2.M32 + matrix1.M34 * matrix2.M42;
-            result.M33 = matrix1.M31 * matrix2.M13 + matrix1.M32 * matrix2.M23 + matrix1.M33 * matrix2.M33 + matrix1.M34 * matrix2.M43;
-            result.M34 = matrix1.M31 * matrix2.M14 + matrix1.M32 * matrix2.M24 + matrix1.M33 * matrix2.M34 + matrix1.M34 * matrix2.M44;
+            result.M31 = matrix1.M31 * matrix2.M11 + matrix1.M32 * matrix2.M21 + matrix1.M33 * matrix2.M31 +
+                         matrix1.M34 * matrix2.M41;
+            result.M32 = matrix1.M31 * matrix2.M12 + matrix1.M32 * matrix2.M22 + matrix1.M33 * matrix2.M32 +
+                         matrix1.M34 * matrix2.M42;
+            result.M33 = matrix1.M31 * matrix2.M13 + matrix1.M32 * matrix2.M23 + matrix1.M33 * matrix2.M33 +
+                         matrix1.M34 * matrix2.M43;
+            result.M34 = matrix1.M31 * matrix2.M14 + matrix1.M32 * matrix2.M24 + matrix1.M33 * matrix2.M34 +
+                         matrix1.M34 * matrix2.M44;
 
             // Fourth row
-            result.M41 = matrix1.M41 * matrix2.M11 + matrix1.M42 * matrix2.M21 + matrix1.M43 * matrix2.M31 + matrix1.M44 * matrix2.M41;
-            result.M42 = matrix1.M41 * matrix2.M12 + matrix1.M42 * matrix2.M22 + matrix1.M43 * matrix2.M32 + matrix1.M44 * matrix2.M42;
-            result.M43 = matrix1.M41 * matrix2.M13 + matrix1.M42 * matrix2.M23 + matrix1.M43 * matrix2.M33 + matrix1.M44 * matrix2.M43;
-            result.M44 = matrix1.M41 * matrix2.M14 + matrix1.M42 * matrix2.M24 + matrix1.M43 * matrix2.M34 + matrix1.M44 * matrix2.M44;
+            result.M41 = matrix1.M41 * matrix2.M11 + matrix1.M42 * matrix2.M21 + matrix1.M43 * matrix2.M31 +
+                         matrix1.M44 * matrix2.M41;
+            result.M42 = matrix1.M41 * matrix2.M12 + matrix1.M42 * matrix2.M22 + matrix1.M43 * matrix2.M32 +
+                         matrix1.M44 * matrix2.M42;
+            result.M43 = matrix1.M41 * matrix2.M13 + matrix1.M42 * matrix2.M23 + matrix1.M43 * matrix2.M33 +
+                         matrix1.M44 * matrix2.M43;
+            result.M44 = matrix1.M41 * matrix2.M14 + matrix1.M42 * matrix2.M24 + matrix1.M43 * matrix2.M34 +
+                         matrix1.M44 * matrix2.M44;
         }
 
         /// <summary>
@@ -204,8 +232,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="matrix1">The first matrix.</param>
         /// <param name="matrix2">The second matrix.</param>
         /// <returns>The sum of both matrices.</returns>
-        public static TSMatrix4x4 Add(TSMatrix4x4 matrix1, TSMatrix4x4 matrix2)
-        {
+        public static TSMatrix4x4 Add(TSMatrix4x4 matrix1, TSMatrix4x4 matrix2) {
             TSMatrix4x4 result;
             TSMatrix4x4.Add(ref matrix1, ref matrix2, out result);
             return result;
@@ -217,8 +244,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="matrix1">The first matrix.</param>
         /// <param name="matrix2">The second matrix.</param>
         /// <param name="result">The sum of both matrices.</param>
-        public static void Add(ref TSMatrix4x4 matrix1, ref TSMatrix4x4 matrix2, out TSMatrix4x4 result)
-        {
+        public static void Add(ref TSMatrix4x4 matrix1, ref TSMatrix4x4 matrix2, out TSMatrix4x4 result) {
             result.M11 = matrix1.M11 + matrix2.M11;
             result.M12 = matrix1.M12 + matrix2.M12;
             result.M13 = matrix1.M13 + matrix2.M13;
@@ -245,17 +271,14 @@ namespace vFrame.Lockstep.Core
         /// </summary>
         /// <param name="matrix">The matrix to invert.</param>
         /// <returns>The inverted JMatrix.</returns>
-        public static TSMatrix4x4 Inverse(TSMatrix4x4 matrix)
-        {
+        public static TSMatrix4x4 Inverse(TSMatrix4x4 matrix) {
             TSMatrix4x4 result;
             TSMatrix4x4.Inverse(ref matrix, out result);
             return result;
         }
 
-        public FixedPoint determinant
-        {
-            get
-            {
+        public FixedPoint determinant {
+            get {
                 // | a b c d |     | f g h |     | e g h |     | e f h |     | e f g |
                 // | e f g h | = a | j k l | - b | i k l | + c | i j l | - d | i j k |
                 // | i j k l |     | n o p |     | m o p |     | m n p |     | m n o |
@@ -307,8 +330,7 @@ namespace vFrame.Lockstep.Core
         /// </summary>
         /// <param name="matrix">The matrix to invert.</param>
         /// <param name="result">The inverted JMatrix.</param>
-        public static void Inverse(ref TSMatrix4x4 matrix, out TSMatrix4x4 result)
-        {
+        public static void Inverse(ref TSMatrix4x4 matrix, out TSMatrix4x4 result) {
             //                                       -1
             // If you have matrix M, inverse Matrix M   can compute
             //
@@ -420,8 +442,7 @@ namespace vFrame.Lockstep.Core
 
             FixedPoint det = a * a11 + b * a12 + c * a13 + d * a14;
 
-            if (det == FixedPoint.Zero)
-            {
+            if (det == FixedPoint.Zero) {
                 result.M11 = FixedPoint.PositiveInfinity;
                 result.M12 = FixedPoint.PositiveInfinity;
                 result.M13 = FixedPoint.PositiveInfinity;
@@ -438,10 +459,8 @@ namespace vFrame.Lockstep.Core
                 result.M42 = FixedPoint.PositiveInfinity;
                 result.M43 = FixedPoint.PositiveInfinity;
                 result.M44 = FixedPoint.PositiveInfinity;
-
             }
-            else
-            {
+            else {
                 FixedPoint invDet = FixedPoint.One / det;
 
                 result.M11 = a11 * invDet;
@@ -486,8 +505,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="matrix1">The matrix.</param>
         /// <param name="scaleFactor">The scale factor.</param>
         /// <returns>A JMatrix multiplied by the scale factor.</returns>
-        public static TSMatrix4x4 Multiply(TSMatrix4x4 matrix1, FixedPoint scaleFactor)
-        {
+        public static TSMatrix4x4 Multiply(TSMatrix4x4 matrix1, FixedPoint scaleFactor) {
             TSMatrix4x4 result;
             TSMatrix4x4.Multiply(ref matrix1, scaleFactor, out result);
             return result;
@@ -499,8 +517,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="matrix1">The matrix.</param>
         /// <param name="scaleFactor">The scale factor.</param>
         /// <param name="result">A JMatrix multiplied by the scale factor.</param>
-        public static void Multiply(ref TSMatrix4x4 matrix1, FixedPoint scaleFactor, out TSMatrix4x4 result)
-        {
+        public static void Multiply(ref TSMatrix4x4 matrix1, FixedPoint scaleFactor, out TSMatrix4x4 result) {
             FixedPoint num = scaleFactor;
             result.M11 = matrix1.M11 * num;
             result.M12 = matrix1.M12 * num;
@@ -524,8 +541,7 @@ namespace vFrame.Lockstep.Core
         }
 
 
-        public static TSMatrix4x4 Rotate(TSQuaternion quaternion)
-        {
+        public static TSMatrix4x4 Rotate(TSQuaternion quaternion) {
             TSMatrix4x4 result;
             TSMatrix4x4.Rotate(ref quaternion, out result);
             return result;
@@ -536,8 +552,7 @@ namespace vFrame.Lockstep.Core
         /// </summary>
         /// <param name="quaternion">The quaternion the matrix should be created from.</param>
         /// <param name="result">JMatrix representing an orientation.</param>
-        public static void Rotate(ref TSQuaternion quaternion, out TSMatrix4x4 result)
-        {
+        public static void Rotate(ref TSQuaternion quaternion, out TSMatrix4x4 result) {
             // Precalculate coordinate products
             FixedPoint x = quaternion.x * 2;
             FixedPoint y = quaternion.y * 2;
@@ -576,8 +591,7 @@ namespace vFrame.Lockstep.Core
         /// </summary>
         /// <param name="matrix">The matrix which should be transposed.</param>
         /// <returns>The transposed JMatrix.</returns>
-        public static TSMatrix4x4 Transpose(TSMatrix4x4 matrix)
-        {
+        public static TSMatrix4x4 Transpose(TSMatrix4x4 matrix) {
             TSMatrix4x4 result;
             TSMatrix4x4.Transpose(ref matrix, out result);
             return result;
@@ -588,8 +602,7 @@ namespace vFrame.Lockstep.Core
         /// </summary>
         /// <param name="matrix">The matrix which should be transposed.</param>
         /// <param name="result">The transposed JMatrix.</param>
-        public static void Transpose(ref TSMatrix4x4 matrix, out TSMatrix4x4 result)
-        {
+        public static void Transpose(ref TSMatrix4x4 matrix, out TSMatrix4x4 result) {
             result.M11 = matrix.M11;
             result.M12 = matrix.M21;
             result.M13 = matrix.M31;
@@ -615,16 +628,14 @@ namespace vFrame.Lockstep.Core
         /// <param name="value1">The first matrix.</param>
         /// <param name="value2">The second matrix.</param>
         /// <returns>The product of both values.</returns>
-        public static TSMatrix4x4 operator *(TSMatrix4x4 value1, TSMatrix4x4 value2)
-        {
+        public static TSMatrix4x4 operator *(TSMatrix4x4 value1, TSMatrix4x4 value2) {
             TSMatrix4x4 result;
             TSMatrix4x4.Multiply(ref value1, ref value2, out result);
             return result;
         }
 
 
-        public FixedPoint Trace()
-        {
+        public FixedPoint Trace() {
             return this.M11 + this.M22 + this.M33 + this.M44;
         }
 
@@ -634,8 +645,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="value1">The first matrix.</param>
         /// <param name="value2">The second matrix.</param>
         /// <returns>The sum of both values.</returns>
-        public static TSMatrix4x4 operator +(TSMatrix4x4 value1, TSMatrix4x4 value2)
-        {
+        public static TSMatrix4x4 operator +(TSMatrix4x4 value1, TSMatrix4x4 value2) {
             TSMatrix4x4 result;
             TSMatrix4x4.Add(ref value1, ref value2, out result);
             return result;
@@ -646,8 +656,7 @@ namespace vFrame.Lockstep.Core
         /// </summary>
         /// <param name="value">The source matrix.</param>
         /// <returns>The negated matrix.</returns>
-        public static TSMatrix4x4 operator -(TSMatrix4x4 value)
-        {
+        public static TSMatrix4x4 operator -(TSMatrix4x4 value) {
             TSMatrix4x4 result;
 
             result.M11 = -value.M11;
@@ -676,95 +685,90 @@ namespace vFrame.Lockstep.Core
         /// <param name="value1">The first matrix.</param>
         /// <param name="value2">The second matrix.</param>
         /// <returns>The difference of both values.</returns>
-        public static TSMatrix4x4 operator -(TSMatrix4x4 value1, TSMatrix4x4 value2)
-        {
+        public static TSMatrix4x4 operator -(TSMatrix4x4 value1, TSMatrix4x4 value2) {
             TSMatrix4x4 result;
             TSMatrix4x4.Multiply(ref value2, -FixedPoint.One, out value2);
             TSMatrix4x4.Add(ref value1, ref value2, out result);
             return result;
         }
 
-        public static bool operator ==(TSMatrix4x4 value1, TSMatrix4x4 value2)
-        {
+        public static bool operator ==(TSMatrix4x4 value1, TSMatrix4x4 value2) {
             return value1.M11 == value2.M11 &&
-                value1.M12 == value2.M12 &&
-                value1.M13 == value2.M13 &&
-                value1.M14 == value2.M14 &&
-                value1.M21 == value2.M21 &&
-                value1.M22 == value2.M22 &&
-                value1.M23 == value2.M23 &&
-                value1.M24 == value2.M24 &&
-                value1.M31 == value2.M31 &&
-                value1.M32 == value2.M32 &&
-                value1.M33 == value2.M33 &&
-                value1.M34 == value2.M34 &&
-                value1.M41 == value2.M41 &&
-                value1.M42 == value2.M42 &&
-                value1.M43 == value2.M43 &&
-                value1.M44 == value2.M44;
+                   value1.M12 == value2.M12 &&
+                   value1.M13 == value2.M13 &&
+                   value1.M14 == value2.M14 &&
+                   value1.M21 == value2.M21 &&
+                   value1.M22 == value2.M22 &&
+                   value1.M23 == value2.M23 &&
+                   value1.M24 == value2.M24 &&
+                   value1.M31 == value2.M31 &&
+                   value1.M32 == value2.M32 &&
+                   value1.M33 == value2.M33 &&
+                   value1.M34 == value2.M34 &&
+                   value1.M41 == value2.M41 &&
+                   value1.M42 == value2.M42 &&
+                   value1.M43 == value2.M43 &&
+                   value1.M44 == value2.M44;
         }
 
-        public static bool operator !=(TSMatrix4x4 value1, TSMatrix4x4 value2)
-        {
+        public static bool operator !=(TSMatrix4x4 value1, TSMatrix4x4 value2) {
             return value1.M11 != value2.M11 ||
-                value1.M12 != value2.M12 ||
-                value1.M13 != value2.M13 ||
-                value1.M14 != value2.M14 ||
-                value1.M21 != value2.M21 ||
-                value1.M22 != value2.M22 ||
-                value1.M23 != value2.M23 ||
-                value1.M24 != value2.M24 ||
-                value1.M31 != value2.M31 ||
-                value1.M32 != value2.M32 ||
-                value1.M33 != value2.M33 ||
-                value1.M34 != value2.M34 ||
-                value1.M41 != value2.M41 ||
-                value1.M42 != value2.M42 ||
-                value1.M43 != value2.M43 ||
-                value1.M44 != value2.M44;
+                   value1.M12 != value2.M12 ||
+                   value1.M13 != value2.M13 ||
+                   value1.M14 != value2.M14 ||
+                   value1.M21 != value2.M21 ||
+                   value1.M22 != value2.M22 ||
+                   value1.M23 != value2.M23 ||
+                   value1.M24 != value2.M24 ||
+                   value1.M31 != value2.M31 ||
+                   value1.M32 != value2.M32 ||
+                   value1.M33 != value2.M33 ||
+                   value1.M34 != value2.M34 ||
+                   value1.M41 != value2.M41 ||
+                   value1.M42 != value2.M42 ||
+                   value1.M43 != value2.M43 ||
+                   value1.M44 != value2.M44;
         }
 
-        public override bool Equals(object obj)
-        {
+        public override bool Equals(object obj) {
             if (!(obj is TSMatrix4x4)) return false;
-            TSMatrix4x4 other = (TSMatrix4x4)obj;
+            TSMatrix4x4 other = (TSMatrix4x4) obj;
 
             return this.M11 == other.M11 &&
-                this.M12 == other.M12 &&
-                this.M13 == other.M13 &&
-                this.M14 == other.M14 &&
-                this.M21 == other.M21 &&
-                this.M22 == other.M22 &&
-                this.M23 == other.M23 &&
-                this.M24 == other.M24 &&
-                this.M31 == other.M31 &&
-                this.M32 == other.M32 &&
-                this.M33 == other.M33 &&
-                this.M34 == other.M44 &&
-                this.M41 == other.M41 &&
-                this.M42 == other.M42 &&
-                this.M43 == other.M43 &&
-                this.M44 == other.M44 ;
+                   this.M12 == other.M12 &&
+                   this.M13 == other.M13 &&
+                   this.M14 == other.M14 &&
+                   this.M21 == other.M21 &&
+                   this.M22 == other.M22 &&
+                   this.M23 == other.M23 &&
+                   this.M24 == other.M24 &&
+                   this.M31 == other.M31 &&
+                   this.M32 == other.M32 &&
+                   this.M33 == other.M33 &&
+                   this.M34 == other.M44 &&
+                   this.M41 == other.M41 &&
+                   this.M42 == other.M42 &&
+                   this.M43 == other.M43 &&
+                   this.M44 == other.M44;
         }
 
-        public override int GetHashCode()
-        {
+        public override int GetHashCode() {
             return M11.GetHashCode() ^
-                M12.GetHashCode() ^
-                M13.GetHashCode() ^
-                M14.GetHashCode() ^
-                M21.GetHashCode() ^
-                M22.GetHashCode() ^
-                M23.GetHashCode() ^
-                M24.GetHashCode() ^
-                M31.GetHashCode() ^
-                M32.GetHashCode() ^
-                M33.GetHashCode() ^
-                M34.GetHashCode() ^
-                M41.GetHashCode() ^
-                M42.GetHashCode() ^
-                M43.GetHashCode() ^
-                M44.GetHashCode();
+                   M12.GetHashCode() ^
+                   M13.GetHashCode() ^
+                   M14.GetHashCode() ^
+                   M21.GetHashCode() ^
+                   M22.GetHashCode() ^
+                   M23.GetHashCode() ^
+                   M24.GetHashCode() ^
+                   M31.GetHashCode() ^
+                   M32.GetHashCode() ^
+                   M33.GetHashCode() ^
+                   M34.GetHashCode() ^
+                   M41.GetHashCode() ^
+                   M42.GetHashCode() ^
+                   M43.GetHashCode() ^
+                   M44.GetHashCode();
         }
 
         /// <summary>
@@ -774,20 +778,30 @@ namespace vFrame.Lockstep.Core
         /// <param name="yPosition">The amount to translate on the Y-axis.</param>
         /// <param name="zPosition">The amount to translate on the Z-axis.</param>
         /// <returns>The translation matrix.</returns>
-        public static TSMatrix4x4 Translate(FixedPoint xPosition, FixedPoint yPosition, FixedPoint zPosition)
-        {
+        public static TSMatrix4x4 Translate(FixedPoint xPosition, FixedPoint yPosition, FixedPoint zPosition) {
             TSMatrix4x4 result;
 
-            result.M11 = FixedPoint.One;  result.M12 = FixedPoint.Zero; result.M13 = FixedPoint.Zero; result.M14 = xPosition;
-            result.M21 = FixedPoint.Zero; result.M22 = FixedPoint.One;  result.M23 = FixedPoint.Zero; result.M24 = yPosition;
-            result.M31 = FixedPoint.Zero; result.M32 = FixedPoint.Zero; result.M33 = FixedPoint.One;  result.M34 = zPosition;
-            result.M41 = FixedPoint.Zero; result.M42 = FixedPoint.Zero; result.M43 = FixedPoint.Zero; result.M44 = FixedPoint.One;
+            result.M11 = FixedPoint.One;
+            result.M12 = FixedPoint.Zero;
+            result.M13 = FixedPoint.Zero;
+            result.M14 = xPosition;
+            result.M21 = FixedPoint.Zero;
+            result.M22 = FixedPoint.One;
+            result.M23 = FixedPoint.Zero;
+            result.M24 = yPosition;
+            result.M31 = FixedPoint.Zero;
+            result.M32 = FixedPoint.Zero;
+            result.M33 = FixedPoint.One;
+            result.M34 = zPosition;
+            result.M41 = FixedPoint.Zero;
+            result.M42 = FixedPoint.Zero;
+            result.M43 = FixedPoint.Zero;
+            result.M44 = FixedPoint.One;
 
             return result;
         }
 
-        public static TSMatrix4x4 Translate(TSVector translation)
-        {
+        public static TSMatrix4x4 Translate(TSVector translation) {
             return Translate(translation.x, translation.y, translation.z);
         }
 
@@ -798,14 +812,25 @@ namespace vFrame.Lockstep.Core
         /// <param name="yScale">Value to scale by on the Y-axis.</param>
         /// <param name="zScale">Value to scale by on the Z-axis.</param>
         /// <returns>The scaling matrix.</returns>
-        public static TSMatrix4x4 Scale(FixedPoint xScale, FixedPoint yScale, FixedPoint zScale)
-        {
+        public static TSMatrix4x4 Scale(FixedPoint xScale, FixedPoint yScale, FixedPoint zScale) {
             TSMatrix4x4 result;
 
-            result.M11 = xScale;  result.M12 = FixedPoint.Zero; result.M13 = FixedPoint.Zero; result.M14 = FixedPoint.Zero;
-            result.M21 = FixedPoint.Zero; result.M22 = yScale;  result.M23 = FixedPoint.Zero; result.M24 = FixedPoint.Zero;
-            result.M31 = FixedPoint.Zero; result.M32 = FixedPoint.Zero; result.M33 = zScale;  result.M34 = FixedPoint.Zero;
-            result.M41 = FixedPoint.Zero; result.M42 = FixedPoint.Zero; result.M43 = FixedPoint.Zero; result.M44 = FixedPoint.One;
+            result.M11 = xScale;
+            result.M12 = FixedPoint.Zero;
+            result.M13 = FixedPoint.Zero;
+            result.M14 = FixedPoint.Zero;
+            result.M21 = FixedPoint.Zero;
+            result.M22 = yScale;
+            result.M23 = FixedPoint.Zero;
+            result.M24 = FixedPoint.Zero;
+            result.M31 = FixedPoint.Zero;
+            result.M32 = FixedPoint.Zero;
+            result.M33 = zScale;
+            result.M34 = FixedPoint.Zero;
+            result.M41 = FixedPoint.Zero;
+            result.M42 = FixedPoint.Zero;
+            result.M43 = FixedPoint.Zero;
+            result.M44 = FixedPoint.One;
 
             return result;
         }
@@ -818,18 +843,29 @@ namespace vFrame.Lockstep.Core
         /// <param name="zScale">Value to scale by on the Z-axis.</param>
         /// <param name="centerPoint">The center point.</param>
         /// <returns>The scaling matrix.</returns>
-        public static TSMatrix4x4 Scale(FixedPoint xScale, FixedPoint yScale, FixedPoint zScale, TSVector centerPoint)
-        {
+        public static TSMatrix4x4 Scale(FixedPoint xScale, FixedPoint yScale, FixedPoint zScale, TSVector centerPoint) {
             TSMatrix4x4 result;
 
             FixedPoint tx = centerPoint.x * (FixedPoint.One - xScale);
             FixedPoint ty = centerPoint.y * (FixedPoint.One - yScale);
             FixedPoint tz = centerPoint.z * (FixedPoint.One - zScale);
 
-            result.M11 = xScale;  result.M12 = FixedPoint.Zero; result.M13 = FixedPoint.Zero; result.M14 = FixedPoint.Zero;
-            result.M21 = FixedPoint.Zero; result.M22 = yScale;  result.M23 = FixedPoint.Zero; result.M24 = FixedPoint.Zero;
-            result.M31 = FixedPoint.Zero; result.M32 = FixedPoint.Zero; result.M33 = zScale;  result.M34 = FixedPoint.Zero;
-            result.M41 = tx;      result.M42 = ty;      result.M43 = tz;      result.M44 = FixedPoint.One;
+            result.M11 = xScale;
+            result.M12 = FixedPoint.Zero;
+            result.M13 = FixedPoint.Zero;
+            result.M14 = FixedPoint.Zero;
+            result.M21 = FixedPoint.Zero;
+            result.M22 = yScale;
+            result.M23 = FixedPoint.Zero;
+            result.M24 = FixedPoint.Zero;
+            result.M31 = FixedPoint.Zero;
+            result.M32 = FixedPoint.Zero;
+            result.M33 = zScale;
+            result.M34 = FixedPoint.Zero;
+            result.M41 = tx;
+            result.M42 = ty;
+            result.M43 = tz;
+            result.M44 = FixedPoint.One;
 
             return result;
         }
@@ -839,8 +875,7 @@ namespace vFrame.Lockstep.Core
         /// </summary>
         /// <param name="scales">The vector containing the amount to scale by on each axis.</param>
         /// <returns>The scaling matrix.</returns>
-        public static TSMatrix4x4 Scale(TSVector scales)
-        {
+        public static TSMatrix4x4 Scale(TSVector scales) {
             return Scale(scales.x, scales.y, scales.z);
         }
 
@@ -850,8 +885,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="scales">The vector containing the amount to scale by on each axis.</param>
         /// <param name="centerPoint">The center point.</param>
         /// <returns>The scaling matrix.</returns>
-        public static TSMatrix4x4 Scale(TSVector scales, TSVector centerPoint)
-        {
+        public static TSMatrix4x4 Scale(TSVector scales, TSVector centerPoint) {
             return Scale(scales.x, scales.y, scales.z, centerPoint);
         }
 
@@ -860,8 +894,7 @@ namespace vFrame.Lockstep.Core
         /// </summary>
         /// <param name="scale">The uniform scaling factor.</param>
         /// <returns>The scaling matrix.</returns>
-        public static TSMatrix4x4 Scale(FixedPoint scale)
-        {
+        public static TSMatrix4x4 Scale(FixedPoint scale) {
             return Scale(scale, scale, scale);
         }
 
@@ -871,8 +904,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="scale">The uniform scaling factor.</param>
         /// <param name="centerPoint">The center point.</param>
         /// <returns>The scaling matrix.</returns>
-        public static TSMatrix4x4 Scale(FixedPoint scale, TSVector centerPoint)
-        {
+        public static TSMatrix4x4 Scale(FixedPoint scale, TSVector centerPoint) {
             return Scale(scale, scale, scale, centerPoint);
         }
 
@@ -881,8 +913,7 @@ namespace vFrame.Lockstep.Core
         /// </summary>
         /// <param name="radians">The amount, in radians, by which to rotate around the X-axis.</param>
         /// <returns>The rotation matrix.</returns>
-        public static TSMatrix4x4 RotateX(FixedPoint radians)
-        {
+        public static TSMatrix4x4 RotateX(FixedPoint radians) {
             TSMatrix4x4 result;
 
             FixedPoint c = TSMath.Cos(radians);
@@ -918,8 +949,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="radians">The amount, in radians, by which to rotate around the X-axis.</param>
         /// <param name="centerPoint">The center point.</param>
         /// <returns>The rotation matrix.</returns>
-        public static TSMatrix4x4 RotateX(FixedPoint radians, TSVector centerPoint)
-        {
+        public static TSMatrix4x4 RotateX(FixedPoint radians, TSVector centerPoint) {
             TSMatrix4x4 result;
 
             FixedPoint c = TSMath.Cos(radians);
@@ -957,8 +987,7 @@ namespace vFrame.Lockstep.Core
         /// </summary>
         /// <param name="radians">The amount, in radians, by which to rotate around the Y-axis.</param>
         /// <returns>The rotation matrix.</returns>
-        public static TSMatrix4x4 RotateY(FixedPoint radians)
-        {
+        public static TSMatrix4x4 RotateY(FixedPoint radians) {
             TSMatrix4x4 result;
 
             FixedPoint c = TSMath.Cos(radians);
@@ -994,8 +1023,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="radians">The amount, in radians, by which to rotate around the Y-axis.</param>
         /// <param name="centerPoint">The center point.</param>
         /// <returns>The rotation matrix.</returns>
-        public static TSMatrix4x4 RotateY(FixedPoint radians, TSVector centerPoint)
-        {
+        public static TSMatrix4x4 RotateY(FixedPoint radians, TSVector centerPoint) {
             TSMatrix4x4 result;
 
             FixedPoint c = TSMath.Cos(radians);
@@ -1033,8 +1061,7 @@ namespace vFrame.Lockstep.Core
         /// </summary>
         /// <param name="radians">The amount, in radians, by which to rotate around the Z-axis.</param>
         /// <returns>The rotation matrix.</returns>
-        public static TSMatrix4x4 RotateZ(FixedPoint radians)
-        {
+        public static TSMatrix4x4 RotateZ(FixedPoint radians) {
             TSMatrix4x4 result;
 
             FixedPoint c = TSMath.Cos(radians);
@@ -1070,8 +1097,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="radians">The amount, in radians, by which to rotate around the Z-axis.</param>
         /// <param name="centerPoint">The center point.</param>
         /// <returns>The rotation matrix.</returns>
-        public static TSMatrix4x4 RotateZ(FixedPoint radians, TSVector centerPoint)
-        {
+        public static TSMatrix4x4 RotateZ(FixedPoint radians, TSVector centerPoint) {
             TSMatrix4x4 result;
 
             FixedPoint c = TSMath.Cos(radians);
@@ -1110,8 +1136,7 @@ namespace vFrame.Lockstep.Core
         /// <param name="axis">The axis.</param>
         /// <param name="angle">The angle.</param>
         /// <param name="result">The resulting rotation matrix</param>
-        public static void AxisAngle(ref TSVector axis, FixedPoint angle, out TSMatrix4x4 result)
-        {
+        public static void AxisAngle(ref TSVector axis, FixedPoint angle, out TSMatrix4x4 result) {
             // a: angle
             // x, y, z: unit vector for axis.
             //
@@ -1166,29 +1191,25 @@ namespace vFrame.Lockstep.Core
         /// <param name="axis">The axis.</param>
         /// <param name="angle">The angle.</param>
         /// <returns>The resulting rotation matrix</returns>
-        public static TSMatrix4x4 AngleAxis(FixedPoint angle, TSVector axis)
-        {
+        public static TSMatrix4x4 AngleAxis(FixedPoint angle, TSVector axis) {
             TSMatrix4x4 result;
             AxisAngle(ref axis, angle, out result);
             return result;
         }
 
-        public override string ToString()
-        {
-            return string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}|{9}|{10}|{11}|{12}|{13}|{14}|{15}", 
+        public override string ToString() {
+            return string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}|{9}|{10}|{11}|{12}|{13}|{14}|{15}",
                 M11.RawValue, M12.RawValue, M13.RawValue, M14.RawValue,
                 M21.RawValue, M22.RawValue, M23.RawValue, M24.RawValue,
                 M31.RawValue, M32.RawValue, M33.RawValue, M34.RawValue,
                 M41.RawValue, M42.RawValue, M43.RawValue, M44.RawValue);
         }
 
-        public static void TRS(TSVector translation, TSQuaternion rotation, TSVector scale, out TSMatrix4x4 matrix)
-        {
+        public static void TRS(TSVector translation, TSQuaternion rotation, TSVector scale, out TSMatrix4x4 matrix) {
             matrix = TSMatrix4x4.Translate(translation) * TSMatrix4x4.Rotate(rotation) * TSMatrix4x4.Scale(scale);
         }
 
-        public static TSMatrix4x4 TRS(TSVector translation, TSQuaternion rotation, TSVector scale)
-        {
+        public static TSMatrix4x4 TRS(TSVector translation, TSQuaternion rotation, TSVector scale) {
             TSMatrix4x4 result;
             TRS(translation, rotation, scale, out result);
             return result;

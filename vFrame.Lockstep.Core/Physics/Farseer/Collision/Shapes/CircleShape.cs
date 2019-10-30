@@ -38,8 +38,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="radius">The radius of the circle.</param>
         /// <param name="density">The density of the circle.</param>
         public CircleShape(FixedPoint radius)
-            : base()
-        {
+            : base() {
             Debug.Assert(radius >= 0);
 
             ShapeType = ShapeType.Circle;
@@ -48,39 +47,32 @@ namespace vFrame.Lockstep.Core.Physics2D
         }
 
         internal CircleShape()
-            : base()
-        {
+            : base() {
             ShapeType = ShapeType.Circle;
             _radius = FixedPoint.Zero;
             _position = TSVector2.zero;
         }
 
-        public override int ChildCount
-        {
+        public override int ChildCount {
             get { return 1; }
         }
 
         /// <summary>
         /// Get or set the position of the circle
         /// </summary>
-        public TSVector2 Position
-        {
+        public TSVector2 Position {
             get { return _position; }
-            set
-            {
-                _position = value;
-            }
+            set { _position = value; }
         }
 
-        public override bool TestPoint(ref Transform transform, ref TSVector2 point)
-        {
+        public override bool TestPoint(ref Transform transform, ref TSVector2 point) {
             TSVector2 center = transform.p + MathUtils.Mul(transform.q, Position);
             TSVector2 d = point - center;
             return TSVector2.Dot(d, d) <= _2radius;
         }
 
-        public override bool RayCast(out RayCastOutput output, ref RayCastInput input, ref Transform transform, int childIndex)
-        {
+        public override bool RayCast(out RayCastOutput output, ref RayCastInput input, ref Transform transform,
+            int childIndex) {
             // Collision Detection in Interactive 3D Environments by Gino van den Bergen
             // From Section 3.1.2
             // x = s + a * r
@@ -99,8 +91,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             FixedPoint sigma = c * c - rr * b;
 
             // Check for negative discriminant and short segment.
-            if (sigma < FixedPoint.Zero || rr < Settings.Epsilon)
-            {
+            if (sigma < FixedPoint.Zero || rr < Settings.Epsilon) {
                 return false;
             }
 
@@ -108,8 +99,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             FixedPoint a = -(c + FixedPoint.Sqrt(sigma));
 
             // Is the intersection point on the segment?
-            if (FixedPoint.Zero <= a && a <= input.MaxFraction * rr)
-            {
+            if (FixedPoint.Zero <= a && a <= input.MaxFraction * rr) {
                 a /= rr;
                 output.Fraction = a;
 
@@ -122,8 +112,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             return false;
         }
 
-        public override void ComputeAABB(out AABB aabb, ref Transform transform, int childIndex)
-        {
+        public override void ComputeAABB(out AABB aabb, ref Transform transform, int childIndex) {
             TSVector2 p = transform.p + MathUtils.Mul(transform.q, Position);
             aabb.LowerBound = new TSVector2(p.x - Radius, p.y - Radius);
             aabb.UpperBound = new TSVector2(p.x + Radius, p.y + Radius);
@@ -134,13 +123,11 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="shape">The other circle</param>
         /// <returns>True if the two circles are the same size and have the same position</returns>
-        public bool CompareTo(CircleShape shape)
-        {
+        public bool CompareTo(CircleShape shape) {
             return (Radius == shape.Radius && Position == shape.Position);
         }
 
-        public override Shape Clone()
-        {
+        public override Shape Clone() {
             CircleShape clone = new CircleShape();
             clone.ShapeType = ShapeType;
             clone._radius = Radius;

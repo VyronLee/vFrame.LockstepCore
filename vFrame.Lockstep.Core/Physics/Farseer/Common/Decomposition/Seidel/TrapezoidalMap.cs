@@ -16,24 +16,21 @@ namespace vFrame.Lockstep.Core.Physics2D
         // AABB margin
         private FixedPoint _margin;
 
-        public TrapezoidalMap()
-        {
+        public TrapezoidalMap() {
             Map = new HashSet<Trapezoid>();
             _margin = 50;
             _bCross = null;
             _cross = null;
         }
 
-        public void Clear()
-        {
+        public void Clear() {
             _bCross = null;
             _cross = null;
         }
 
         // Case 1: segment completely enclosed by trapezoid
         //         break trapezoid into 4 smaller trapezoids
-        public Trapezoid[] Case1(Trapezoid t, Edge e)
-        {
+        public Trapezoid[] Case1(Trapezoid t, Edge e) {
             Trapezoid[] trapezoids = new Trapezoid[4];
             trapezoids[0] = new Trapezoid(t.LeftPoint, e.P, t.Top, t.Bottom);
             trapezoids[1] = new Trapezoid(e.P, e.Q, t.Top, e);
@@ -50,8 +47,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
         // Case 2: Trapezoid contains point p, q lies outside
         //         break trapezoid into 3 smaller trapezoids
-        public Trapezoid[] Case2(Trapezoid t, Edge e)
-        {
+        public Trapezoid[] Case2(Trapezoid t, Edge e) {
             Point rp;
             if (e.Q.X == t.RightPoint.X)
                 rp = e.Q;
@@ -77,8 +73,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         }
 
         // Case 3: Trapezoid is bisected
-        public Trapezoid[] Case3(Trapezoid t, Edge e)
-        {
+        public Trapezoid[] Case3(Trapezoid t, Edge e) {
             Point lp;
             if (e.P.X == t.LeftPoint.X)
                 lp = e.P;
@@ -93,26 +88,22 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             Trapezoid[] trapezoids = new Trapezoid[2];
 
-            if (_cross == t.Top)
-            {
+            if (_cross == t.Top) {
                 trapezoids[0] = t.UpperLeft;
                 trapezoids[0].UpdateRight(t.UpperRight, null);
                 trapezoids[0].RightPoint = rp;
             }
-            else
-            {
+            else {
                 trapezoids[0] = new Trapezoid(lp, rp, t.Top, e);
                 trapezoids[0].UpdateLeftRight(t.UpperLeft, e.Above, t.UpperRight, null);
             }
 
-            if (_bCross == t.Bottom)
-            {
+            if (_bCross == t.Bottom) {
                 trapezoids[1] = t.LowerLeft;
                 trapezoids[1].UpdateRight(null, t.LowerRight);
                 trapezoids[1].RightPoint = rp;
             }
-            else
-            {
+            else {
                 trapezoids[1] = new Trapezoid(lp, rp, e, t.Bottom);
                 trapezoids[1].UpdateLeftRight(e.Below, t.LowerLeft, null, t.LowerRight);
             }
@@ -128,8 +119,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
         // Case 4: Trapezoid contains point q, p lies outside
         //         break trapezoid into 3 smaller trapezoids
-        public Trapezoid[] Case4(Trapezoid t, Edge e)
-        {
+        public Trapezoid[] Case4(Trapezoid t, Edge e) {
             Point lp;
             if (e.P.X == t.LeftPoint.X)
                 lp = e.P;
@@ -138,24 +128,20 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             Trapezoid[] trapezoids = new Trapezoid[3];
 
-            if (_cross == t.Top)
-            {
+            if (_cross == t.Top) {
                 trapezoids[0] = t.UpperLeft;
                 trapezoids[0].RightPoint = e.Q;
             }
-            else
-            {
+            else {
                 trapezoids[0] = new Trapezoid(lp, e.Q, t.Top, e);
                 trapezoids[0].UpdateLeft(t.UpperLeft, e.Above);
             }
 
-            if (_bCross == t.Bottom)
-            {
+            if (_bCross == t.Bottom) {
                 trapezoids[1] = t.LowerLeft;
                 trapezoids[1].RightPoint = e.Q;
             }
-            else
-            {
+            else {
                 trapezoids[1] = new Trapezoid(lp, e.Q, e, t.Bottom);
                 trapezoids[1].UpdateLeft(e.Below, t.LowerLeft);
             }
@@ -167,13 +153,11 @@ namespace vFrame.Lockstep.Core.Physics2D
         }
 
         // Create an AABB around segments
-        public Trapezoid BoundingBox(List<Edge> edges)
-        {
+        public Trapezoid BoundingBox(List<Edge> edges) {
             Point max = edges[0].P + _margin;
             Point min = edges[0].Q - _margin;
 
-            foreach (Edge e in edges)
-            {
+            foreach (Edge e in edges) {
                 if (e.P.X > max.X) max = new Point(e.P.X + _margin, max.Y);
                 if (e.P.Y > max.Y) max = new Point(max.X, e.P.Y + _margin);
                 if (e.Q.X > max.X) max = new Point(e.Q.X + _margin, max.Y);

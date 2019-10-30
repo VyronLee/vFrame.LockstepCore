@@ -45,19 +45,16 @@ namespace vFrame.Lockstep.Core.Physics2D
         public DelaunayTriangle Triangle;
         public FixedPoint Value;
 
-        public AdvancingFrontNode(TriangulationPoint point)
-        {
+        public AdvancingFrontNode(TriangulationPoint point) {
             Point = point;
             Value = point.X;
         }
 
-        public bool HasNext
-        {
+        public bool HasNext {
             get { return Next != null; }
         }
 
-        public bool HasPrev
-        {
+        public bool HasPrev {
             get { return Prev != null; }
         }
     }

@@ -162,7 +162,7 @@
     <Compile Include="Physics\Farseer\WorldChecksumExtractor.cs" />
     <Compile Include="Physics\GameObject.cs" />
     <Compile Include="Physics\PhyBoxSimplify.cs" />
-    <Compile Include="Physics\PhyUtil.cs" />
+    <Compile Include="Physics\PhyUtils.cs" />
     <Compile Include="Physics\PhyWorld.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TSTime.cs" />

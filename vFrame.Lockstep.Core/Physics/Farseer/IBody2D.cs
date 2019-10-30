@@ -1,38 +1,28 @@
-﻿namespace vFrame.Lockstep.Core {
-
+﻿namespace vFrame.Lockstep.Core
+{
     /**
     * @brief Represents an interface to 2D bodies.
     **/
-    public interface IBody2D : IBody {
-
+    public interface IBody2D : IBody
+    {
         /**
         * @brief If true the body doesn't move around by collisions.
         **/
-        bool TSIsStatic {
-            get; set;
-        }
-        
+        bool TSIsStatic { get; set; }
+
         /**
          *  @brief Static friction when in contact. 
          **/
-        FixedPoint TSFriction {
-            get; set;
-        }
+        FixedPoint TSFriction { get; set; }
 
         /**
         * @brief Coeficient of restitution.
         **/
-        FixedPoint TSRestitution {
-            get; set;
-        }
+        FixedPoint TSRestitution { get; set; }
 
         /**
         * @brief Set/get body's position.
         **/
-        TSVector2 TSPosition {
-            get; set;
-        }
-
+        TSVector2 TSPosition { get; set; }
     }
-
 }

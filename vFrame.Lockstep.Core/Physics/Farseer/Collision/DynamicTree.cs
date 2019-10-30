@@ -47,8 +47,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
         internal T UserData;
 
-        internal bool IsLeaf()
-        {
+        internal bool IsLeaf() {
             return Child1 == DynamicTree<T>.NullNode;
         }
     }
@@ -76,8 +75,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <summary>
         /// Constructing the tree initializes the node pool.
         /// </summary>
-        public DynamicTree()
-        {
+        public DynamicTree() {
             _root = NullNode;
 
             _nodeCapacity = 16;
@@ -85,12 +83,12 @@ namespace vFrame.Lockstep.Core.Physics2D
             _nodes = new TreeNode<T>[_nodeCapacity];
 
             // Build a linked list for the free list.
-            for (int i = 0; i < _nodeCapacity - 1; ++i)
-            {
+            for (int i = 0; i < _nodeCapacity - 1; ++i) {
                 _nodes[i] = new TreeNode<T>();
                 _nodes[i].ParentOrNext = i + 1;
                 _nodes[i].Height = 1;
             }
+
             _nodes[_nodeCapacity - 1] = new TreeNode<T>();
             _nodes[_nodeCapacity - 1].ParentOrNext = NullNode;
             _nodes[_nodeCapacity - 1].Height = 1;
@@ -100,12 +98,9 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <summary>
         /// Compute the height of the binary tree in O(N) time. Should not be called often.
         /// </summary>
-        public int Height
-        {
-            get
-            {
-                if (_root == NullNode)
-                {
+        public int Height {
+            get {
+                if (_root == NullNode) {
                     return 0;
                 }
 
@@ -116,12 +111,9 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <summary>
         /// Get the ratio of the sum of the node areas to the root area.
         /// </summary>
-        public FixedPoint AreaRatio
-        {
-            get
-            {
-                if (_root == NullNode)
-                {
+        public FixedPoint AreaRatio {
+            get {
+                if (_root == NullNode) {
                     return FixedPoint.Zero;
                 }
 
@@ -129,11 +121,9 @@ namespace vFrame.Lockstep.Core.Physics2D
                 FixedPoint rootArea = root.AABB.Perimeter;
 
                 FixedPoint totalArea = FixedPoint.Zero;
-                for (int i = 0; i < _nodeCapacity; ++i)
-                {
+                for (int i = 0; i < _nodeCapacity; ++i) {
                     TreeNode<T> node = _nodes[i];
-                    if (node.Height < 0)
-                    {
+                    if (node.Height < 0) {
                         // Free node in pool
                         continue;
                     }
@@ -149,16 +139,12 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Get the maximum balance of an node in the tree. The balance is the difference
         /// in height of the two children of a node.
         /// </summary>
-        public int MaxBalance
-        {
-            get
-            {
+        public int MaxBalance {
+            get {
                 int maxBalance = 0;
-                for (int i = 0; i < _nodeCapacity; ++i)
-                {
+                for (int i = 0; i < _nodeCapacity; ++i) {
                     TreeNode<T> node = _nodes[i];
-                    if (node.Height <= 1)
-                    {
+                    if (node.Height <= 1) {
                         continue;
                     }
 
@@ -182,8 +168,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="aabb">The aabb.</param>
         /// <param name="userData">The user data.</param>
         /// <returns>Index of the created proxy</returns>
-        public int AddProxy(ref AABB aabb, T userData)
-        {
+        public int AddProxy(ref AABB aabb, T userData) {
             int proxyId = AllocateNode();
 
             // Fatten the aabb.
@@ -202,8 +187,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Destroy a proxy. This asserts if the id is invalid.
         /// </summary>
         /// <param name="proxyId">The proxy id.</param>
-        public void RemoveProxy(int proxyId)
-        {
+        public void RemoveProxy(int proxyId) {
             Debug.Assert(0 <= proxyId && proxyId < _nodeCapacity);
             Debug.Assert(_nodes[proxyId].IsLeaf());
 
@@ -220,14 +204,12 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="aabb">The aabb.</param>
         /// <param name="displacement">The displacement.</param>
         /// <returns>true if the proxy was re-inserted.</returns>
-        public bool MoveProxy(int proxyId, ref AABB aabb, TSVector2 displacement)
-        {
+        public bool MoveProxy(int proxyId, ref AABB aabb, TSVector2 displacement) {
             Debug.Assert(0 <= proxyId && proxyId < _nodeCapacity);
 
             Debug.Assert(_nodes[proxyId].IsLeaf());
 
-            if (_nodes[proxyId].AABB.Contains(ref aabb))
-            {
+            if (_nodes[proxyId].AABB.Contains(ref aabb)) {
                 return false;
             }
 
@@ -242,21 +224,17 @@ namespace vFrame.Lockstep.Core.Physics2D
             // Predict AABB displacement.
             TSVector2 d = Settings.AABBMultiplier * displacement;
 
-            if (d.x < FixedPoint.Zero)
-            {
+            if (d.x < FixedPoint.Zero) {
                 b.LowerBound.x += d.x;
             }
-            else
-            {
+            else {
                 b.UpperBound.x += d.x;
             }
 
-            if (d.y < FixedPoint.Zero)
-            {
+            if (d.y < FixedPoint.Zero) {
                 b.LowerBound.y += d.y;
             }
-            else
-            {
+            else {
                 b.UpperBound.y += d.y;
             }
 
@@ -272,8 +250,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <typeparam name="T"></typeparam>
         /// <param name="proxyId">The proxy id.</param>
         /// <returns>the proxy user data or 0 if the id is invalid.</returns>
-        public T GetUserData(int proxyId)
-        {
+        public T GetUserData(int proxyId) {
             Debug.Assert(0 <= proxyId && proxyId < _nodeCapacity);
             return _nodes[proxyId].UserData;
         }
@@ -283,8 +260,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="proxyId">The proxy id.</param>
         /// <param name="fatAABB">The fat AABB.</param>
-        public void GetFatAABB(int proxyId, out AABB fatAABB)
-        {
+        public void GetFatAABB(int proxyId, out AABB fatAABB) {
             Debug.Assert(0 <= proxyId && proxyId < _nodeCapacity);
             fatAABB = _nodes[proxyId].AABB;
         }
@@ -295,33 +271,26 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="callback">The callback.</param>
         /// <param name="aabb">The aabb.</param>
-        public void Query(Func<int, bool> callback, ref AABB aabb)
-        {
+        public void Query(Func<int, bool> callback, ref AABB aabb) {
             _queryStack.Clear();
             _queryStack.Push(_root);
 
-            while (_queryStack.Count > 0)
-            {
+            while (_queryStack.Count > 0) {
                 int nodeId = _queryStack.Pop();
-                if (nodeId == NullNode)
-                {
+                if (nodeId == NullNode) {
                     continue;
                 }
 
                 TreeNode<T> node = _nodes[nodeId];
 
-                if (AABB.TestOverlap(ref node.AABB, ref aabb))
-                {
-                    if (node.IsLeaf())
-                    {
+                if (AABB.TestOverlap(ref node.AABB, ref aabb)) {
+                    if (node.IsLeaf()) {
                         bool proceed = callback(nodeId);
-                        if (proceed == false)
-                        {
+                        if (proceed == false) {
                             return;
                         }
                     }
-                    else
-                    {
+                    else {
                         _queryStack.Push(node.Child1);
                         _queryStack.Push(node.Child2);
                     }
@@ -338,8 +307,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="callback">A callback class that is called for each proxy that is hit by the ray.</param>
         /// <param name="input">The ray-cast input data. The ray extends from p1 to p1 + maxFraction * (p2 - p1).</param>
-        public void RayCast(Func<RayCastInput, int, int, FixedPoint> callback, ref RayCastInput input, int layerMask)
-        {
+        public void RayCast(Func<RayCastInput, int, int, FixedPoint> callback, ref RayCastInput input, int layerMask) {
             TSVector2 p1 = input.Point1;
             TSVector2 p2 = input.Point2;
             TSVector2 r = p2 - p1;
@@ -365,18 +333,15 @@ namespace vFrame.Lockstep.Core.Physics2D
             _raycastStack.Clear();
             _raycastStack.Push(_root);
 
-            while (_raycastStack.Count > 0)
-            {
+            while (_raycastStack.Count > 0) {
                 int nodeId = _raycastStack.Pop();
-                if (nodeId == NullNode)
-                {
+                if (nodeId == NullNode) {
                     continue;
                 }
 
                 TreeNode<T> node = _nodes[nodeId];
 
-                if (AABB.TestOverlap(ref node.AABB, ref segmentAABB) == false)
-                {
+                if (AABB.TestOverlap(ref node.AABB, ref segmentAABB) == false) {
                     continue;
                 }
 
@@ -384,14 +349,13 @@ namespace vFrame.Lockstep.Core.Physics2D
                 // |dot(v, p1 - c)| > dot(|v|, h)
                 TSVector2 c = node.AABB.Center;
                 TSVector2 h = node.AABB.Extents;
-                FixedPoint separation = FixedPoint.Abs(TSVector2.Dot(new TSVector2(-r.y, r.x), p1 - c)) - TSVector2.Dot(absV, h);
-                if (separation > FixedPoint.Zero)
-                {
+                FixedPoint separation = FixedPoint.Abs(TSVector2.Dot(new TSVector2(-r.y, r.x), p1 - c)) -
+                                        TSVector2.Dot(absV, h);
+                if (separation > FixedPoint.Zero) {
                     continue;
                 }
 
-                if (node.IsLeaf())
-                {
+                if (node.IsLeaf()) {
                     RayCastInput subInput;
                     subInput.Point1 = input.Point1;
                     subInput.Point2 = input.Point2;
@@ -399,14 +363,12 @@ namespace vFrame.Lockstep.Core.Physics2D
 
                     FixedPoint value = callback(subInput, nodeId, layerMask);
 
-                    if (value == FixedPoint.Zero)
-                    {
+                    if (value == FixedPoint.Zero) {
                         // the client has terminated the raycast.
                         return;
                     }
 
-                    if (value > FixedPoint.Zero)
-                    {
+                    if (value > FixedPoint.Zero) {
                         // Update segment bounding box.
                         maxFraction = value;
                         TSVector2 t = p1 + maxFraction * (p2 - p1);
@@ -414,16 +376,14 @@ namespace vFrame.Lockstep.Core.Physics2D
                         segmentAABB.UpperBound = TSVector2.Max(p1, t);
                     }
                 }
-                else
-                {
+                else {
                     _raycastStack.Push(node.Child1);
                     _raycastStack.Push(node.Child2);
                 }
             }
         }
 
-        public int GetDebugParent(int node)
-        {
+        public int GetDebugParent(int node) {
 #if DOD_DEBUG
             return _nodes[node].ParentDebug;
 #else
@@ -431,8 +391,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 #endif
         }
 
-        public AABB GetAABB(int node)
-        {
+        public AABB GetAABB(int node) {
             return _nodes[node].AABB;
         }
 
@@ -445,8 +404,8 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="callback">A callback class that is called for each proxy that is hit by the ray.</param>
         /// <param name="input">The ray-cast input data. The ray extends from p1 to p1 + maxFraction * (p2 - p1).</param>
-        public void CircleCast(Func<CircleCastInput, int, int, FixedPoint> callback, ref CircleCastInput input, int layerMask)
-        {
+        public void CircleCast(Func<CircleCastInput, int, int, FixedPoint> callback, ref CircleCastInput input,
+            int layerMask) {
             TSVector2 p1 = input.Point1;
             TSVector2 p2 = input.Point2;
             //TSVector2 r = p2 - p1;
@@ -475,18 +434,15 @@ namespace vFrame.Lockstep.Core.Physics2D
             _raycastStack.Clear();
             _raycastStack.Push(_root);
 
-            while (_raycastStack.Count > 0)
-            {
+            while (_raycastStack.Count > 0) {
                 int nodeId = _raycastStack.Pop();
-                if (nodeId == NullNode)
-                {
+                if (nodeId == NullNode) {
                     continue;
                 }
 
                 TreeNode<T> node = _nodes[nodeId];
 
-                if (AABB.TestOverlap(ref node.AABB, ref segmentAABB) == false)
-                {
+                if (AABB.TestOverlap(ref node.AABB, ref segmentAABB) == false) {
                     continue;
                 }
 
@@ -500,8 +456,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 //    //continue;
                 //}
 
-                if (node.IsLeaf())
-                {
+                if (node.IsLeaf()) {
                     CircleCastInput subInput;
                     subInput.Point1 = input.Point1;
                     subInput.Point2 = input.Point2;
@@ -513,8 +468,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
                     FixedPoint value = callback(subInput, nodeId, layerMask);
 
-                    if (value == FixedPoint.Zero)
-                    {
+                    if (value == FixedPoint.Zero) {
                         // the client has terminated the raycast.
                         return;
                     }
@@ -528,8 +482,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                     //    segmentAABB.UpperBound = TSVector2.Max(p1, t);
                     //}
                 }
-                else
-                {
+                else {
 #if DOD_DEBUG
                     if (node.Child1 != NullNode)
                     {
@@ -546,11 +499,9 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
         }
 
-        private int AllocateNode()
-        {
+        private int AllocateNode() {
             // Expand the node pool as needed.
-            if (_freeList == NullNode)
-            {
+            if (_freeList == NullNode) {
                 Debug.Assert(_nodeCount == _nodeCapacity);
 
                 // The free list is empty. Rebuild a bigger pool.
@@ -561,12 +512,12 @@ namespace vFrame.Lockstep.Core.Physics2D
 
                 // Build a linked list for the free list. The parent
                 // pointer becomes the "next" pointer.
-                for (int i = _nodeCount; i < _nodeCapacity - 1; ++i)
-                {
+                for (int i = _nodeCount; i < _nodeCapacity - 1; ++i) {
                     _nodes[i] = new TreeNode<T>();
                     _nodes[i].ParentOrNext = i + 1;
                     _nodes[i].Height = -1;
                 }
+
                 _nodes[_nodeCapacity - 1] = new TreeNode<T>();
                 _nodes[_nodeCapacity - 1].ParentOrNext = NullNode;
                 _nodes[_nodeCapacity - 1].Height = -1;
@@ -590,8 +541,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             return nodeId;
         }
 
-        private void FreeNode(int nodeId)
-        {
+        private void FreeNode(int nodeId) {
             Debug.Assert(0 <= nodeId && nodeId < _nodeCapacity);
             Debug.Assert(0 < _nodeCount);
             _nodes[nodeId].ParentOrNext = _freeList;
@@ -600,10 +550,8 @@ namespace vFrame.Lockstep.Core.Physics2D
             --_nodeCount;
         }
 
-        private void InsertLeaf(int leaf)
-        {
-            if (_root == NullNode)
-            {
+        private void InsertLeaf(int leaf) {
+            if (_root == NullNode) {
                 _root = leaf;
                 _nodes[_root].ParentOrNext = NullNode;
                 return;
@@ -612,8 +560,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             // Find the best sibling for this node
             AABB leafAABB = _nodes[leaf].AABB;
             int index = _root;
-            while (_nodes[index].IsLeaf() == false)
-            {
+            while (_nodes[index].IsLeaf() == false) {
                 int child1 = _nodes[index].Child1;
                 int child2 = _nodes[index].Child2;
 
@@ -631,14 +578,12 @@ namespace vFrame.Lockstep.Core.Physics2D
 
                 // Cost of descending into child1
                 FixedPoint cost1;
-                if (_nodes[child1].IsLeaf())
-                {
+                if (_nodes[child1].IsLeaf()) {
                     AABB aabb = new AABB();
                     aabb.Combine(ref leafAABB, ref _nodes[child1].AABB);
                     cost1 = aabb.Perimeter + inheritanceCost;
                 }
-                else
-                {
+                else {
                     AABB aabb = new AABB();
                     aabb.Combine(ref leafAABB, ref _nodes[child1].AABB);
                     FixedPoint oldArea = _nodes[child1].AABB.Perimeter;
@@ -648,14 +593,12 @@ namespace vFrame.Lockstep.Core.Physics2D
 
                 // Cost of descending into child2
                 FixedPoint cost2;
-                if (_nodes[child2].IsLeaf())
-                {
+                if (_nodes[child2].IsLeaf()) {
                     AABB aabb = new AABB();
                     aabb.Combine(ref leafAABB, ref _nodes[child2].AABB);
                     cost2 = aabb.Perimeter + inheritanceCost;
                 }
-                else
-                {
+                else {
                     AABB aabb = new AABB();
                     aabb.Combine(ref leafAABB, ref _nodes[child2].AABB);
                     FixedPoint oldArea = _nodes[child2].AABB.Perimeter;
@@ -664,18 +607,15 @@ namespace vFrame.Lockstep.Core.Physics2D
                 }
 
                 // Descend according to the minimum cost.
-                if (cost < cost1 && cost1 < cost2)
-                {
+                if (cost < cost1 && cost1 < cost2) {
                     break;
                 }
 
                 // Descend
-                if (cost1 < cost2)
-                {
+                if (cost1 < cost2) {
                     index = child1;
                 }
-                else
-                {
+                else {
                     index = child2;
                 }
             }
@@ -690,15 +630,12 @@ namespace vFrame.Lockstep.Core.Physics2D
             _nodes[newParent].AABB.Combine(ref leafAABB, ref _nodes[sibling].AABB);
             _nodes[newParent].Height = _nodes[sibling].Height + 1;
 
-            if (oldParent != NullNode)
-            {
+            if (oldParent != NullNode) {
                 // The sibling was not the root.
-                if (_nodes[oldParent].Child1 == sibling)
-                {
+                if (_nodes[oldParent].Child1 == sibling) {
                     _nodes[oldParent].Child1 = newParent;
                 }
-                else
-                {
+                else {
                     _nodes[oldParent].Child2 = newParent;
                 }
 
@@ -707,8 +644,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 _nodes[sibling].ParentOrNext = newParent;
                 _nodes[leaf].ParentOrNext = newParent;
             }
-            else
-            {
+            else {
                 // The sibling was the root.
                 _nodes[newParent].Child1 = sibling;
                 _nodes[newParent].Child2 = leaf;
@@ -719,8 +655,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             // Walk back up the tree fixing heights and AABBs
             index = _nodes[leaf].ParentOrNext;
-            while (index != NullNode)
-            {
+            while (index != NullNode) {
                 index = Balance(index);
 
                 int child1 = _nodes[index].Child1;
@@ -738,10 +673,8 @@ namespace vFrame.Lockstep.Core.Physics2D
             //Validate();
         }
 
-        private void RemoveLeaf(int leaf)
-        {
-            if (leaf == _root)
-            {
+        private void RemoveLeaf(int leaf) {
+            if (leaf == _root) {
                 _root = NullNode;
                 return;
             }
@@ -749,33 +682,28 @@ namespace vFrame.Lockstep.Core.Physics2D
             int parent = _nodes[leaf].ParentOrNext;
             int grandParent = _nodes[parent].ParentOrNext;
             int sibling;
-            if (_nodes[parent].Child1 == leaf)
-            {
+            if (_nodes[parent].Child1 == leaf) {
                 sibling = _nodes[parent].Child2;
             }
-            else
-            {
+            else {
                 sibling = _nodes[parent].Child1;
             }
 
-            if (grandParent != NullNode)
-            {
+            if (grandParent != NullNode) {
                 // Destroy parent and connect sibling to grandParent.
-                if (_nodes[grandParent].Child1 == parent)
-                {
+                if (_nodes[grandParent].Child1 == parent) {
                     _nodes[grandParent].Child1 = sibling;
                 }
-                else
-                {
+                else {
                     _nodes[grandParent].Child2 = sibling;
                 }
+
                 _nodes[sibling].ParentOrNext = grandParent;
                 FreeNode(parent);
 
                 // Adjust ancestor bounds.
                 int index = grandParent;
-                while (index != NullNode)
-                {
+                while (index != NullNode) {
                     index = Balance(index);
 
                     int child1 = _nodes[index].Child1;
@@ -787,8 +715,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                     index = _nodes[index].ParentOrNext;
                 }
             }
-            else
-            {
+            else {
                 _root = sibling;
                 _nodes[sibling].ParentOrNext = NullNode;
                 FreeNode(parent);
@@ -802,13 +729,11 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="iA"></param>
         /// <returns>the new root index.</returns>
-        private int Balance(int iA)
-        {
+        private int Balance(int iA) {
             Debug.Assert(iA != NullNode);
 
             TreeNode<T> A = _nodes[iA];
-            if (A.IsLeaf() || A.Height < 2)
-            {
+            if (A.IsLeaf() || A.Height < 2) {
                 return iA;
             }
 
@@ -823,8 +748,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             int balance = C.Height - B.Height;
 
             // Rotate C up
-            if (balance > 1)
-            {
+            if (balance > 1) {
                 int iF = C.Child1;
                 int iG = C.Child2;
                 TreeNode<T> F = _nodes[iF];
@@ -838,26 +762,21 @@ namespace vFrame.Lockstep.Core.Physics2D
                 A.ParentOrNext = iC;
 
                 // A's old parent should point to C
-                if (C.ParentOrNext != NullNode)
-                {
-                    if (_nodes[C.ParentOrNext].Child1 == iA)
-                    {
+                if (C.ParentOrNext != NullNode) {
+                    if (_nodes[C.ParentOrNext].Child1 == iA) {
                         _nodes[C.ParentOrNext].Child1 = iC;
                     }
-                    else
-                    {
+                    else {
                         Debug.Assert(_nodes[C.ParentOrNext].Child2 == iA);
                         _nodes[C.ParentOrNext].Child2 = iC;
                     }
                 }
-                else
-                {
+                else {
                     _root = iC;
                 }
 
                 // Rotate
-                if (F.Height > G.Height)
-                {
+                if (F.Height > G.Height) {
                     C.Child2 = iF;
                     A.Child2 = iG;
                     G.ParentOrNext = iA;
@@ -867,8 +786,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                     A.Height = 1 + Math.Max(B.Height, G.Height);
                     C.Height = 1 + Math.Max(A.Height, F.Height);
                 }
-                else
-                {
+                else {
                     C.Child2 = iG;
                     A.Child2 = iF;
                     F.ParentOrNext = iA;
@@ -883,8 +801,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
 
             // Rotate B up
-            if (balance < -1)
-            {
+            if (balance < -1) {
                 int iD = B.Child1;
                 int iE = B.Child2;
                 TreeNode<T> D = _nodes[iD];
@@ -898,37 +815,31 @@ namespace vFrame.Lockstep.Core.Physics2D
                 A.ParentOrNext = iB;
 
                 // A's old parent should point to B
-                if (B.ParentOrNext != NullNode)
-                {
-                    if (_nodes[B.ParentOrNext].Child1 == iA)
-                    {
+                if (B.ParentOrNext != NullNode) {
+                    if (_nodes[B.ParentOrNext].Child1 == iA) {
                         _nodes[B.ParentOrNext].Child1 = iB;
                     }
-                    else
-                    {
+                    else {
                         Debug.Assert(_nodes[B.ParentOrNext].Child2 == iA);
                         _nodes[B.ParentOrNext].Child2 = iB;
                     }
                 }
-                else
-                {
+                else {
                     _root = iB;
                 }
 
                 // Rotate
-                if (D.Height > E.Height)
-                {
+                if (D.Height > E.Height) {
                     B.Child2 = iD;
                     A.Child1 = iE;
                     E.ParentOrNext = iA;
-                    A.AABB.Combine(ref C.AABB, ref  E.AABB);
+                    A.AABB.Combine(ref C.AABB, ref E.AABB);
                     B.AABB.Combine(ref A.AABB, ref D.AABB);
 
                     A.Height = 1 + Math.Max(C.Height, E.Height);
                     B.Height = 1 + Math.Max(A.Height, D.Height);
                 }
-                else
-                {
+                else {
                     B.Child2 = iE;
                     A.Child1 = iD;
                     D.ParentOrNext = iA;
@@ -950,13 +861,11 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="nodeId">The node id to use as parent.</param>
         /// <returns>The height of the tree.</returns>
-        public int ComputeHeight(int nodeId)
-        {
+        public int ComputeHeight(int nodeId) {
             Debug.Assert(0 <= nodeId && nodeId < _nodeCapacity);
             TreeNode<T> node = _nodes[nodeId];
 
-            if (node.IsLeaf())
-            {
+            if (node.IsLeaf()) {
                 return 0;
             }
 
@@ -969,21 +878,17 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Compute the height of the entire tree.
         /// </summary>
         /// <returns>The height of the tree.</returns>
-        public int ComputeHeight()
-        {
+        public int ComputeHeight() {
             int height = ComputeHeight(_root);
             return height;
         }
 
-        public void ValidateStructure(int index)
-        {
-            if (index == NullNode)
-            {
+        public void ValidateStructure(int index) {
+            if (index == NullNode) {
                 return;
             }
 
-            if (index == _root)
-            {
+            if (index == _root) {
                 Debug.Assert(_nodes[index].ParentOrNext == NullNode);
             }
 
@@ -992,8 +897,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             int child1 = node.Child1;
             int child2 = node.Child2;
 
-            if (node.IsLeaf())
-            {
+            if (node.IsLeaf()) {
                 Debug.Assert(child1 == NullNode);
                 Debug.Assert(child2 == NullNode);
                 Debug.Assert(node.Height == 0);
@@ -1010,10 +914,8 @@ namespace vFrame.Lockstep.Core.Physics2D
             ValidateStructure(child2);
         }
 
-        public void ValidateMetrics(int index)
-        {
-            if (index == NullNode)
-            {
+        public void ValidateMetrics(int index) {
+            if (index == NullNode) {
                 return;
             }
 
@@ -1022,8 +924,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             int child1 = node.Child1;
             int child2 = node.Child2;
 
-            if (node.IsLeaf())
-            {
+            if (node.IsLeaf()) {
                 Debug.Assert(child1 == NullNode);
                 Debug.Assert(child2 == NullNode);
                 Debug.Assert(node.Height == 0);
@@ -1051,15 +952,13 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <summary>
         /// Validate this tree. For testing.
         /// </summary>
-        public void Validate()
-        {
+        public void Validate() {
             ValidateStructure(_root);
             ValidateMetrics(_root);
 
             int freeCount = 0;
             int freeIndex = _freeList;
-            while (freeIndex != NullNode)
-            {
+            while (freeIndex != NullNode) {
                 Debug.Assert(0 <= freeIndex && freeIndex < _nodeCapacity);
                 freeIndex = _nodes[freeIndex].ParentOrNext;
                 ++freeCount;
@@ -1073,48 +972,39 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <summary>
         /// Build an optimal tree. Very expensive. For testing.
         /// </summary>
-        public void RebuildBottomUp()
-        {
+        public void RebuildBottomUp() {
             int[] nodes = new int[_nodeCount];
             int count = 0;
 
             // Build array of leaves. Free the rest.
-            for (int i = 0; i < _nodeCapacity; ++i)
-            {
-                if (_nodes[i].Height < 0)
-                {
+            for (int i = 0; i < _nodeCapacity; ++i) {
+                if (_nodes[i].Height < 0) {
                     // free node in pool
                     continue;
                 }
 
-                if (_nodes[i].IsLeaf())
-                {
+                if (_nodes[i].IsLeaf()) {
                     _nodes[i].ParentOrNext = NullNode;
                     nodes[count] = i;
                     ++count;
                 }
-                else
-                {
+                else {
                     FreeNode(i);
                 }
             }
 
-            while (count > 1)
-            {
+            while (count > 1) {
                 FixedPoint minCost = Settings.MaxFP;
                 int iMin = -1, jMin = -1;
-                for (int i = 0; i < count; ++i)
-                {
+                for (int i = 0; i < count; ++i) {
                     AABB AABBi = _nodes[nodes[i]].AABB;
 
-                    for (int j = i + 1; j < count; ++j)
-                    {
+                    for (int j = i + 1; j < count; ++j) {
                         AABB AABBj = _nodes[nodes[j]].AABB;
                         AABB b = new AABB();
                         b.Combine(ref AABBi, ref AABBj);
                         FixedPoint cost = b.Perimeter;
-                        if (cost < minCost)
-                        {
+                        if (cost < minCost) {
                             iMin = i;
                             jMin = j;
                             minCost = cost;
@@ -1152,11 +1042,9 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Shift the origin of the nodes
         /// </summary>
         /// <param name="newOrigin">The displacement to use.</param>
-        public void ShiftOrigin(TSVector2 newOrigin)
-        {
+        public void ShiftOrigin(TSVector2 newOrigin) {
             // Build array of leaves. Free the rest.
-            for (int i = 0; i < _nodeCapacity; ++i)
-            {
+            for (int i = 0; i < _nodeCapacity; ++i) {
                 _nodes[i].AABB.LowerBound -= newOrigin;
                 _nodes[i].AABB.UpperBound -= newOrigin;
             }

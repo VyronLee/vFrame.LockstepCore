@@ -20,6 +20,7 @@
 * 3. This notice may not be removed or altered from any source distribution.
 */
 //#define USE_ACTIVE_CONTACT_SET
+
 #pragma warning disable 0162
 
 using System.Collections.Generic;
@@ -68,37 +69,34 @@ namespace vFrame.Lockstep.Core.Physics2D
 
         private static EdgeShape _edge = new EdgeShape();
 
-        private static ContactType[,] _registers = new[,]
-                                                       {
-                                                           {
-                                                               ContactType.Circle,
-                                                               ContactType.EdgeAndCircle,
-                                                               ContactType.PolygonAndCircle,
-                                                               ContactType.ChainAndCircle,
-                                                           },
-                                                           {
-                                                               ContactType.EdgeAndCircle,
-                                                               ContactType.NotSupported,
-                                                               // 1,1 is invalid (no ContactType.Edge)
-                                                               ContactType.EdgeAndPolygon,
-                                                               ContactType.NotSupported,
-                                                               // 1,3 is invalid (no ContactType.EdgeAndLoop)
-                                                           },
-                                                           {
-                                                               ContactType.PolygonAndCircle,
-                                                               ContactType.EdgeAndPolygon,
-                                                               ContactType.Polygon,
-                                                               ContactType.ChainAndPolygon,
-                                                           },
-                                                           {
-                                                               ContactType.ChainAndCircle,
-                                                               ContactType.NotSupported,
-                                                               // 3,1 is invalid (no ContactType.EdgeAndLoop)
-                                                               ContactType.ChainAndPolygon,
-                                                               ContactType.NotSupported,
-                                                               // 3,3 is invalid (no ContactType.Loop)
-                                                           },
-                                                       };
+        private static ContactType[,] _registers = new[,] {
+            {
+                ContactType.Circle,
+                ContactType.EdgeAndCircle,
+                ContactType.PolygonAndCircle,
+                ContactType.ChainAndCircle,
+            }, {
+                ContactType.EdgeAndCircle,
+                ContactType.NotSupported,
+                // 1,1 is invalid (no ContactType.Edge)
+                ContactType.EdgeAndPolygon,
+                ContactType.NotSupported,
+                // 1,3 is invalid (no ContactType.EdgeAndLoop)
+            }, {
+                ContactType.PolygonAndCircle,
+                ContactType.EdgeAndPolygon,
+                ContactType.Polygon,
+                ContactType.ChainAndPolygon,
+            }, {
+                ContactType.ChainAndCircle,
+                ContactType.NotSupported,
+                // 3,1 is invalid (no ContactType.EdgeAndLoop)
+                ContactType.ChainAndPolygon,
+                ContactType.NotSupported,
+                // 3,3 is invalid (no ContactType.Loop)
+            },
+        };
+
         // Nodes for connecting bodies.
         internal ContactEdge _nodeA = new ContactEdge();
         internal ContactEdge _nodeB = new ContactEdge();
@@ -117,9 +115,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         public Manifold Manifold;
 
         internal ContactCloneKey Key {
-            get {
-                return new ContactCloneKey(FixtureA.FixtureId, FixtureB.FixtureId);
-            }
+            get { return new ContactCloneKey(FixtureA.FixtureId, FixtureB.FixtureId); }
         }
 
         /// Get or set the desired tangent speed for a conveyor belt behavior. In meters per second.
@@ -157,26 +153,23 @@ namespace vFrame.Lockstep.Core.Physics2D
         internal bool TOIFlag { get; set; }
         internal bool FilterFlag { get; set; }
 
-        public void ResetRestitution()
-        {
+        public void ResetRestitution() {
             Restitution = Settings.MixRestitution(FixtureA.Restitution, FixtureB.Restitution);
         }
 
-        public void ResetFriction()
-        {
+        public void ResetFriction() {
             Friction = Settings.MixFriction(FixtureA.Friction, FixtureB.Friction);
         }
 
-        internal Contact() {}
+        internal Contact() {
+        }
 
-        internal Contact(World world, Fixture fA, int indexA, Fixture fB, int indexB)
-        {
+        internal Contact(World world, Fixture fA, int indexA, Fixture fB, int indexB) {
             m_world = world;
             Reset(fA, indexA, fB, indexB);
         }
 
-        private void Reset(Fixture fA, int indexA, Fixture fB, int indexB)
-        {
+        private void Reset(Fixture fA, int indexA, Fixture fB, int indexB) {
             Enabled = true;
             IsTouching = false;
             IslandFlag = false;
@@ -204,8 +197,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             _toiCount = 0;
 
             //FPE: We only set the friction and restitution if we are not destroying the contact
-            if (FixtureA != null && FixtureB != null)
-            {
+            if (FixtureA != null && FixtureB != null) {
                 Friction = Settings.MixFriction(FixtureA.Friction, FixtureB.Friction);
                 Restitution = Settings.MixRestitution(FixtureA.Restitution, FixtureB.Restitution);
             }
@@ -219,40 +211,44 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="manifold">The manifold.</param>
         /// <param name="transformA">The first transform.</param>
         /// <param name="transformB">The second transform.</param>
-        internal void Evaluate(ref Manifold manifold, ref Transform transformA, ref Transform transformB)
-        {
-            switch (_type)
-            {
+        internal void Evaluate(ref Manifold manifold, ref Transform transformA, ref Transform transformB) {
+            switch (_type) {
                 case ContactType.Polygon:
-                    Collision.CollidePolygons(ref manifold, (PolygonShape)FixtureA.Shape, ref transformA, (PolygonShape)FixtureB.Shape, ref transformB);
+                    Collision.CollidePolygons(ref manifold, (PolygonShape) FixtureA.Shape, ref transformA,
+                        (PolygonShape) FixtureB.Shape, ref transformB);
                     break;
                 case ContactType.PolygonAndCircle:
-                    Collision.CollidePolygonAndCircle(ref manifold, (PolygonShape)FixtureA.Shape, ref transformA, (CircleShape)FixtureB.Shape, ref transformB);
+                    Collision.CollidePolygonAndCircle(ref manifold, (PolygonShape) FixtureA.Shape, ref transformA,
+                        (CircleShape) FixtureB.Shape, ref transformB);
                     break;
                 case ContactType.EdgeAndCircle:
-                    Collision.CollideEdgeAndCircle(ref manifold, (EdgeShape)FixtureA.Shape, ref transformA, (CircleShape)FixtureB.Shape, ref transformB);
+                    Collision.CollideEdgeAndCircle(ref manifold, (EdgeShape) FixtureA.Shape, ref transformA,
+                        (CircleShape) FixtureB.Shape, ref transformB);
                     break;
                 case ContactType.EdgeAndPolygon:
-                    Collision.CollideEdgeAndPolygon(ref manifold, (EdgeShape)FixtureA.Shape, ref transformA, (PolygonShape)FixtureB.Shape, ref transformB);
+                    Collision.CollideEdgeAndPolygon(ref manifold, (EdgeShape) FixtureA.Shape, ref transformA,
+                        (PolygonShape) FixtureB.Shape, ref transformB);
                     break;
                 case ContactType.ChainAndCircle:
-                    ChainShape chain = (ChainShape)FixtureA.Shape;
+                    ChainShape chain = (ChainShape) FixtureA.Shape;
                     chain.GetChildEdge(_edge, ChildIndexA);
-                    Collision.CollideEdgeAndCircle(ref manifold, _edge, ref transformA, (CircleShape)FixtureB.Shape, ref transformB);
+                    Collision.CollideEdgeAndCircle(ref manifold, _edge, ref transformA, (CircleShape) FixtureB.Shape,
+                        ref transformB);
                     break;
                 case ContactType.ChainAndPolygon:
-                    ChainShape loop2 = (ChainShape)FixtureA.Shape;
+                    ChainShape loop2 = (ChainShape) FixtureA.Shape;
                     loop2.GetChildEdge(_edge, ChildIndexA);
-                    Collision.CollideEdgeAndPolygon(ref manifold, _edge, ref transformA, (PolygonShape)FixtureB.Shape, ref transformB);
+                    Collision.CollideEdgeAndPolygon(ref manifold, _edge, ref transformA, (PolygonShape) FixtureB.Shape,
+                        ref transformB);
                     break;
                 case ContactType.Circle:
-                    Collision.CollideCircles(ref manifold, (CircleShape)FixtureA.Shape, ref transformA, (CircleShape)FixtureB.Shape, ref transformB);
+                    Collision.CollideCircles(ref manifold, (CircleShape) FixtureA.Shape, ref transformA,
+                        (CircleShape) FixtureB.Shape, ref transformB);
                     break;
             }
         }
 
-        internal static Contact Create(World world, Fixture fixtureA, int indexA, Fixture fixtureB, int indexB)
-        {
+        internal static Contact Create(World world, Fixture fixtureA, int indexA, Fixture fixtureB, int indexB) {
             ShapeType type1 = fixtureA.Shape.ShapeType;
             ShapeType type2 = fixtureB.Shape.ShapeType;
 
@@ -261,45 +257,39 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             Contact c;
             Queue<Contact> pool = world._contactPool;
-            if (pool.Count > 0)
-            {
+            if (pool.Count > 0) {
                 c = pool.Dequeue();
-                if ((type1 >= type2 || (type1 == ShapeType.Edge && type2 == ShapeType.Polygon)) && !(type2 == ShapeType.Edge && type1 == ShapeType.Polygon))
-                {
+                if ((type1 >= type2 || (type1 == ShapeType.Edge && type2 == ShapeType.Polygon)) &&
+                    !(type2 == ShapeType.Edge && type1 == ShapeType.Polygon)) {
                     c.Reset(fixtureA, indexA, fixtureB, indexB);
                 }
-                else
-                {
+                else {
                     c.Reset(fixtureB, indexB, fixtureA, indexA);
                 }
             }
-            else
-            {
+            else {
                 // Edge+Polygon is non-symetrical due to the way Erin handles collision type registration.
-                if ((type1 >= type2 || (type1 == ShapeType.Edge && type2 == ShapeType.Polygon)) && !(type2 == ShapeType.Edge && type1 == ShapeType.Polygon))
-                {
+                if ((type1 >= type2 || (type1 == ShapeType.Edge && type2 == ShapeType.Polygon)) &&
+                    !(type2 == ShapeType.Edge && type1 == ShapeType.Polygon)) {
                     c = new Contact(world, fixtureA, indexA, fixtureB, indexB);
                 }
-                else
-                {
+                else {
                     c = new Contact(world, fixtureB, indexB, fixtureA, indexA);
                 }
             }
 
-            c._type = _registers[(int)type1, (int)type2];
+            c._type = _registers[(int) type1, (int) type2];
 
             return c;
         }
 
-        internal void Destroy()
-        {
+        internal void Destroy() {
 #if USE_ACTIVE_CONTACT_SET
             FixtureA.Body.World.ContactManager.RemoveActiveContact(this);
 #endif
             m_world._contactPool.Enqueue(this);
 
-            if (Manifold.PointCount > 0 && FixtureA.IsSensor == false && FixtureB.IsSensor == false)
-            {
+            if (Manifold.PointCount > 0 && FixtureA.IsSensor == false && FixtureB.IsSensor == false) {
                 FixtureA.Body.Awake = true;
                 FixtureB.Body.Awake = true;
             }

@@ -39,12 +39,9 @@ namespace vFrame.Lockstep.Core.Physics2D
     {
         public bool _0, _1, _2;
 
-        public bool this[int index]
-        {
-            get
-            {
-                switch (index)
-                {
+        public bool this[int index] {
+            get {
+                switch (index) {
                     case 0:
                         return _0;
                     case 1:
@@ -55,10 +52,8 @@ namespace vFrame.Lockstep.Core.Physics2D
                         throw new IndexOutOfRangeException();
                 }
             }
-            set
-            {
-                switch (index)
-                {
+            set {
+                switch (index) {
                     case 0:
                         _0 = value;
                         break;
@@ -76,42 +71,41 @@ namespace vFrame.Lockstep.Core.Physics2D
 
         #region IEnumerable<bool> Members
 
-        public IEnumerator<bool> GetEnumerator()
-        {
+        public IEnumerator<bool> GetEnumerator() {
             return Enumerate().GetEnumerator();
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
+        IEnumerator IEnumerable.GetEnumerator() {
             return GetEnumerator();
         }
 
         #endregion
 
-        public bool Contains(bool value)
-        {
-            for (int i = 0; i < 3; ++i) if (this[i] == value) return true;
+        public bool Contains(bool value) {
+            for (int i = 0; i < 3; ++i)
+                if (this[i] == value)
+                    return true;
             return false;
         }
 
-        public int IndexOf(bool value)
-        {
-            for (int i = 0; i < 3; ++i) if (this[i] == value) return i;
+        public int IndexOf(bool value) {
+            for (int i = 0; i < 3; ++i)
+                if (this[i] == value)
+                    return i;
             return -1;
         }
 
-        public void Clear()
-        {
+        public void Clear() {
             _0 = _1 = _2 = false;
         }
 
-        public void Clear(bool value)
-        {
-            for (int i = 0; i < 3; ++i) if (this[i] == value) this[i] = false;
+        public void Clear(bool value) {
+            for (int i = 0; i < 3; ++i)
+                if (this[i] == value)
+                    this[i] = false;
         }
 
-        private IEnumerable<bool> Enumerate()
-        {
+        private IEnumerable<bool> Enumerate() {
             for (int i = 0; i < 3; ++i) yield return this[i];
         }
     }

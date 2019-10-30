@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace vFrame.Lockstep.Core {
-
+namespace vFrame.Lockstep.Core
+{
     /**
      *  @brief Generates random numbers based on a deterministic approach.
      **/
-    public class TSRandom {
-
+    public class TSRandom
+    {
         // From http://www.codeproject.com/Articles/164087/Random-Number-Generation
         // Class TSRandom generates random numbers
         // from a uniform distribution using the Mersenne
@@ -17,10 +17,10 @@ namespace vFrame.Lockstep.Core {
         private const uint UPPER_MASK = 0x80000000U;
         private const uint LOWER_MASK = 0x7fffffffU;
         private const int MAX_RAND_INT = 0x7fffffff;
-        private uint[] mag01 = { 0x0U, MATRIX_A };
+        private uint[] mag01 = {0x0U, MATRIX_A};
         private uint[] mt = new uint[N];
         private int mti = N + 1;
-        
+
         /**
          *  @brief Generates a new instance based on a given seed.
          **/
@@ -30,21 +30,23 @@ namespace vFrame.Lockstep.Core {
         }
 
         private TSRandom() {
-            init_genrand((uint)DateTime.Now.Millisecond);
+            init_genrand((uint) DateTime.Now.Millisecond);
         }
 
         private TSRandom(int seed) {
-            init_genrand((uint)seed);
+            init_genrand((uint) seed);
         }
 
         private TSRandom(int[] init) {
             uint[] initArray = new uint[init.Length];
             for (int i = 0; i < init.Length; ++i)
-                initArray[i] = (uint)init[i];
-            init_by_array(initArray, (uint)initArray.Length);
+                initArray[i] = (uint) init[i];
+            init_by_array(initArray, (uint) initArray.Length);
         }
 
-        public static int MaxRandomInt { get { return 0x7fffffff; } }
+        public static int MaxRandomInt {
+            get { return 0x7fffffff; }
+        }
 
         /**
          *  @brief Returns a random integer.
@@ -52,7 +54,7 @@ namespace vFrame.Lockstep.Core {
         public int Next() {
             return genrand_int31();
         }
-        
+
         /**
          *  @brief Returns a integer between a min value [inclusive] and a max value [exclusive].
          **/
@@ -68,14 +70,12 @@ namespace vFrame.Lockstep.Core {
             return minValue + Next() % range;
         }
 
-        public FixedPoint Next(FixedPoint min, FixedPoint max)
-        {
-            if (min == max)
-            {
+        public FixedPoint Next(FixedPoint min, FixedPoint max) {
+            if (min == max) {
                 return min;
             }
-            if (min > max)
-            {
+
+            if (min > max) {
                 var tmp = max;
                 max = min;
                 min = tmp;
@@ -84,13 +84,11 @@ namespace vFrame.Lockstep.Core {
             return NextFP() * (max - min + FixedPoint.Precision) + min;
         }
 
-        public FixedPoint Next01()
-        {
+        public FixedPoint Next01() {
             return Next(FixedPoint.Zero, FixedPoint.One);
         }
 
-        public TSVector2 RandomInsideCircle(FixedPoint radius)
-        {
+        public TSVector2 RandomInsideCircle(FixedPoint radius) {
             var val = new TSVector2();
             val.x = Next(-radius, radius);
             val.y = Next(-radius, radius);
@@ -112,18 +110,17 @@ namespace vFrame.Lockstep.Core {
         //    return (FP.Floor((maxValueInt - minValueInt + 1) * NextFP() +
         //        minValueInt)) / 1000;
         //}
-
         /**
          *  @brief Returns a {@link FP} between 0.0 [inclusive] and 1.0 [inclusive].
          **/
         public FixedPoint NextFP() {
             return ((FixedPoint) Next()) / (MaxRandomInt);
         }
-        
+
         private void init_genrand(uint s) {
             mt[0] = s & 0xffffffffU;
             for (mti = 1; mti < N; mti++) {
-                mt[mti] = (uint)(1812433253U * (mt[mti - 1] ^ (mt[mti - 1] >> 30)) + mti);
+                mt[mti] = (uint) (1812433253U * (mt[mti - 1] ^ (mt[mti - 1] >> 30)) + mti);
                 mt[mti] &= 0xffffffffU;
             }
         }
@@ -133,9 +130,9 @@ namespace vFrame.Lockstep.Core {
             init_genrand(19650218U);
             i = 1;
             j = 0;
-            k = (int)(N > key_length ? N : key_length);
+            k = (int) (N > key_length ? N : key_length);
             for (; k > 0; k--) {
-                mt[i] = (uint)((uint)(mt[i] ^ ((mt[i - 1] ^ (mt[i - 1] >> 30)) * 1664525U)) + init_key[j] + j);
+                mt[i] = (uint) ((uint) (mt[i] ^ ((mt[i - 1] ^ (mt[i - 1] >> 30)) * 1664525U)) + init_key[j] + j);
                 mt[i] &= 0xffffffffU;
                 i++;
                 j++;
@@ -143,12 +140,14 @@ namespace vFrame.Lockstep.Core {
                     mt[0] = mt[N - 1];
                     i = 1;
                 }
+
                 if (j >= key_length)
                     j = 0;
             }
+
             for (k = N - 1; k > 0; k--) {
-                mt[i] = (uint)((uint)(mt[i] ^ ((mt[i - 1] ^ (mt[i - 1] >> 30)) *
-                    1566083941U)) - i);
+                mt[i] = (uint) ((uint) (mt[i] ^ ((mt[i - 1] ^ (mt[i - 1] >> 30)) *
+                                                 1566083941U)) - i);
                 mt[i] &= 0xffffffffU;
                 i++;
                 if (i >= N) {
@@ -156,6 +155,7 @@ namespace vFrame.Lockstep.Core {
                     i = 1;
                 }
             }
+
             mt[0] = 0x80000000U;
         }
 
@@ -169,14 +169,17 @@ namespace vFrame.Lockstep.Core {
                     y = (mt[kk] & UPPER_MASK) | (mt[kk + 1] & LOWER_MASK);
                     mt[kk] = mt[kk + M] ^ (y >> 1) ^ mag01[y & 0x1U];
                 }
+
                 for (; kk < N - 1; kk++) {
                     y = (mt[kk] & UPPER_MASK) | (mt[kk + 1] & LOWER_MASK);
                     mt[kk] = mt[kk + (M - N)] ^ (y >> 1) ^ mag01[y & 0x1U];
                 }
+
                 y = (mt[N - 1] & UPPER_MASK) | (mt[0] & LOWER_MASK);
                 mt[N - 1] = mt[M - 1] ^ (y >> 1) ^ mag01[y & 0x1U];
                 mti = 0;
             }
+
             y = mt[mti++];
             y ^= (y >> 11);
             y ^= (y << 7) & 0x9d2c5680U;
@@ -186,22 +189,23 @@ namespace vFrame.Lockstep.Core {
         }
 
         private int genrand_int31() {
-            return (int)(genrand_int32() >> 1);
+            return (int) (genrand_int32() >> 1);
         }
 
         FixedPoint genrand_FP() {
-            return (FixedPoint)genrand_int32() * (FixedPoint.One / (FixedPoint)4294967295);
+            return (FixedPoint) genrand_int32() * (FixedPoint.One / (FixedPoint) 4294967295);
         }
 
         double genrand_real1() {
             return genrand_int32() * (1.0 / 4294967295.0);
         }
+
         double genrand_real2() {
             return genrand_int32() * (1.0 / 4294967296.0);
         }
 
         double genrand_real3() {
-            return (((double)genrand_int32()) + 0.5) * (1.0 / 4294967296.0);
+            return (((double) genrand_int32()) + 0.5) * (1.0 / 4294967296.0);
         }
 
         double genrand_res53() {
@@ -209,5 +213,4 @@ namespace vFrame.Lockstep.Core {
             return (a * 67108864.0 + b) * (1.0 / 9007199254740992.0);
         }
     }
-
 }

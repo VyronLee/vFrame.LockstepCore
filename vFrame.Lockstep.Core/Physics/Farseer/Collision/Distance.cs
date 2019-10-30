@@ -44,51 +44,45 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="shape">The shape.</param>
         /// <param name="index">The index.</param>
-        public void Set(Shape shape, int index)
-        {
-            switch (shape.ShapeType)
-            {
-                case ShapeType.Circle:
-                    {
-                        CircleShape circle = (CircleShape)shape;
-                        Vertices.Clear();
-                        Vertices.Add(circle.Position);
-                        Radius = circle.Radius;
-                    }
+        public void Set(Shape shape, int index) {
+            switch (shape.ShapeType) {
+                case ShapeType.Circle: {
+                    CircleShape circle = (CircleShape) shape;
+                    Vertices.Clear();
+                    Vertices.Add(circle.Position);
+                    Radius = circle.Radius;
+                }
                     break;
 
-                case ShapeType.Polygon:
-                    {
-                        PolygonShape polygon = (PolygonShape)shape;
-                        Vertices.Clear();
-                        for (int i = 0; i < polygon.Vertices.Count; i++)
-                        {
-                            Vertices.Add(polygon.Vertices[i]);
-                        }
-                        Radius = polygon.Radius;
+                case ShapeType.Polygon: {
+                    PolygonShape polygon = (PolygonShape) shape;
+                    Vertices.Clear();
+                    for (int i = 0; i < polygon.Vertices.Count; i++) {
+                        Vertices.Add(polygon.Vertices[i]);
                     }
+
+                    Radius = polygon.Radius;
+                }
                     break;
 
-                case ShapeType.Chain:
-                    {
-                        ChainShape chain = (ChainShape)shape;
-                        Debug.Assert(0 <= index && index < chain.Vertices.Count);
-                        Vertices.Clear();
-                        Vertices.Add(chain.Vertices[index]);
-                        Vertices.Add(index + 1 < chain.Vertices.Count ? chain.Vertices[index + 1] : chain.Vertices[0]);
+                case ShapeType.Chain: {
+                    ChainShape chain = (ChainShape) shape;
+                    Debug.Assert(0 <= index && index < chain.Vertices.Count);
+                    Vertices.Clear();
+                    Vertices.Add(chain.Vertices[index]);
+                    Vertices.Add(index + 1 < chain.Vertices.Count ? chain.Vertices[index + 1] : chain.Vertices[0]);
 
-                        Radius = chain.Radius;
-                    }
+                    Radius = chain.Radius;
+                }
                     break;
 
-                case ShapeType.Edge:
-                    {
-                        EdgeShape edge = (EdgeShape)shape;
-                        Vertices.Clear();
-                        Vertices.Add(edge.Vertex1);
-                        Vertices.Add(edge.Vertex2);
-                        Radius = edge.Radius;
-                    }
+                case ShapeType.Edge: {
+                    EdgeShape edge = (EdgeShape) shape;
+                    Vertices.Clear();
+                    Vertices.Add(edge.Vertex1);
+                    Vertices.Add(edge.Vertex2);
+                    Radius = edge.Radius;
+                }
                     break;
 
                 default:
@@ -102,15 +96,12 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="direction">The direction.</param>
         /// <returns></returns>
-        public int GetSupport(TSVector2 direction)
-        {
+        public int GetSupport(TSVector2 direction) {
             int bestIndex = 0;
             FixedPoint bestValue = TSVector2.Dot(Vertices[0], direction);
-            for (int i = 1; i < Vertices.Count; ++i)
-            {
+            for (int i = 1; i < Vertices.Count; ++i) {
                 FixedPoint value = TSVector2.Dot(Vertices[i], direction);
-                if (value > bestValue)
-                {
+                if (value > bestValue) {
                     bestIndex = i;
                     bestValue = value;
                 }
@@ -124,15 +115,12 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="direction">The direction.</param>
         /// <returns></returns>
-        public TSVector2 GetSupportVertex(TSVector2 direction)
-        {
+        public TSVector2 GetSupportVertex(TSVector2 direction) {
             int bestIndex = 0;
             FixedPoint bestValue = TSVector2.Dot(Vertices[0], direction);
-            for (int i = 1; i < Vertices.Count; ++i)
-            {
+            for (int i = 1; i < Vertices.Count; ++i) {
                 FixedPoint value = TSVector2.Dot(Vertices[i], direction);
-                if (value > bestValue)
-                {
+                if (value > bestValue) {
                     bestIndex = i;
                     bestValue = value;
                 }
@@ -240,14 +228,13 @@ namespace vFrame.Lockstep.Core.Physics2D
         internal int Count;
         internal FixedArray3<SimplexVertex> V;
 
-        internal void ReadCache(ref SimplexCache cache, DistanceProxy proxyA, ref Transform transformA, DistanceProxy proxyB, ref Transform transformB)
-        {
+        internal void ReadCache(ref SimplexCache cache, DistanceProxy proxyA, ref Transform transformA,
+            DistanceProxy proxyB, ref Transform transformB) {
             Debug.Assert(cache.Count <= 3);
 
             // Copy data from cache.
             Count = cache.Count;
-            for (int i = 0; i < Count; ++i)
-            {
+            for (int i = 0; i < Count; ++i) {
                 SimplexVertex v = V[i];
                 v.IndexA = cache.IndexA[i];
                 v.IndexB = cache.IndexB[i];
@@ -262,20 +249,17 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             // Compute the new simplex metric, if it is substantially different than
             // old metric then flush the simplex.
-            if (Count > 1)
-            {
+            if (Count > 1) {
                 FixedPoint metric1 = cache.Metric;
                 FixedPoint metric2 = GetMetric();
-                if (metric2 < FixedPoint.Half * metric1 || 2 * metric1 < metric2 || metric2 < Settings.Epsilon)
-                {
+                if (metric2 < FixedPoint.Half * metric1 || 2 * metric1 < metric2 || metric2 < Settings.Epsilon) {
                     // Reset the simplex.
                     Count = 0;
                 }
             }
 
             // If the cache is empty or invalid ...
-            if (Count == 0)
-            {
+            if (Count == 0) {
                 SimplexVertex v = V[0];
                 v.IndexA = 0;
                 v.IndexB = 0;
@@ -290,39 +274,32 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
         }
 
-        internal void WriteCache(ref SimplexCache cache)
-        {
+        internal void WriteCache(ref SimplexCache cache) {
             cache.Metric = GetMetric();
-            cache.Count = (UInt16)Count;
-            for (int i = 0; i < Count; ++i)
-            {
-                cache.IndexA[i] = (byte)(V[i].IndexA);
-                cache.IndexB[i] = (byte)(V[i].IndexB);
+            cache.Count = (UInt16) Count;
+            for (int i = 0; i < Count; ++i) {
+                cache.IndexA[i] = (byte) (V[i].IndexA);
+                cache.IndexB[i] = (byte) (V[i].IndexB);
             }
         }
 
-        internal TSVector2 GetSearchDirection()
-        {
-            switch (Count)
-            {
+        internal TSVector2 GetSearchDirection() {
+            switch (Count) {
                 case 1:
                     return -V[0].W;
 
-                case 2:
-                    {
-                        TSVector2 e12 = V[1].W - V[0].W;
-                        FixedPoint sgn = MathUtils.Cross(e12, -V[0].W);
-                        if (sgn > FixedPoint.Zero)
-                        {
-                            // Origin is left of e12.
-                            return new TSVector2(-e12.y, e12.x);
-                        }
-                        else
-                        {
-                            // Origin is right of e12.
-                            return new TSVector2(e12.y, -e12.x);
-                        }
+                case 2: {
+                    TSVector2 e12 = V[1].W - V[0].W;
+                    FixedPoint sgn = MathUtils.Cross(e12, -V[0].W);
+                    if (sgn > FixedPoint.Zero) {
+                        // Origin is left of e12.
+                        return new TSVector2(-e12.y, e12.x);
                     }
+                    else {
+                        // Origin is right of e12.
+                        return new TSVector2(e12.y, -e12.x);
+                    }
+                }
 
                 default:
                     Debug.Assert(false);
@@ -330,10 +307,8 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
         }
 
-        internal TSVector2 GetClosestPoint()
-        {
-            switch (Count)
-            {
+        internal TSVector2 GetClosestPoint() {
+            switch (Count) {
                 case 0:
                     Debug.Assert(false);
                     return TSVector2.zero;
@@ -353,10 +328,8 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
         }
 
-        internal void GetWitnessPoints(out TSVector2 pA, out TSVector2 pB)
-        {
-            switch (Count)
-            {
+        internal void GetWitnessPoints(out TSVector2 pA, out TSVector2 pB) {
+            switch (Count) {
                 case 0:
                     pA = TSVector2.zero;
                     pB = TSVector2.zero;
@@ -383,10 +356,8 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
         }
 
-        internal FixedPoint GetMetric()
-        {
-            switch (Count)
-            {
+        internal FixedPoint GetMetric() {
+            switch (Count) {
                 case 0:
                     Debug.Assert(false);
                     return FixedPoint.Zero;
@@ -429,16 +400,14 @@ namespace vFrame.Lockstep.Core.Physics2D
         // a1 = d12_1 / d12
         // a2 = d12_2 / d12
 
-        internal void Solve2()
-        {
+        internal void Solve2() {
             TSVector2 w1 = V[0].W;
             TSVector2 w2 = V[1].W;
             TSVector2 e12 = w2 - w1;
 
             // w1 region
             FixedPoint d12_2 = -TSVector2.Dot(w1, e12);
-            if (d12_2 <= FixedPoint.Zero)
-            {
+            if (d12_2 <= FixedPoint.Zero) {
                 // a2 <= 0, so we clamp it to 0
                 SimplexVertex v0 = V[0];
                 v0.A = FixedPoint.One;
@@ -449,8 +418,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             // w2 region
             FixedPoint d12_1 = TSVector2.Dot(w2, e12);
-            if (d12_1 <= FixedPoint.Zero)
-            {
+            if (d12_1 <= FixedPoint.Zero) {
                 // a1 <= 0, so we clamp it to 0
                 SimplexVertex v1 = V[1];
                 v1.A = FixedPoint.One;
@@ -476,8 +444,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         // - edge points[0]-points[2]
         // - edge points[1]-points[2]
         // - inside the triangle
-        internal void Solve3()
-        {
+        internal void Solve3() {
             TSVector2 w1 = V[0].W;
             TSVector2 w2 = V[1].W;
             TSVector2 w3 = V[2].W;
@@ -520,8 +487,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             FixedPoint d123_3 = n123 * MathUtils.Cross(w1, w2);
 
             // w1 region
-            if (d12_2 <= FixedPoint.Zero && d13_2 <= FixedPoint.Zero)
-            {
+            if (d12_2 <= FixedPoint.Zero && d13_2 <= FixedPoint.Zero) {
                 SimplexVertex v0_1 = V[0];
                 v0_1.A = FixedPoint.One;
                 V[0] = v0_1;
@@ -530,8 +496,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
 
             // e12
-            if (d12_1 > FixedPoint.Zero && d12_2 > FixedPoint.Zero && d123_3 <= FixedPoint.Zero)
-            {
+            if (d12_1 > FixedPoint.Zero && d12_2 > FixedPoint.Zero && d123_3 <= FixedPoint.Zero) {
                 FixedPoint inv_d12 = FixedPoint.One / (d12_1 + d12_2);
                 SimplexVertex v0_2 = V[0];
                 SimplexVertex v1_2 = V[1];
@@ -544,8 +509,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
 
             // e13
-            if (d13_1 > FixedPoint.Zero && d13_2 > FixedPoint.Zero && d123_2 <= FixedPoint.Zero)
-            {
+            if (d13_1 > FixedPoint.Zero && d13_2 > FixedPoint.Zero && d123_2 <= FixedPoint.Zero) {
                 FixedPoint inv_d13 = FixedPoint.One / (d13_1 + d13_2);
                 SimplexVertex v0_3 = V[0];
                 SimplexVertex v2_3 = V[2];
@@ -559,8 +523,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
 
             // w2 region
-            if (d12_1 <= FixedPoint.Zero && d23_2 <= FixedPoint.Zero)
-            {
+            if (d12_1 <= FixedPoint.Zero && d23_2 <= FixedPoint.Zero) {
                 SimplexVertex v1_4 = V[1];
                 v1_4.A = FixedPoint.One;
                 V[1] = v1_4;
@@ -570,8 +533,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
 
             // w3 region
-            if (d13_1 <= FixedPoint.Zero && d23_1 <= FixedPoint.Zero)
-            {
+            if (d13_1 <= FixedPoint.Zero && d23_1 <= FixedPoint.Zero) {
                 SimplexVertex v2_5 = V[2];
                 v2_5.A = FixedPoint.One;
                 V[2] = v2_5;
@@ -581,8 +543,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
 
             // e23
-            if (d23_1 > FixedPoint.Zero && d23_2 > FixedPoint.Zero && d123_1 <= FixedPoint.Zero)
-            {
+            if (d23_1 > FixedPoint.Zero && d23_2 > FixedPoint.Zero && d123_1 <= FixedPoint.Zero) {
                 FixedPoint inv_d23 = FixedPoint.One / (d23_1 + d23_2);
                 SimplexVertex v1_6 = V[1];
                 SimplexVertex v2_6 = V[2];
@@ -619,25 +580,21 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// The number of calls made to the ComputeDistance() function.
         /// Note: This is only activated when Settings.EnableDiagnostics = true
         /// </summary>
-        [ThreadStatic]
-        public static int GJKCalls;
+        [ThreadStatic] public static int GJKCalls;
 
         /// <summary>
         /// The number of iterations that was made on the last call to ComputeDistance().
         /// Note: This is only activated when Settings.EnableDiagnostics = true
         /// </summary>
-        [ThreadStatic]
-        public static int GJKIters;
+        [ThreadStatic] public static int GJKIters;
 
         /// <summary>
         /// The maximum numer of iterations ever mae with calls to the CompteDistance() funtion.
         /// Note: This is only activated when Settings.EnableDiagnostics = true
         /// </summary>
-        [ThreadStatic]
-        public static int GJKMaxIters;
+        [ThreadStatic] public static int GJKMaxIters;
 
-        public static void ComputeDistance(out DistanceOutput output, out SimplexCache cache, DistanceInput input)
-        {
+        public static void ComputeDistance(out DistanceOutput output, out SimplexCache cache, DistanceInput input) {
             cache = new SimplexCache();
 
             if (Settings.EnableDiagnostics) //FPE: We only gather diagnostics when enabled
@@ -656,18 +613,15 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             // Main iteration loop.
             int iter = 0;
-            while (iter < Settings.MaxGJKIterations)
-            {
+            while (iter < Settings.MaxGJKIterations) {
                 // Copy simplex so we can identify duplicates.
                 int saveCount = simplex.Count;
-                for (int i = 0; i < saveCount; ++i)
-                {
+                for (int i = 0; i < saveCount; ++i) {
                     saveA[i] = simplex.V[i].IndexA;
                     saveB[i] = simplex.V[i].IndexB;
                 }
 
-                switch (simplex.Count)
-                {
+                switch (simplex.Count) {
                     case 1:
                         break;
                     case 2:
@@ -682,8 +636,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 }
 
                 // If we have 3 points, then the origin is in the corresponding triangle.
-                if (simplex.Count == 3)
-                {
+                if (simplex.Count == 3) {
                     break;
                 }
 
@@ -703,8 +656,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 TSVector2 d = simplex.GetSearchDirection();
 
                 // Ensure the search direction is numerically fit.
-                if (d.LengthSquared() < Settings.EpsilonSqr)
-                {
+                if (d.LengthSquared() < Settings.EpsilonSqr) {
                     // The origin is probably contained by a line segment
                     // or triangle. Thus the shapes are overlapped.
 
@@ -732,18 +684,15 @@ namespace vFrame.Lockstep.Core.Physics2D
 
                 // Check for duplicate support points. This is the main termination criteria.
                 bool duplicate = false;
-                for (int i = 0; i < saveCount; ++i)
-                {
-                    if (vertex.IndexA == saveA[i] && vertex.IndexB == saveB[i])
-                    {
+                for (int i = 0; i < saveCount; ++i) {
+                    if (vertex.IndexA == saveA[i] && vertex.IndexB == saveB[i]) {
                         duplicate = true;
                         break;
                     }
                 }
 
                 // If we found a duplicate support point we must exit to avoid cycling.
-                if (duplicate)
-                {
+                if (duplicate) {
                     break;
                 }
 
@@ -763,13 +712,11 @@ namespace vFrame.Lockstep.Core.Physics2D
             simplex.WriteCache(ref cache);
 
             // Apply radii if requested.
-            if (input.UseRadii)
-            {
+            if (input.UseRadii) {
                 FixedPoint rA = input.ProxyA.Radius;
                 FixedPoint rB = input.ProxyB.Radius;
 
-                if (output.Distance > rA + rB && output.Distance > Settings.Epsilon)
-                {
+                if (output.Distance > rA + rB && output.Distance > Settings.Epsilon) {
                     // Shapes are still no overlapped.
                     // Move the witness points to the outer surface.
                     output.Distance -= rA + rB;
@@ -778,8 +725,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                     output.PointA += rA * normal;
                     output.PointB -= rB * normal;
                 }
-                else
-                {
+                else {
                     // Shapes are overlapped when radii are considered.
                     // Move the witness points to the middle.
                     TSVector2 p = FixedPoint.Half * (output.PointA + output.PointB);

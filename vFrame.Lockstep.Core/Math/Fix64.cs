@@ -7,19 +7,18 @@ using System.Xml.Serialization;
 
 namespace vFrame.Lockstep.Core
 {
-
     /// <summary>
     /// Represents a Q31.32 fixed-point number.
     /// </summary>
     [Serializable]
-    public partial struct FixedPoint : IEquatable<FixedPoint>, IComparable<FixedPoint>, IXmlSerializable {
-
+    public partial struct FixedPoint : IEquatable<FixedPoint>, IComparable<FixedPoint>, IXmlSerializable
+    {
         public long _serializedValue;
 
         public const long L_MAX_VALUE = long.MaxValue;
         public const long L_MIN_VALUE = long.MinValue;
         public const int NUM_BITS = 64;
-        public const int FRACTIONAL_PLACES = 32;    //32位精度
+        public const int FRACTIONAL_PLACES = 32; //32位精度
         public const long L_ONE = 1L << FRACTIONAL_PLACES;
         public const long L_TEN = 10L << FRACTIONAL_PLACES;
         public const long L_HALF = 1L << (FRACTIONAL_PLACES - 1);
@@ -29,19 +28,19 @@ namespace vFrame.Lockstep.Core
         public const long L_LN2 = 0xB17217F7;
         public const long L_LOG2MAX = 0x1F00000000;
         public const long L_LOG2MIN = -0x2000000000;
-        public const int LUT_SIZE = (int)(L_PI_OVER_2 >> 15);
+        public const int LUT_SIZE = (int) (L_PI_OVER_2 >> 15);
 
         // Precision of this type is 2^-32, that is 2,3283064365386962890625E-10
-        public static readonly FixedPoint Precision = new FixedPoint(1L);//0.00000000023283064365386962890625m;
-        public static readonly FixedPoint MaxValue = new FixedPoint(L_MAX_VALUE-1);
-        public static readonly FixedPoint MinValue = new FixedPoint(L_MIN_VALUE+2);
+        public static readonly FixedPoint Precision = new FixedPoint(1L); //0.00000000023283064365386962890625m;
+        public static readonly FixedPoint MaxValue = new FixedPoint(L_MAX_VALUE - 1);
+        public static readonly FixedPoint MinValue = new FixedPoint(L_MIN_VALUE + 2);
         public static readonly FixedPoint One = new FixedPoint(L_ONE);
-		public static readonly FixedPoint Ten = new FixedPoint(L_TEN);
+        public static readonly FixedPoint Ten = new FixedPoint(L_TEN);
         public static readonly FixedPoint Half = new FixedPoint(L_HALF);
 
         public static readonly FixedPoint Zero = new FixedPoint();
         public static readonly FixedPoint PositiveInfinity = new FixedPoint(L_MAX_VALUE);
-        public static readonly FixedPoint NegativeInfinity = new FixedPoint(L_MIN_VALUE+1);
+        public static readonly FixedPoint NegativeInfinity = new FixedPoint(L_MIN_VALUE + 1);
         public static readonly FixedPoint NaN = new FixedPoint(L_MIN_VALUE);
 
         public static readonly FixedPoint EN1 = FixedPoint.One / 10;
@@ -59,16 +58,17 @@ namespace vFrame.Lockstep.Core
         /// The value of Pi
         /// </summary>
         public static readonly FixedPoint Pi = new FixedPoint(L_PI);
+
         public static readonly FixedPoint PiOver2 = new FixedPoint(L_PI_OVER_2);
         public static readonly FixedPoint PiTimes2 = new FixedPoint(L_PI_TIMES_2);
-        public static readonly FixedPoint PiInv = (FixedPoint)0.3183098861837906715377675267M;
-        public static readonly FixedPoint PiOver2Inv = (FixedPoint)0.6366197723675813430755350535M;
+        public static readonly FixedPoint PiInv = (FixedPoint) 0.3183098861837906715377675267M;
+        public static readonly FixedPoint PiOver2Inv = (FixedPoint) 0.6366197723675813430755350535M;
 
         public static readonly FixedPoint Deg2Rad = Pi / new FixedPoint(180);
 
         public static readonly FixedPoint Rad2Deg = new FixedPoint(180) / Pi;
 
-		public static readonly FixedPoint LutInterval = (FixedPoint)(LUT_SIZE - 1) / PiOver2;
+        public static readonly FixedPoint LutInterval = (FixedPoint) (LUT_SIZE - 1) / PiOver2;
 
         public static readonly FixedPoint Log2Max = new FixedPoint(L_LOG2MAX);
         public static readonly FixedPoint Log2Min = new FixedPoint(L_LOG2MIN);
@@ -123,7 +123,7 @@ namespace vFrame.Lockstep.Core
         public static FixedPoint Floor(FixedPoint value) {
             // Just zero out the fractional part
             FixedPoint result;
-            result._serializedValue = (long)((ulong)value._serializedValue & 0xFFFFFFFF00000000);
+            result._serializedValue = (long) ((ulong) value._serializedValue & 0xFFFFFFFF00000000);
             return result;
             //return new FP((long)((ulong)value._serializedValue & 0xFFFFFFFF00000000));
         }
@@ -146,14 +146,16 @@ namespace vFrame.Lockstep.Core
             if (fractionalPart < 0x80000000) {
                 return integralPart;
             }
+
             if (fractionalPart > 0x80000000) {
                 return integralPart + One;
             }
+
             // if number is halfway between two values, round to the nearest even number
             // this is the method used by System.Math.Round().
             return (integralPart._serializedValue & L_ONE) == 0
-                       ? integralPart
-                       : integralPart + One;
+                ? integralPart
+                : integralPart + One;
         }
 
         /// <summary>
@@ -178,6 +180,7 @@ namespace vFrame.Lockstep.Core
             if (((~(xl ^ yl) & (xl ^ sum)) & L_MIN_VALUE) != 0) {
                 sum = xl > 0 ? L_MAX_VALUE : L_MIN_VALUE;
             }
+
             FixedPoint result;
             result._serializedValue = sum;
             return result;
@@ -216,6 +219,7 @@ namespace vFrame.Lockstep.Core
             if ((((xl ^ yl) & (xl ^ diff)) & L_MIN_VALUE) != 0) {
                 diff = xl < 0 ? L_MIN_VALUE : L_MAX_VALUE;
             }
+
             FixedPoint result;
             result._serializedValue = diff;
             return result;
@@ -240,14 +244,14 @@ namespace vFrame.Lockstep.Core
             var xl = x._serializedValue;
             var yl = y._serializedValue;
 
-            var xlo = (ulong)(xl & 0x00000000FFFFFFFF);
+            var xlo = (ulong) (xl & 0x00000000FFFFFFFF);
             var xhi = xl >> FRACTIONAL_PLACES;
-            var ylo = (ulong)(yl & 0x00000000FFFFFFFF);
+            var ylo = (ulong) (yl & 0x00000000FFFFFFFF);
             var yhi = yl >> FRACTIONAL_PLACES;
 
             var lolo = xlo * ylo;
-            var lohi = (long)xlo * yhi;
-            var hilo = xhi * (long)ylo;
+            var lohi = (long) xlo * yhi;
+            var hilo = xhi * (long) ylo;
             var hihi = xhi * yhi;
 
             var loResult = lolo >> FRACTIONAL_PLACES;
@@ -255,8 +259,8 @@ namespace vFrame.Lockstep.Core
             var midResult2 = hilo;
             var hiResult = hihi << FRACTIONAL_PLACES;
 
-            var sum = (long)loResult + midResult1 + midResult2 + hiResult;
-            FixedPoint result;// = default(FP);
+            var sum = (long) loResult + midResult1 + midResult2 + hiResult;
+            FixedPoint result; // = default(FP);
             result._serializedValue = sum;
             return result;
         }
@@ -269,14 +273,14 @@ namespace vFrame.Lockstep.Core
             var xl = x._serializedValue;
             var yl = y._serializedValue;
 
-            var xlo = (ulong)(xl & 0x00000000FFFFFFFF);
+            var xlo = (ulong) (xl & 0x00000000FFFFFFFF);
             var xhi = xl >> FRACTIONAL_PLACES;
-            var ylo = (ulong)(yl & 0x00000000FFFFFFFF);
+            var ylo = (ulong) (yl & 0x00000000FFFFFFFF);
             var yhi = yl >> FRACTIONAL_PLACES;
 
             var lolo = xlo * ylo;
-            var lohi = (long)xlo * yhi;
-            var hilo = xhi * (long)ylo;
+            var lohi = (long) xlo * yhi;
+            var hilo = xhi * (long) ylo;
             var hihi = xhi * yhi;
 
             var loResult = lolo >> FRACTIONAL_PLACES;
@@ -285,7 +289,7 @@ namespace vFrame.Lockstep.Core
             var hiResult = hihi << FRACTIONAL_PLACES;
 
             bool overflow = false;
-            var sum = AddOverflowHelper((long)loResult, midResult1, ref overflow);
+            var sum = AddOverflowHelper((long) loResult, midResult1, ref overflow);
             sum = AddOverflowHelper(sum, midResult2, ref overflow);
             sum = AddOverflowHelper(sum, hiResult, ref overflow);
 
@@ -298,7 +302,8 @@ namespace vFrame.Lockstep.Core
                 if (sum < 0 || (overflow && xl > 0)) {
                     return MaxValue;
                 }
-            } else {
+            }
+            else {
                 if (sum > 0) {
                     return MinValue;
                 }
@@ -318,14 +323,17 @@ namespace vFrame.Lockstep.Core
                 if (xl > yl) {
                     posOp = xl;
                     negOp = yl;
-                } else {
+                }
+                else {
                     posOp = yl;
                     negOp = xl;
                 }
+
                 if (sum > negOp && negOp < -L_ONE && posOp > L_ONE) {
                     return MinValue;
                 }
             }
+
             FixedPoint result;
             result._serializedValue = sum;
             return result;
@@ -340,14 +348,14 @@ namespace vFrame.Lockstep.Core
             var xl = x._serializedValue;
             var yl = y._serializedValue;
 
-            var xlo = (ulong)(xl & 0x00000000FFFFFFFF);
+            var xlo = (ulong) (xl & 0x00000000FFFFFFFF);
             var xhi = xl >> FRACTIONAL_PLACES;
-            var ylo = (ulong)(yl & 0x00000000FFFFFFFF);
+            var ylo = (ulong) (yl & 0x00000000FFFFFFFF);
             var yhi = yl >> FRACTIONAL_PLACES;
 
             var lolo = xlo * ylo;
-            var lohi = (long)xlo * yhi;
-            var hilo = xhi * (long)ylo;
+            var lohi = (long) xlo * yhi;
+            var hilo = xhi * (long) ylo;
             var hihi = xhi * yhi;
 
             var loResult = lolo >> FRACTIONAL_PLACES;
@@ -355,18 +363,26 @@ namespace vFrame.Lockstep.Core
             var midResult2 = hilo;
             var hiResult = hihi << FRACTIONAL_PLACES;
 
-            var sum = (long)loResult + midResult1 + midResult2 + hiResult;
-			FixedPoint result;// = default(FP);
-			result._serializedValue = sum;
-			return result;
+            var sum = (long) loResult + midResult1 + midResult2 + hiResult;
+            FixedPoint result; // = default(FP);
+            result._serializedValue = sum;
+            return result;
             //return new FP(sum);
         }
 
         //[MethodImplAttribute(MethodImplOptions.AggressiveInlining)]
         public static int CountLeadingZeroes(ulong x) {
             int result = 0;
-            while ((x & 0xF000000000000000) == 0) { result += 4; x <<= 4; }
-            while ((x & 0x8000000000000000) == 0) { result += 1; x <<= 1; }
+            while ((x & 0xF000000000000000) == 0) {
+                result += 4;
+                x <<= 4;
+            }
+
+            while ((x & 0x8000000000000000) == 0) {
+                result += 1;
+                x <<= 1;
+            }
+
             return result;
         }
 
@@ -379,8 +395,8 @@ namespace vFrame.Lockstep.Core
                 //throw new DivideByZeroException();
             }
 
-            var remainder = (ulong)(xl >= 0 ? xl : -xl);
-            var divider = (ulong)(yl >= 0 ? yl : -yl);
+            var remainder = (ulong) (xl >= 0 ? xl : -xl);
+            var divider = (ulong) (yl >= 0 ? yl : -yl);
             var quotient = 0UL;
             var bitPos = NUM_BITS / 2 + 1;
 
@@ -396,6 +412,7 @@ namespace vFrame.Lockstep.Core
                 if (shift > bitPos) {
                     shift = bitPos;
                 }
+
                 remainder <<= shift;
                 bitPos -= shift;
 
@@ -414,7 +431,7 @@ namespace vFrame.Lockstep.Core
 
             // rounding
             ++quotient;
-            var result = (long)(quotient >> 1);
+            var result = (long) (quotient >> 1);
             if (((xl ^ yl) & L_MIN_VALUE) != 0) {
                 result = -result;
             }
@@ -427,9 +444,9 @@ namespace vFrame.Lockstep.Core
 
         public static FixedPoint operator %(FixedPoint x, FixedPoint y) {
             FixedPoint result;
-            result._serializedValue = x._serializedValue == L_MIN_VALUE & y._serializedValue == -1 ?
-                0 :
-                x._serializedValue % y._serializedValue;
+            result._serializedValue = x._serializedValue == L_MIN_VALUE & y._serializedValue == -1
+                ? 0
+                : x._serializedValue % y._serializedValue;
             return result;
             //return new FP(
             //    x._serializedValue == MIN_VALUE & y._serializedValue == -1 ?
@@ -491,7 +508,7 @@ namespace vFrame.Lockstep.Core
                 throw new ArgumentOutOfRangeException("Negative value passed to Sqrt", "x");
             }
 
-            var num = (ulong)xl;
+            var num = (ulong) xl;
             var result = 0UL;
 
             // second-to-top bit
@@ -509,9 +526,11 @@ namespace vFrame.Lockstep.Core
                     if (num >= result + bit) {
                         num -= result + bit;
                         result = (result >> 1) + bit;
-                    } else {
+                    }
+                    else {
                         result = result >> 1;
                     }
+
                     bit >>= 2;
                 }
 
@@ -527,7 +546,8 @@ namespace vFrame.Lockstep.Core
                         num -= result;
                         num = (num << (NUM_BITS / 2)) - 0x80000000UL;
                         result = (result << (NUM_BITS / 2)) + 0x80000000UL;
-                    } else {
+                    }
+                    else {
                         num <<= (NUM_BITS / 2);
                         result <<= (NUM_BITS / 2);
                     }
@@ -535,13 +555,14 @@ namespace vFrame.Lockstep.Core
                     bit = 1UL << (NUM_BITS / 2 - 2);
                 }
             }
+
             // Finally, if next bit would have been 1, round the result upwards.
             if (num > result) {
                 ++result;
             }
 
             FixedPoint r;
-            r._serializedValue = (long)result;
+            r._serializedValue = (long) result;
             return r;
             //return new FP((long)result);
         }
@@ -561,14 +582,15 @@ namespace vFrame.Lockstep.Core
             // This is what kills the performance of this function on x86 - x64 is fine though
             var rawIndex = FastMul(clamped, LutInterval);
             var roundedIndex = Round(rawIndex);
-            var indexError = 0;//FastSub(rawIndex, roundedIndex);
+            var indexError = 0; //FastSub(rawIndex, roundedIndex);
 
-            var nearestValue = new FixedPoint(SinLut[flipHorizontal ?
-                SinLut.Length - 1 - (int)roundedIndex :
-                (int)roundedIndex]);
-            var secondNearestValue = new FixedPoint(SinLut[flipHorizontal ?
-                SinLut.Length - 1 - (int)roundedIndex - Sign(indexError) :
-                (int)roundedIndex + Sign(indexError)]);
+            var nearestValue =
+                new FixedPoint(SinLut[flipHorizontal ? SinLut.Length - 1 - (int) roundedIndex : (int) roundedIndex]);
+            var secondNearestValue =
+                new FixedPoint(SinLut[
+                    flipHorizontal
+                        ? SinLut.Length - 1 - (int) roundedIndex - Sign(indexError)
+                        : (int) roundedIndex + Sign(indexError)]);
 
             var delta = FastMul(indexError, FastAbs(FastSub(nearestValue, secondNearestValue)))._serializedValue;
             var interpolatedValue = nearestValue._serializedValue + (flipHorizontal ? -delta : delta);
@@ -591,20 +613,18 @@ namespace vFrame.Lockstep.Core
 
             // Here we use the fact that the SinLut table has a number of entries
             // equal to (PI_OVER_2 >> 15) to use the angle to index directly into it
-            var rawIndex = (uint)(clampedL >> 15);
+            var rawIndex = (uint) (clampedL >> 15);
             if (rawIndex >= LUT_SIZE) {
                 rawIndex = LUT_SIZE - 1;
             }
-            var nearestValue = SinLut[flipHorizontal ?
-                SinLut.Length - 1 - (int)rawIndex :
-                (int)rawIndex];
+
+            var nearestValue = SinLut[flipHorizontal ? SinLut.Length - 1 - (int) rawIndex : (int) rawIndex];
 
             FixedPoint result;
             result._serializedValue = flipVertical ? -nearestValue : nearestValue;
             return result;
             //return new FP(flipVertical ? -nearestValue : nearestValue);
         }
-
 
 
         //[MethodImplAttribute(MethodImplOptions.AggressiveInlining)]
@@ -623,12 +643,14 @@ namespace vFrame.Lockstep.Core
             while (clampedPi >= L_PI) {
                 clampedPi -= L_PI;
             }
+
             flipHorizontal = clampedPi >= L_PI_OVER_2;
             // obtain (angle % PI_OVER_2) from (angle % PI) - much faster than doing another modulo
             var clampedPiOver2 = clampedPi;
             if (clampedPiOver2 >= L_PI_OVER_2) {
                 clampedPiOver2 -= L_PI_OVER_2;
             }
+
             return clampedPiOver2;
         }
 
@@ -666,6 +688,7 @@ namespace vFrame.Lockstep.Core
                 clampedPi = -clampedPi;
                 flip = true;
             }
+
             if (clampedPi > L_PI_OVER_2) {
                 flip = !flip;
                 clampedPi = L_PI_OVER_2 - (clampedPi - L_PI_OVER_2);
@@ -678,8 +701,8 @@ namespace vFrame.Lockstep.Core
             var roundedIndex = Round(rawIndex);
             var indexError = FastSub(rawIndex, roundedIndex);
 
-            var nearestValue = new FixedPoint(TanLut[(int)roundedIndex]);
-            var secondNearestValue = new FixedPoint(TanLut[(int)roundedIndex + Sign(indexError)]);
+            var nearestValue = new FixedPoint(TanLut[(int) roundedIndex]);
+            var secondNearestValue = new FixedPoint(TanLut[(int) roundedIndex + Sign(indexError)]);
 
             var delta = FastMul(indexError, FastAbs(FastSub(nearestValue, secondNearestValue)))._serializedValue;
             var interpolatedValue = nearestValue._serializedValue + delta;
@@ -692,21 +715,19 @@ namespace vFrame.Lockstep.Core
         /// Returns the arctan of of the specified number, calculated using Euler series
         /// This function has at least 7 decimals of accuracy.
         /// </summary>
-        public static FixedPoint Atan(FixedPoint z)
-        {
+        public static FixedPoint Atan(FixedPoint z) {
             if (z.RawValue == 0) return Zero;
 
             // Force positive values for argument
             // Atan(-z) = -Atan(z).
             var neg = z.RawValue < 0;
-            if (neg)
-            {
+            if (neg) {
                 z = -z;
             }
 
             FixedPoint result;
-            var two = (FixedPoint)2;
-            var three = (FixedPoint)3;
+            var two = (FixedPoint) 2;
+            var three = (FixedPoint) 3;
 
             bool invert = z > One;
             if (invert) z = One / z;
@@ -721,8 +742,7 @@ namespace vFrame.Lockstep.Core
             var dividend = zSq2;
             var divisor = zSqPlusOne * three;
 
-            for (var i = 2; i < 30; ++i)
-            {
+            for (var i = 2; i < 30; ++i) {
                 term *= dividend / divisor;
                 result += term;
 
@@ -734,15 +754,14 @@ namespace vFrame.Lockstep.Core
 
             result = result * z / zSqPlusOne;
 
-            if (invert)
-            {
+            if (invert) {
                 result = PiOver2 - result;
             }
 
-            if (neg)
-            {
+            if (neg) {
                 result = -result;
             }
+
             return result;
         }
 
@@ -753,11 +772,14 @@ namespace vFrame.Lockstep.Core
                 if (yl > 0) {
                     return PiOver2;
                 }
+
                 if (yl == 0) {
                     return Zero;
                 }
+
                 return -PiOver2;
             }
+
             FixedPoint atan;
             var z = y / x;
 
@@ -773,14 +795,17 @@ namespace vFrame.Lockstep.Core
                     if (yl < 0) {
                         return atan - Pi;
                     }
+
                     return atan + Pi;
                 }
-            } else {
+            }
+            else {
                 atan = PiOver2 - z / (z * z + sm);
                 if (yl < 0) {
                     return atan - Pi;
                 }
             }
+
             return atan;
         }
 
@@ -792,15 +817,12 @@ namespace vFrame.Lockstep.Core
         /// Returns the arccos of of the specified number, calculated using Atan and Sqrt
         /// This function has at least 7 decimals of accuracy.
         /// </summary>
-        public static FixedPoint Acos(FixedPoint x)
-        {
-            if (x < -One)
-            {
+        public static FixedPoint Acos(FixedPoint x) {
+            if (x < -One) {
                 x = -One;
             }
 
-            if (x > One)
-            {
+            if (x > One) {
                 x = One;
             }
 
@@ -828,29 +850,29 @@ namespace vFrame.Lockstep.Core
 
         public static implicit operator FixedPoint(float value) {
             FixedPoint result;
-            result._serializedValue = (long)(value * L_ONE);
+            result._serializedValue = (long) (value * L_ONE);
             return result;
             //return new FP((long)(value * ONE));
         }
 
         public static explicit operator float(FixedPoint value) {
-            return (float)value._serializedValue / L_ONE;
+            return (float) value._serializedValue / L_ONE;
         }
 
         public static implicit operator FixedPoint(double value) {
             FixedPoint result;
-            result._serializedValue = (long)(value * L_ONE);
+            result._serializedValue = (long) (value * L_ONE);
             return result;
             //return new FP((long)(value * ONE));
         }
 
         public static explicit operator double(FixedPoint value) {
-            return (double)value._serializedValue / L_ONE;
+            return (double) value._serializedValue / L_ONE;
         }
 
         public static explicit operator FixedPoint(decimal value) {
             FixedPoint result;
-            result._serializedValue = (long)(value * L_ONE);
+            result._serializedValue = (long) (value * L_ONE);
             return result;
             //return new FP((long)(value * ONE));
         }
@@ -863,7 +885,7 @@ namespace vFrame.Lockstep.Core
         }
 
         public static explicit operator decimal(FixedPoint value) {
-            return (decimal)value._serializedValue / L_ONE;
+            return (decimal) value._serializedValue / L_ONE;
         }
 
         public float AsFloat() {
@@ -875,28 +897,28 @@ namespace vFrame.Lockstep.Core
         }
 
         public long AsLong() {
-            return (long)this;
+            return (long) this;
         }
 
         public double AsDouble() {
-            return (double)this;
+            return (double) this;
         }
 
         public decimal AsDecimal() {
-            return (decimal)this;
+            return (decimal) this;
         }
 
         public static float ToFloat(FixedPoint value) {
-            return (float)value;
+            return (float) value;
         }
 
         public static int ToInt(FixedPoint value) {
-            return (int)value;
+            return (int) value;
         }
 
         public static FixedPoint FromFloat(float value) {
             FixedPoint result;
-            result._serializedValue = (long)(value * L_ONE);
+            result._serializedValue = (long) (value * L_ONE);
             return result;
         }
 
@@ -908,13 +930,11 @@ namespace vFrame.Lockstep.Core
             return value == NaN;
         }
 
-        public override bool Equals(object obj)
-        {
-            return obj is FixedPoint && ((FixedPoint)obj)._serializedValue == _serializedValue;
+        public override bool Equals(object obj) {
+            return obj is FixedPoint && ((FixedPoint) obj)._serializedValue == _serializedValue;
         }
 
-        public override int GetHashCode()
-        {
+        public override int GetHashCode() {
             return _serializedValue.GetHashCode();
         }
 
@@ -927,14 +947,15 @@ namespace vFrame.Lockstep.Core
         }
 
         public override string ToString() {
-            return ((float)this).ToString();
+            return ((float) this).ToString();
         }
 
         public string ToString(IFormatProvider provider) {
-            return ((float)this).ToString(provider);
+            return ((float) this).ToString(provider);
         }
+
         public string ToString(string format) {
-            return ((float)this).ToString(format);
+            return ((float) this).ToString(format);
         }
 
         public static FixedPoint FromRaw(long rawValue) {
@@ -944,22 +965,24 @@ namespace vFrame.Lockstep.Core
         internal static void GenerateAcosLut() {
             using (var writer = new StreamWriter("Fix64AcosLut.cs")) {
                 writer.Write(
-@"namespace vFrame.Lockstep.Core {
+                    @"namespace vFrame.Lockstep.Core {
     partial struct FP {
         public static readonly long[] AcosLut = new[] {");
                 int lineCounter = 0;
                 for (int i = 0; i < LUT_SIZE; ++i) {
-                    var angle = i / ((float)(LUT_SIZE - 1));
+                    var angle = i / ((float) (LUT_SIZE - 1));
                     if (lineCounter++ % 8 == 0) {
                         writer.WriteLine();
                         writer.Write("            ");
                     }
+
                     var acos = Math.Acos(angle);
-                    var rawValue = ((FixedPoint)acos)._serializedValue;
+                    var rawValue = ((FixedPoint) acos)._serializedValue;
                     writer.Write(string.Format("0x{0:X}L, ", rawValue));
                 }
+
                 writer.Write(
-@"
+                    @"
         };
     }
 }");
@@ -969,7 +992,7 @@ namespace vFrame.Lockstep.Core
         internal static void GenerateSinLut() {
             using (var writer = new StreamWriter("Fix64SinLut.cs")) {
                 writer.Write(
-@"namespace FixMath.NET {
+                    @"namespace FixMath.NET {
     partial struct Fix64 {
         public static readonly long[] SinLut = new[] {");
                 int lineCounter = 0;
@@ -979,12 +1002,14 @@ namespace vFrame.Lockstep.Core
                         writer.WriteLine();
                         writer.Write("            ");
                     }
+
                     var sin = Math.Sin(angle);
-                    var rawValue = ((FixedPoint)sin)._serializedValue;
+                    var rawValue = ((FixedPoint) sin)._serializedValue;
                     writer.Write(string.Format("0x{0:X}L, ", rawValue));
                 }
+
                 writer.Write(
-@"
+                    @"
         };
     }
 }");
@@ -994,7 +1019,7 @@ namespace vFrame.Lockstep.Core
         internal static void GenerateTanLut() {
             using (var writer = new StreamWriter("Fix64TanLut.cs")) {
                 writer.Write(
-@"namespace FixMath.NET {
+                    @"namespace FixMath.NET {
     partial struct Fix64 {
         public static readonly long[] TanLut = new[] {");
                 int lineCounter = 0;
@@ -1004,15 +1029,19 @@ namespace vFrame.Lockstep.Core
                         writer.WriteLine();
                         writer.Write("            ");
                     }
+
                     var tan = Math.Tan(angle);
-                    if (tan > (double)MaxValue || tan < 0.0) {
-                        tan = (double)MaxValue;
+                    if (tan > (double) MaxValue || tan < 0.0) {
+                        tan = (double) MaxValue;
                     }
-                    var rawValue = (((decimal)tan > (decimal)MaxValue || tan < 0.0) ? MaxValue : (FixedPoint)tan)._serializedValue;
+
+                    var rawValue = (((decimal) tan > (decimal) MaxValue || tan < 0.0) ? MaxValue : (FixedPoint) tan)
+                        ._serializedValue;
                     writer.Write(string.Format("0x{0:X}L, ", rawValue));
                 }
+
                 writer.Write(
-@"
+                    @"
         };
     }
 }");
@@ -1022,7 +1051,9 @@ namespace vFrame.Lockstep.Core
         /// <summary>
         /// The underlying integer representation
         /// </summary>
-        public long RawValue { get { return _serializedValue; } }
+        public long RawValue {
+            get { return _serializedValue; }
+        }
 
         /// <summary>
         /// This is the constructor from raw value; it can only be used interally.
@@ -1036,34 +1067,28 @@ namespace vFrame.Lockstep.Core
             _serializedValue = value * L_ONE;
         }
 
-        public void WriteXml(XmlWriter writer)
-        {
+        public void WriteXml(XmlWriter writer) {
             writer.WriteElementString("_serializedValue", _serializedValue.ToString());
         }
 
-        public void ReadXml(XmlReader reader)
-        {
-            if (reader.NodeType != XmlNodeType.Element)
-            {
+        public void ReadXml(XmlReader reader) {
+            if (reader.NodeType != XmlNodeType.Element) {
                 return;
             }
 
             reader.Read();
-            if (reader.NodeType == XmlNodeType.Element)
-            {
+            if (reader.NodeType == XmlNodeType.Element) {
                 Debug.Assert(reader.LocalName == "_serializedValue");
                 _serializedValue = reader.ReadElementContentAsLong();
             }
-            else
-            {
+            else {
                 var strVal = reader.ReadContentAsString();
                 var floatVal = float.Parse(strVal);
                 this = FromFloat(floatVal);
             }
         }
 
-        public XmlSchema GetSchema()
-        {
+        public XmlSchema GetSchema() {
             return (null);
         }
     }

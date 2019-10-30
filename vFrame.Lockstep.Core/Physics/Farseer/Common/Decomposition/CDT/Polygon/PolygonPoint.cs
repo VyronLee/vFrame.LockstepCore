@@ -38,8 +38,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 {
     internal class PolygonPoint : TriangulationPoint
     {
-        public PolygonPoint(FixedPoint x, FixedPoint y) : base(x, y)
-        {
+        public PolygonPoint(FixedPoint x, FixedPoint y) : base(x, y) {
         }
 
         public PolygonPoint Next { get; set; }

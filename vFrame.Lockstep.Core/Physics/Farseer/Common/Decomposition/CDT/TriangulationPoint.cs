@@ -40,42 +40,36 @@ namespace vFrame.Lockstep.Core.Physics2D
 
         public FixedPoint X, Y;
 
-        public TriangulationPoint(FixedPoint x, FixedPoint y)
-        {
+        public TriangulationPoint(FixedPoint x, FixedPoint y) {
             X = x;
             Y = y;
         }
 
         public List<DTSweepConstraint> Edges { get; private set; }
 
-        public FixedPoint Xf
-        {
+        public FixedPoint Xf {
             get { return (FixedPoint) X; }
             set { X = value; }
         }
 
-        public FixedPoint Yf
-        {
+        public FixedPoint Yf {
             get { return (FixedPoint) Y; }
             set { Y = value; }
         }
 
-        public bool HasEdges
-        {
+        public bool HasEdges {
             get { return Edges != null; }
         }
 
-        public override string ToString()
-        {
+        public override string ToString() {
             return "[" + X + "," + Y + "]";
         }
 
-        public void AddEdge(DTSweepConstraint e)
-        {
-            if (Edges == null)
-            {
+        public void AddEdge(DTSweepConstraint e) {
+            if (Edges == null) {
                 Edges = new List<DTSweepConstraint>();
             }
+
             Edges.Add(e);
         }
     }

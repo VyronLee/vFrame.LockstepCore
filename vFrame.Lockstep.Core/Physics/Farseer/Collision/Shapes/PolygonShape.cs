@@ -39,8 +39,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="vertices">The vertices.</param>
         /// <param name="density">The density.</param>
         public PolygonShape(Vertices vertices)
-            : base()
-        {
+            : base() {
             ShapeType = ShapeType.Polygon;
             _radius = Settings.PolygonRadius;
 
@@ -52,8 +51,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="density">The density.</param>
         public PolygonShape(FixedPoint density)
-            : base()
-        {
+            : base() {
             Debug.Assert(density >= FixedPoint.Zero);
 
             ShapeType = ShapeType.Polygon;
@@ -63,8 +61,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         }
 
         internal PolygonShape()
-            : base()
-        {
+            : base() {
             ShapeType = ShapeType.Polygon;
             _radius = Settings.PolygonRadius;
             _vertices = new Vertices(Settings.MaxPolygonVertices);
@@ -77,17 +74,14 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Warning: the points may be re-ordered, even if they form a convex polygon
         /// Warning: collinear points are handled but not removed. Collinear points may lead to poor stacking behavior.
         /// </summary>
-        public Vertices Vertices
-        {
+        public Vertices Vertices {
             get { return _vertices; }
-            set
-            {
+            set {
                 _vertices = new Vertices(value);
 
                 Debug.Assert(_vertices.Count >= 3 && _vertices.Count <= Settings.MaxPolygonVertices);
 
-                if (Settings.UseConvexHullPolygons)
-                {
+                if (Settings.UseConvexHullPolygons) {
                     //FPE note: This check is required as the GiftWrap algorithm early exits on triangles
                     //So instead of giftwrapping a triangle, we just force it to be clock wise.
                     if (_vertices.Count <= 3)
@@ -101,8 +95,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 _normals = new Vertices(_vertices.Count);
 
                 // Compute normals. Ensure the edges have non-zero length.
-                for (int i = 0; i < _vertices.Count; ++i)
-                {
+                for (int i = 0; i < _vertices.Count; ++i) {
                     int next = i + 1 < _vertices.Count ? i + 1 : 0;
                     TSVector2 edge = _vertices[next] - _vertices[i];
                     //Debug.Assert(edge.LengthSquared() > Settings.Epsilon * Settings.Epsilon);
@@ -115,19 +108,20 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
         }
 
-        public Vertices Normals { get { return _normals; } }
+        public Vertices Normals {
+            get { return _normals; }
+        }
 
-        public override int ChildCount { get { return 1; } }
-        
-        public override bool TestPoint(ref Transform transform, ref TSVector2 point)
-        {
+        public override int ChildCount {
+            get { return 1; }
+        }
+
+        public override bool TestPoint(ref Transform transform, ref TSVector2 point) {
             TSVector2 pLocal = MathUtils.MulT(transform.q, point - transform.p);
 
-            for (int i = 0; i < Vertices.Count; ++i)
-            {
+            for (int i = 0; i < Vertices.Count; ++i) {
                 FixedPoint dot = TSVector2.Dot(Normals[i], pLocal - Vertices[i]);
-                if (dot > FixedPoint.Zero)
-                {
+                if (dot > FixedPoint.Zero) {
                     return false;
                 }
             }
@@ -135,8 +129,8 @@ namespace vFrame.Lockstep.Core.Physics2D
             return true;
         }
 
-        public override bool RayCast(out RayCastOutput output, ref RayCastInput input, ref Transform transform, int childIndex)
-        {
+        public override bool RayCast(out RayCastOutput output, ref RayCastInput input, ref Transform transform,
+            int childIndex) {
             output = new RayCastOutput();
 
             // Put the ray into the polygon's frame of reference.
@@ -148,36 +142,30 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             int index = -1;
 
-            for (int i = 0; i < Vertices.Count; ++i)
-            {
+            for (int i = 0; i < Vertices.Count; ++i) {
                 // p = p1 + a * d
                 // dot(normal, p - v) = 0
                 // dot(normal, p1 - v) + a * dot(normal, d) = 0
                 FixedPoint numerator = TSVector2.Dot(Normals[i], Vertices[i] - p1);
                 FixedPoint denominator = TSVector2.Dot(Normals[i], d);
 
-                if (denominator == FixedPoint.Zero)
-                {
-                    if (numerator < FixedPoint.Zero)
-                    {
+                if (denominator == FixedPoint.Zero) {
+                    if (numerator < FixedPoint.Zero) {
                         return false;
                     }
                 }
-                else
-                {
+                else {
                     // Note: we want this predicate without division:
                     // lower < numerator / denominator, where denominator < 0
                     // Since denominator < 0, we have to flip the inequality:
                     // lower < numerator / denominator <==> denominator * lower > numerator.
-                    if (denominator < FixedPoint.Zero && numerator < lower * denominator)
-                    {
+                    if (denominator < FixedPoint.Zero && numerator < lower * denominator) {
                         // Increase lower.
                         // The segment enters this half-space.
                         lower = numerator / denominator;
                         index = i;
                     }
-                    else if (denominator > FixedPoint.Zero && numerator < upper * denominator)
-                    {
+                    else if (denominator > FixedPoint.Zero && numerator < upper * denominator) {
                         // Decrease upper.
                         // The segment exits this half-space.
                         upper = numerator / denominator;
@@ -188,16 +176,14 @@ namespace vFrame.Lockstep.Core.Physics2D
                 // in some cases. Apparently the use of epsilon was to make edge
                 // shapes work, but now those are handled separately.
                 //if (upper < lower - b2_epsilon)
-                if (upper < lower)
-                {
+                if (upper < lower) {
                     return false;
                 }
             }
 
             Debug.Assert(FixedPoint.Zero <= lower && lower <= input.MaxFraction);
 
-            if (index >= 0)
-            {
+            if (index >= 0) {
                 output.Fraction = lower;
                 output.Normal = MathUtils.Mul(transform.q, Normals[index]);
                 return true;
@@ -212,13 +198,11 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="aabb">The aabb results.</param>
         /// <param name="transform">The world transform of the shape.</param>
         /// <param name="childIndex">The child shape index.</param>
-        public override void ComputeAABB(out AABB aabb, ref Transform transform, int childIndex)
-        {
+        public override void ComputeAABB(out AABB aabb, ref Transform transform, int childIndex) {
             TSVector2 lower = MathUtils.Mul(ref transform, Vertices[0]);
             TSVector2 upper = lower;
 
-            for (int i = 1; i < Vertices.Count; ++i)
-            {
+            for (int i = 1; i < Vertices.Count; ++i) {
                 TSVector2 v = MathUtils.Mul(ref transform, Vertices[i]);
                 lower = TSVector2.Min(lower, v);
                 upper = TSVector2.Max(upper, v);
@@ -229,13 +213,11 @@ namespace vFrame.Lockstep.Core.Physics2D
             aabb.UpperBound = upper + r;
         }
 
-        public bool CompareTo(PolygonShape shape)
-        {
+        public bool CompareTo(PolygonShape shape) {
             if (Vertices.Count != shape.Vertices.Count)
                 return false;
 
-            for (int i = 0; i < Vertices.Count; i++)
-            {
+            for (int i = 0; i < Vertices.Count; i++) {
                 if (Vertices[i] != shape.Vertices[i])
                     return false;
             }
@@ -243,8 +225,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             return (Radius == shape.Radius);
         }
 
-        public override Shape Clone()
-        {
+        public override Shape Clone() {
             PolygonShape clone = new PolygonShape();
             clone.ShapeType = ShapeType;
             clone._radius = _radius;

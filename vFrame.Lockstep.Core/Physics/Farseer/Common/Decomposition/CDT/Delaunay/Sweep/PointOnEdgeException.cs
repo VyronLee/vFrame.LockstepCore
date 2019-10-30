@@ -36,8 +36,7 @@ namespace vFrame.Lockstep.Core.Physics2D
     internal class PointOnEdgeException : NotImplementedException
     {
         public PointOnEdgeException(string message)
-            : base(message)
-        {
+            : base(message) {
         }
     }
 }

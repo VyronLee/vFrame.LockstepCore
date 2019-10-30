@@ -37,6 +37,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// The vertices. These are not owned/freed by the chain Shape.
         /// </summary>
         public Vertices Vertices;
+
         private TSVector2 _prevVertex, _nextVertex;
         private bool _hasPrevVertex, _hasNextVertex;
         private static EdgeShape _edgeShape = new EdgeShape();
@@ -45,8 +46,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Constructor for ChainShape. By default have 0 in density.
         /// </summary>
         public ChainShape()
-            : base()
-        {
+            : base() {
             ShapeType = ShapeType.Chain;
             _radius = Settings.PolygonRadius;
         }
@@ -57,16 +57,17 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="vertices">The vertices to use. Must contain 2 or more vertices.</param>
         /// <param name="createLoop">Set to true to create a closed loop. It connects the first vertice to the last, and automatically adjusts connectivity to create smooth collisions along the chain.</param>
         public ChainShape(Vertices vertices, bool createLoop = false)
-            : base()
-        {
+            : base() {
             ShapeType = ShapeType.Chain;
             _radius = Settings.PolygonRadius;
 
             Debug.Assert(vertices != null && vertices.Count >= 3);
-            Debug.Assert(vertices[0] != vertices[vertices.Count - 1]); // FPE. See http://www.box2d.org/forum/viewtopic.php?f=4&t=7973&p=35363
+            Debug.Assert(vertices[0] !=
+                         vertices[
+                             vertices.Count -
+                             1]); // FPE. See http://www.box2d.org/forum/viewtopic.php?f=4&t=7973&p=35363
 
-            for (int i = 1; i < vertices.Count; ++i)
-            {
+            for (int i = 1; i < vertices.Count; ++i) {
                 TSVector2 v1 = vertices[i - 1];
                 TSVector2 v2 = vertices[i];
 
@@ -76,16 +77,15 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             Vertices = new Vertices(vertices);
 
-            if (createLoop)
-            {
+            if (createLoop) {
                 Vertices.Add(vertices[0]);
-                PrevVertex = Vertices[Vertices.Count - 2]; //FPE: We use the properties instead of the private fields here.
+                PrevVertex =
+                    Vertices[Vertices.Count - 2]; //FPE: We use the properties instead of the private fields here.
                 NextVertex = Vertices[1]; //FPE: We use the properties instead of the private fields here.
             }
         }
 
-        public override int ChildCount
-        {
+        public override int ChildCount {
             // edge count = vertex count - 1
             get { return Vertices.Count - 1; }
         }
@@ -94,11 +94,9 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Establish connectivity to a vertex that precedes the first vertex.
         /// Don't call this for loops.
         /// </summary>
-        public TSVector2 PrevVertex
-        {
+        public TSVector2 PrevVertex {
             get { return _prevVertex; }
-            set
-            {
+            set {
                 _prevVertex = value;
                 _hasPrevVertex = true;
             }
@@ -108,11 +106,9 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Establish connectivity to a vertex that follows the last vertex.
         /// Don't call this for loops.
         /// </summary>
-        public TSVector2 NextVertex
-        {
+        public TSVector2 NextVertex {
             get { return _nextVertex; }
-            set
-            {
+            set {
                 _nextVertex = value;
                 _hasNextVertex = true;
             }
@@ -123,8 +119,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="edge">The cached edge to set properties on.</param>
         /// <param name="index">The index.</param>
-        internal void GetChildEdge(EdgeShape edge, int index)
-        {
+        internal void GetChildEdge(EdgeShape edge, int index) {
             Debug.Assert(0 <= index && index < Vertices.Count - 1);
             Debug.Assert(edge != null);
 
@@ -134,24 +129,20 @@ namespace vFrame.Lockstep.Core.Physics2D
             edge.Vertex1 = Vertices[index + 0];
             edge.Vertex2 = Vertices[index + 1];
 
-            if (index > 0)
-            {
+            if (index > 0) {
                 edge.Vertex0 = Vertices[index - 1];
                 edge.HasVertex0 = true;
             }
-            else
-            {
+            else {
                 edge.Vertex0 = _prevVertex;
                 edge.HasVertex0 = _hasPrevVertex;
             }
 
-            if (index < Vertices.Count - 2)
-            {
+            if (index < Vertices.Count - 2) {
                 edge.Vertex3 = Vertices[index + 2];
                 edge.HasVertex3 = true;
             }
-            else
-            {
+            else {
                 edge.Vertex3 = _nextVertex;
                 edge.HasVertex3 = _hasNextVertex;
             }
@@ -161,26 +152,23 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Get a child edge.
         /// </summary>
         /// <param name="index">The index.</param>
-        public EdgeShape GetChildEdge(int index)
-        {
+        public EdgeShape GetChildEdge(int index) {
             EdgeShape edgeShape = new EdgeShape();
             GetChildEdge(edgeShape, index);
             return edgeShape;
         }
 
-        public override bool TestPoint(ref Transform transform, ref TSVector2 point)
-        {
+        public override bool TestPoint(ref Transform transform, ref TSVector2 point) {
             return false;
         }
 
-        public override bool RayCast(out RayCastOutput output, ref RayCastInput input, ref Transform transform, int childIndex)
-        {
+        public override bool RayCast(out RayCastOutput output, ref RayCastInput input, ref Transform transform,
+            int childIndex) {
             Debug.Assert(childIndex < Vertices.Count);
 
             int i1 = childIndex;
             int i2 = childIndex + 1;
-            if (i2 == Vertices.Count)
-            {
+            if (i2 == Vertices.Count) {
                 i2 = 0;
             }
 
@@ -190,14 +178,12 @@ namespace vFrame.Lockstep.Core.Physics2D
             return _edgeShape.RayCast(out output, ref input, ref transform, 0);
         }
 
-        public override void ComputeAABB(out AABB aabb, ref Transform transform, int childIndex)
-        {
+        public override void ComputeAABB(out AABB aabb, ref Transform transform, int childIndex) {
             Debug.Assert(childIndex < Vertices.Count);
 
             int i1 = childIndex;
             int i2 = childIndex + 1;
-            if (i2 == Vertices.Count)
-            {
+            if (i2 == Vertices.Count) {
                 i2 = 0;
             }
 
@@ -207,19 +193,17 @@ namespace vFrame.Lockstep.Core.Physics2D
             aabb.LowerBound = TSVector2.Min(v1, v2);
             aabb.UpperBound = TSVector2.Max(v1, v2);
         }
-        
+
         /// <summary>
         /// Compare the chain to another chain
         /// </summary>
         /// <param name="shape">The other chain</param>
         /// <returns>True if the two chain shapes are the same</returns>
-        public bool CompareTo(ChainShape shape)
-        {
+        public bool CompareTo(ChainShape shape) {
             if (Vertices.Count != shape.Vertices.Count)
                 return false;
 
-            for (int i = 0; i < Vertices.Count; i++)
-            {
+            for (int i = 0; i < Vertices.Count; i++) {
                 if (Vertices[i] != shape.Vertices[i])
                     return false;
             }
@@ -227,8 +211,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             return PrevVertex == shape.PrevVertex && NextVertex == shape.NextVertex;
         }
 
-        public override Shape Clone()
-        {
+        public override Shape Clone() {
             ChainShape clone = new ChainShape();
             clone.ShapeType = ShapeType;
             clone._radius = _radius;

@@ -85,8 +85,7 @@ namespace vFrame.Lockstep.Core.Physics2D
     /// </summary>
     public class Fixture : IDisposable
     {
-        [ThreadStatic]
-        internal static int _fixtureIdCounter;
+        [ThreadStatic] internal static int _fixtureIdCounter;
         private bool _isSensor;
         private FixedPoint _friction;
         private FixedPoint _restitution;
@@ -99,25 +98,23 @@ namespace vFrame.Lockstep.Core.Physics2D
 
         public FixtureProxy[] Proxies;
         public int ProxyCount;
-        
-        internal Fixture()
-        {
+
+        internal Fixture() {
             FixtureId = _fixtureIdCounter++;
 
             _collisionCategories = Settings.DefaultFixtureCollisionCategories;
             _collisionGroup = 0;
-            
+
             //Fixture defaults
             Friction = 2 * FixedPoint.EN1;
             Restitution = 0;
         }
 
         internal Fixture(Body body, Shape shape, object userData = null)
-            : this()
-        {
+            : this() {
 #if DEBUG
             if (shape.ShapeType == ShapeType.Polygon)
-                ((PolygonShape)shape).Vertices.AttachedToBody = true;
+                ((PolygonShape) shape).Vertices.AttachedToBody = true;
 #endif
 
             Body = body;
@@ -127,8 +124,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             RegisterFixture();
         }
 
-        internal void Initialize(Shape shape, bool isSensor)
-        {
+        internal void Initialize(Shape shape, bool isSensor) {
             Shape = shape;
             IsSensor = isSensor;
 
@@ -152,10 +148,8 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// If Settings.UseFPECollisionCategories is set to true:
         /// If 2 fixtures are in the same collision group, they will not collide.
         /// </summary>
-        public short CollisionGroup
-        {
-            set
-            {
+        public short CollisionGroup {
+            set {
                 if (_collisionGroup == value)
                     return;
 
@@ -164,7 +158,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
             get { return _collisionGroup; }
         }
-        
+
         /// <summary>
         /// The collision categories this fixture is a part of.
         /// 
@@ -174,12 +168,10 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// If Settings.UseFPECollisionCategories is set to true:
         /// Defaults to Category.All
         /// </summary>
-        public Category CollisionCategories
-        {
+        public Category CollisionCategories {
             get { return _collisionCategories; }
 
-            set
-            {
+            set {
                 if (_collisionCategories == value)
                     return;
 
@@ -199,11 +191,9 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Gets or sets a value indicating whether this fixture is a sensor.
         /// </summary>
         /// <value><c>true</c> if this instance is a sensor; otherwise, <c>false</c>.</value>
-        public bool IsSensor
-        {
+        public bool IsSensor {
             get { return _isSensor; }
-            set
-            {
+            set {
                 if (Body != null)
                     Body.Awake = true;
 
@@ -228,11 +218,9 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// existing contacts.
         /// </summary>
         /// <value>The friction.</value>
-        public FixedPoint Friction
-        {
+        public FixedPoint Friction {
             get { return _friction; }
-            set
-            {
+            set {
                 Debug.Assert(!FixedPoint.IsNaN(value));
 
                 _friction = value;
@@ -244,11 +232,9 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// existing contacts.
         /// </summary>
         /// <value>The restitution.</value>
-        public FixedPoint Restitution
-        {
+        public FixedPoint Restitution {
             get { return _restitution; }
-            set
-            {
+            set {
                 Debug.Assert(!FixedPoint.IsNaN(value));
 
                 _restitution = value;
@@ -265,10 +251,8 @@ namespace vFrame.Lockstep.Core.Physics2D
 
         public bool IsDisposed { get; set; }
 
-        public void Dispose()
-        {
-            if (!IsDisposed)
-            {
+        public void Dispose() {
+            if (!IsDisposed) {
                 Body.DestroyFixture(this);
                 IsDisposed = true;
                 GC.SuppressFinalize(this);
@@ -283,42 +267,36 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// flagged for filtering.
         /// This methods flags all contacts associated with the body for filtering.
         /// </summary>
-        private void Refilter()
-        {
+        private void Refilter() {
             World world = Body._world;
-            if (world == null)
-            {
+            if (world == null) {
                 return;
             }
 
             // Touch each proxy so that new pairs may be created
             IBroadPhase broadPhase = world.BroadPhase;
-            for (int i = 0; i < ProxyCount; ++i)
-            {
+            for (int i = 0; i < ProxyCount; ++i) {
                 broadPhase.TouchProxy(Proxies[i].ProxyId);
             }
         }
 
-        private void RegisterFixture()
-        {
+        private void RegisterFixture() {
             // Reserve proxy space
             Proxies = new FixtureProxy[Shape.ChildCount];
             ProxyCount = 0;
 
-            if (Body.Enabled)
-            {
+            if (Body.Enabled) {
                 IBroadPhase broadPhase = Body._world.BroadPhase;
                 CreateProxies(broadPhase, ref Body._xf);
             }
 
             Body.FixtureList.Add(this);
-            
+
             // Let the world know we have a new fixture. This will cause new contacts
             // to be created at the beginning of the next time step.
             Body._world._worldHasNewFixture = true;
 
-            if (Body._world.FixtureAdded != null)
-            {
+            if (Body._world.FixtureAdded != null) {
                 Body._world.FixtureAdded(this);
             }
         }
@@ -328,8 +306,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="point">A point in world coordinates.</param>
         /// <returns></returns>
-        public bool TestPoint(ref TSVector2 point)
-        {
+        public bool TestPoint(ref TSVector2 point) {
             return Shape.TestPoint(ref Body._xf, ref point);
         }
 
@@ -340,8 +317,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="input">The ray-cast input parameters.</param>
         /// <param name="childIndex">Index of the child.</param>
         /// <returns></returns>
-        public bool RayCast(out RayCastOutput output, ref RayCastInput input, int childIndex)
-        {
+        public bool RayCast(out RayCastOutput output, ref RayCastInput input, int childIndex) {
             return Shape.RayCast(out output, ref input, ref Body._xf, childIndex);
         }
 
@@ -352,17 +328,15 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="aabb">The aabb.</param>
         /// <param name="childIndex">Index of the child.</param>
-        public void GetAABB(out AABB aabb, int childIndex)
-        {
+        public void GetAABB(out AABB aabb, int childIndex) {
             Debug.Assert(0 <= childIndex && childIndex < ProxyCount);
             aabb = Proxies[childIndex].AABB;
         }
 
-        internal void Destroy()
-        {
+        internal void Destroy() {
 #if DEBUG
             if (Shape.ShapeType == ShapeType.Polygon)
-                ((PolygonShape)Shape).Vertices.AttachedToBody = false;
+                ((PolygonShape) Shape).Vertices.AttachedToBody = false;
 #endif
 
             // The proxies must be destroyed before calling this.
@@ -374,9 +348,8 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             //FPE: We set the userdata to null here to help prevent bugs related to stale references in GC
             UserData = null;
-            
-            if (Body._world.FixtureRemoved != null)
-            {
+
+            if (Body._world.FixtureRemoved != null) {
                 Body._world.FixtureRemoved(this);
             }
 
@@ -385,15 +358,13 @@ namespace vFrame.Lockstep.Core.Physics2D
         }
 
         // These support body activation/deactivation.
-        internal void CreateProxies(IBroadPhase broadPhase, ref Transform xf)
-        {
+        internal void CreateProxies(IBroadPhase broadPhase, ref Transform xf) {
             Debug.Assert(ProxyCount == 0);
 
             // Create proxies in the broad-phase.
             ProxyCount = Shape.ChildCount;
 
-            for (int i = 0; i < ProxyCount; ++i)
-            {
+            for (int i = 0; i < ProxyCount; ++i) {
                 FixtureProxy proxy = new FixtureProxy();
                 Shape.ComputeAABB(out proxy.AABB, ref xf, i);
                 proxy.Fixture = this;
@@ -406,11 +377,9 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
         }
 
-        internal void DestroyProxies(IBroadPhase broadPhase)
-        {
+        internal void DestroyProxies(IBroadPhase broadPhase) {
             // Destroy proxies in the broad-phase.
-            for (int i = 0; i < ProxyCount; ++i)
-            {
+            for (int i = 0; i < ProxyCount; ++i) {
                 broadPhase.RemoveProxy(Proxies[i].ProxyId);
                 Proxies[i].ProxyId = -1;
             }
@@ -418,15 +387,12 @@ namespace vFrame.Lockstep.Core.Physics2D
             ProxyCount = 0;
         }
 
-        internal void Synchronize(IBroadPhase broadPhase, ref Transform transform2)
-        {
-            if (ProxyCount == 0)
-            {
+        internal void Synchronize(IBroadPhase broadPhase, ref Transform transform2) {
+            if (ProxyCount == 0) {
                 return;
             }
 
-            for (int i = 0; i < ProxyCount; ++i)
-            {
+            for (int i = 0; i < ProxyCount; ++i) {
                 FixtureProxy proxy = Proxies[i];
 
                 // Compute an AABB that covers the swept Shape (may miss some rotation effect).
@@ -440,8 +406,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Only compares the values of this fixture, and not the attached shape or body.
         /// This is used for deduplication in serialization only.
         /// </summary>
-        internal bool CompareTo(Fixture fixture)
-        {
+        internal bool CompareTo(Fixture fixture) {
             return _collisionCategories == fixture._collisionCategories &&
                    _collisionGroup == fixture._collisionGroup &&
                    Friction == fixture.Friction &&
@@ -450,17 +415,13 @@ namespace vFrame.Lockstep.Core.Physics2D
                    UserData == fixture.UserData;
         }
 
-        private bool SequenceEqual<T>(HashSet<T> first, HashSet<T> second)
-        {
+        private bool SequenceEqual<T>(HashSet<T> first, HashSet<T> second) {
             if (first.Count != second.Count)
                 return false;
 
-            using (IEnumerator<T> enumerator1 = first.GetEnumerator())
-            {
-                using (IEnumerator<T> enumerator2 = second.GetEnumerator())
-                {
-                    while (enumerator1.MoveNext())
-                    {
+            using (IEnumerator<T> enumerator1 = first.GetEnumerator()) {
+                using (IEnumerator<T> enumerator2 = second.GetEnumerator()) {
+                    while (enumerator1.MoveNext()) {
                         if (!enumerator2.MoveNext() || !Equals(enumerator1.Current, enumerator2.Current))
                             return false;
                     }
@@ -478,8 +439,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="body">The body you wish to clone the fixture onto.</param>
         /// <returns>The cloned fixture.</returns>
-        public Fixture CloneOnto(Body body)
-        {
+        public Fixture CloneOnto(Body body) {
             Fixture fixture = new Fixture();
             fixture.Body = body;
             fixture.Shape = Shape.Clone();
@@ -489,7 +449,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             fixture.IsSensor = IsSensor;
             fixture._collisionGroup = _collisionGroup;
             fixture._collisionCategories = _collisionCategories;
-            
+
             fixture.RegisterFixture();
             return fixture;
         }

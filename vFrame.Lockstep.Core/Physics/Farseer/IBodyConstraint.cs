@@ -19,9 +19,8 @@
 
 namespace vFrame.Lockstep.Core
 {
-    public interface IBodyConstraint {
-
+    public interface IBodyConstraint
+    {
         void PostStep();
-
     }
 }

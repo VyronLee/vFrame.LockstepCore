@@ -2,8 +2,8 @@ using System;
 
 namespace vFrame.Lockstep.Core
 {
-	public interface ResourcePoolItem
-	{
-		void CleanUp();
-	}
+    public interface ResourcePoolItem
+    {
+        void CleanUp();
+    }
 }

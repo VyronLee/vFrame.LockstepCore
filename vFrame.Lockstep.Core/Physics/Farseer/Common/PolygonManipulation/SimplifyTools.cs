@@ -16,15 +16,13 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="collinearityTolerance">The collinearity tolerance.</param>
         /// <returns>A simplified polygon.</returns>
         // TS - public static Vertices CollinearSimplify(Vertices vertices, FP collinearityTolerance = 0)
-        public static Vertices CollinearSimplify(Vertices vertices, FixedPoint collinearityTolerance)
-        {
+        public static Vertices CollinearSimplify(Vertices vertices, FixedPoint collinearityTolerance) {
             if (vertices.Count <= 3)
                 return vertices;
 
             Vertices simplified = new Vertices(vertices.Count);
 
-            for (int i = 0; i < vertices.Count; i++)
-            {
+            for (int i = 0; i < vertices.Count; i++) {
                 TSVector2 prev = vertices.PreviousVertex(i);
                 TSVector2 current = vertices[i];
                 TSVector2 next = vertices.NextVertex(i);
@@ -46,8 +44,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// If you pass in 0, it will remove all collinear points.
         /// </summary>
         /// <returns>The simplified polygon</returns>
-        public static Vertices DouglasPeuckerSimplify(Vertices vertices, FixedPoint distanceTolerance)
-        {
+        public static Vertices DouglasPeuckerSimplify(Vertices vertices, FixedPoint distanceTolerance) {
             if (vertices.Count <= 3)
                 return vertices;
 
@@ -60,8 +57,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             Vertices simplified = new Vertices(vertices.Count);
 
-            for (int i = 0; i < vertices.Count; i++)
-            {
+            for (int i = 0; i < vertices.Count; i++) {
                 if (usePoint[i])
                     simplified.Add(vertices[i]);
             }
@@ -69,38 +65,33 @@ namespace vFrame.Lockstep.Core.Physics2D
             return simplified;
         }
 
-        private static void SimplifySection(Vertices vertices, int i, int j, bool[] usePoint, FixedPoint distanceTolerance)
-        {
+        private static void SimplifySection(Vertices vertices, int i, int j, bool[] usePoint,
+            FixedPoint distanceTolerance) {
             if ((i + 1) == j)
                 return;
 
             TSVector2 a = vertices[i];
             TSVector2 b = vertices[j];
 
-            FixedPoint maxDistance = -1;//-1.0;
+            FixedPoint maxDistance = -1; //-1.0;
             int maxIndex = i;
-            for (int k = i + 1; k < j; k++)
-            {
+            for (int k = i + 1; k < j; k++) {
                 TSVector2 point = vertices[k];
 
                 FixedPoint distance = LineTools.DistanceBetweenPointAndLineSegment(ref point, ref a, ref b);
 
-                if (distance > maxDistance)
-                {
+                if (distance > maxDistance) {
                     maxDistance = distance;
                     maxIndex = k;
                 }
             }
 
-            if (maxDistance <= distanceTolerance)
-            {
-                for (int k = i + 1; k < j; k++)
-                {
+            if (maxDistance <= distanceTolerance) {
+                for (int k = i + 1; k < j; k++) {
                     usePoint[k] = false;
                 }
             }
-            else
-            {
+            else {
                 SimplifySection(vertices, i, maxIndex, usePoint, distanceTolerance);
                 SimplifySection(vertices, maxIndex, j, usePoint, distanceTolerance);
             }
@@ -111,8 +102,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="vertices">The vertices.</param>
         /// <param name="tolerance">The tolerance.</param>
-        public static Vertices MergeParallelEdges(Vertices vertices, FixedPoint tolerance)
-        {
+        public static Vertices MergeParallelEdges(Vertices vertices, FixedPoint tolerance) {
             //From Eric Jordan's convex decomposition library
 
             if (vertices.Count <= 3)
@@ -122,8 +112,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             int newNVertices = vertices.Count;
 
             //Gather points to process
-            for (int i = 0; i < vertices.Count; ++i)
-            {
+            for (int i = 0; i < vertices.Count; ++i) {
                 int lower = (i == 0) ? (vertices.Count - 1) : (i - 1);
                 int middle = i;
                 int upper = (i == vertices.Count - 1) ? (0) : (i + 1);
@@ -135,8 +124,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 FixedPoint norm0 = FixedPoint.Sqrt(dx0 * dx0 + dy0 * dy0);
                 FixedPoint norm1 = FixedPoint.Sqrt(dx1 * dx1 + dy1 * dy1);
 
-                if (!(norm0 > FixedPoint.Zero && norm1 > FixedPoint.Zero) && newNVertices > 3)
-                {
+                if (!(norm0 > FixedPoint.Zero && norm1 > FixedPoint.Zero) && newNVertices > 3) {
                     //Merge identical points
                     mergeMe[i] = true;
                     --newNVertices;
@@ -149,8 +137,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 FixedPoint cross = dx0 * dy1 - dx1 * dy0;
                 FixedPoint dot = dx0 * dx1 + dy0 * dy1;
 
-                if (FixedPoint.Abs(cross) < tolerance && dot > 0 && newNVertices > 3)
-                {
+                if (FixedPoint.Abs(cross) < tolerance && dot > 0 && newNVertices > 3) {
                     mergeMe[i] = true;
                     --newNVertices;
                 }
@@ -166,8 +153,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             //Copy the vertices to a new list and clear the old
             Vertices newVertices = new Vertices(newNVertices);
 
-            for (int i = 0; i < vertices.Count; ++i)
-            {
+            for (int i = 0; i < vertices.Count; ++i) {
                 if (mergeMe[i] || newNVertices == 0 || currIndex == newNVertices)
                     continue;
 
@@ -184,12 +170,10 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Merges the identical points in the polygon.
         /// </summary>
         /// <param name="vertices">The vertices.</param>
-        public static Vertices MergeIdenticalPoints(Vertices vertices)
-        {
+        public static Vertices MergeIdenticalPoints(Vertices vertices) {
             HashSet<TSVector2> unique = new HashSet<TSVector2>();
 
-            foreach (TSVector2 vertex in vertices)
-            {
+            foreach (TSVector2 vertex in vertices) {
                 unique.Add(vertex);
             }
 
@@ -201,8 +185,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="vertices">The vertices.</param>
         /// <param name="distance">The distance between points. Points closer than this will be removed.</param>
-        public static Vertices ReduceByDistance(Vertices vertices, FixedPoint distance)
-        {
+        public static Vertices ReduceByDistance(Vertices vertices, FixedPoint distance) {
             if (vertices.Count <= 3)
                 return vertices;
 
@@ -210,8 +193,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             Vertices simplified = new Vertices(vertices.Count);
 
-            for (int i = 0; i < vertices.Count; i++)
-            {
+            for (int i = 0; i < vertices.Count; i++) {
                 TSVector2 current = vertices[i];
                 TSVector2 next = vertices.NextVertex(i);
 
@@ -231,8 +213,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="vertices">The vertices.</param>
         /// <param name="nth">The Nth point to remove. Example: 5.</param>
         /// <returns></returns>
-        public static Vertices ReduceByNth(Vertices vertices, int nth)
-        {
+        public static Vertices ReduceByNth(Vertices vertices, int nth) {
             if (vertices.Count <= 3)
                 return vertices;
 
@@ -241,8 +222,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             Vertices simplified = new Vertices(vertices.Count);
 
-            for (int i = 0; i < vertices.Count; i++)
-            {
+            for (int i = 0; i < vertices.Count; i++) {
                 if (i % nth == 0)
                     continue;
 
@@ -260,8 +240,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="vertices"></param>
         /// <param name="areaTolerance"></param>
         /// <returns></returns>
-        public static Vertices ReduceByArea(Vertices vertices, FixedPoint areaTolerance)
-        {
+        public static Vertices ReduceByArea(Vertices vertices, FixedPoint areaTolerance) {
             //From physics2d.net
 
             if (vertices.Count <= 3)
@@ -276,8 +255,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             TSVector2 v2 = vertices[vertices.Count - 1];
             areaTolerance *= 2;
 
-            for (int i = 0; i < vertices.Count; ++i, v2 = v3)
-            {
+            for (int i = 0; i < vertices.Count; ++i, v2 = v3) {
                 v3 = i == vertices.Count - 1 ? simplified[0] : vertices[i];
 
                 FixedPoint old1;
@@ -289,8 +267,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 FixedPoint new1;
                 MathUtils.Cross(ref v1, ref v3, out new1);
 
-                if (FixedPoint.Abs(new1 - (old1 + old2)) > areaTolerance)
-                {
+                if (FixedPoint.Abs(new1 - (old1 + old2)) > areaTolerance) {
                     simplified.Add(v2);
                     v1 = v2;
                 }

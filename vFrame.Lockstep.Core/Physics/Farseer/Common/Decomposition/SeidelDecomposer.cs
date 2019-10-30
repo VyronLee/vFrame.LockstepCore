@@ -39,14 +39,12 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="sheer">The sheer to use if you get bad results, try using a higher value.</param>
         /// <returns>A list of triangles</returns>
         // TS - public static List<Vertices> ConvexPartition(Vertices vertices, FP sheer = 0.001f)
-        public static List<Vertices> ConvexPartition(Vertices vertices, FixedPoint sheer)
-        {
+        public static List<Vertices> ConvexPartition(Vertices vertices, FixedPoint sheer) {
             Debug.Assert(vertices.Count > 3);
 
             List<Point> compatList = new List<Point>(vertices.Count);
 
-            foreach (TSVector2 vertex in vertices)
-            {
+            foreach (TSVector2 vertex in vertices) {
                 compatList.Add(new Point(vertex.x, vertex.y));
             }
 
@@ -54,12 +52,10 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             List<Vertices> list = new List<Vertices>();
 
-            foreach (List<Point> triangle in t.Triangles)
-            {
+            foreach (List<Point> triangle in t.Triangles) {
                 Vertices outTriangles = new Vertices(triangle.Count);
 
-                foreach (Point outTriangle in triangle)
-                {
+                foreach (Point outTriangle in triangle) {
                     outTriangles.Add(new TSVector2(outTriangle.X, outTriangle.Y));
                 }
 
@@ -76,12 +72,10 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="sheer">The sheer to use if you get bad results, try using a higher value.</param>
         /// <returns>A list of trapezoids</returns>
         // TS - public static List<Vertices> ConvexPartitionTrapezoid(Vertices vertices, FP sheer = 0.001f)
-        public static List<Vertices> ConvexPartitionTrapezoid(Vertices vertices, FixedPoint sheer)
-        {
+        public static List<Vertices> ConvexPartitionTrapezoid(Vertices vertices, FixedPoint sheer) {
             List<Point> compatList = new List<Point>(vertices.Count);
 
-            foreach (TSVector2 vertex in vertices)
-            {
+            foreach (TSVector2 vertex in vertices) {
                 compatList.Add(new Point(vertex.x, vertex.y));
             }
 
@@ -89,13 +83,11 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             List<Vertices> list = new List<Vertices>();
 
-            foreach (Trapezoid trapezoid in t.Trapezoids)
-            {
+            foreach (Trapezoid trapezoid in t.Trapezoids) {
                 Vertices verts = new Vertices();
 
                 List<Point> points = trapezoid.GetVertices();
-                foreach (Point point in points)
-                {
+                foreach (Point point in points) {
                     verts.Add(new TSVector2(point.X, point.Y));
                 }
 

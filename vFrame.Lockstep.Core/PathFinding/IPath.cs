@@ -1,6 +1,6 @@
 ﻿namespace vFrame.Lockstep.Core.PathFinding
 {
-    public interface IPath<out TNode> where TNode: INode
+    public interface IPath<out TNode> where TNode : INode
     {
         int GetCount();
 

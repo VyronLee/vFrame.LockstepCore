@@ -2,7 +2,7 @@ using System;
 
 namespace vFrame.Lockstep.Core
 {
-	public interface ICollider
-	{
-	}
+    public interface ICollider
+    {
+    }
 }

@@ -37,28 +37,21 @@ namespace vFrame.Lockstep.Core.Physics2D
     {
         #region IComparer<TriangulationPoint> Members
 
-        public int Compare(TriangulationPoint p1, TriangulationPoint p2)
-        {
-            if (p1.Y < p2.Y)
-            {
+        public int Compare(TriangulationPoint p1, TriangulationPoint p2) {
+            if (p1.Y < p2.Y) {
                 return -1;
             }
-            else if (p1.Y > p2.Y)
-            {
+            else if (p1.Y > p2.Y) {
                 return 1;
             }
-            else
-            {
-                if (p1.X < p2.X)
-                {
+            else {
+                if (p1.X < p2.X) {
                     return -1;
                 }
-                else if (p1.X > p2.X)
-                {
+                else if (p1.X > p2.X) {
                     return 1;
                 }
-                else
-                {
+                else {
                     return 0;
                 }
             }

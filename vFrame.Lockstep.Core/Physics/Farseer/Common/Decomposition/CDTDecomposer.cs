@@ -26,8 +26,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <summary>
         /// Decompose the polygon into several smaller non-concave polygon.
         /// </summary>
-        public static List<Vertices> ConvexPartition(Vertices vertices)
-        {
+        public static List<Vertices> ConvexPartition(Vertices vertices) {
             Debug.Assert(vertices.Count > 3);
 
             Polygon poly = new Polygon();
@@ -35,10 +34,8 @@ namespace vFrame.Lockstep.Core.Physics2D
             foreach (TSVector2 vertex in vertices)
                 poly.Points.Add(new TriangulationPoint(vertex.x, vertex.y));
 
-            if (vertices.Holes != null)
-            {
-                foreach (Vertices holeVertices in vertices.Holes)
-                {
+            if (vertices.Holes != null) {
+                foreach (Vertices holeVertices in vertices.Holes) {
                     Polygon hole = new Polygon();
 
                     foreach (TSVector2 vertex in holeVertices)
@@ -54,13 +51,12 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             List<Vertices> results = new List<Vertices>();
 
-            foreach (DelaunayTriangle triangle in poly.Triangles)
-            {
+            foreach (DelaunayTriangle triangle in poly.Triangles) {
                 Vertices v = new Vertices();
-                foreach (TriangulationPoint p in triangle.Points)
-                {
-                    v.Add(new TSVector2((FixedPoint)p.X, (FixedPoint)p.Y));
+                foreach (TriangulationPoint p in triangle.Points) {
+                    v.Add(new TSVector2((FixedPoint) p.X, (FixedPoint) p.Y));
                 }
+
                 results.Add(v);
             }
 

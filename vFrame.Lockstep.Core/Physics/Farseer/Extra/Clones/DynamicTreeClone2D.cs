@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 
-namespace vFrame.Lockstep.Core.Physics2D {
-
-    internal class DynamicTreeClone2D {
-
+namespace vFrame.Lockstep.Core.Physics2D
+{
+    internal class DynamicTreeClone2D
+    {
         public List<int> _raycastStack = new List<int>(256);
         public List<int> _queryStack = new List<int>(256);
 
@@ -56,7 +56,7 @@ namespace vFrame.Lockstep.Core.Physics2D {
             }
         }
 
-		public void Restore(DynamicTree<Physics2D.FixtureProxy> dynamicTree) {
+        public void Restore(DynamicTree<Physics2D.FixtureProxy> dynamicTree) {
             dynamicTree._raycastStack.Clear();
 
             for (index = 0, length = _raycastStack.Count; index < length; index++) {
@@ -90,7 +90,5 @@ namespace vFrame.Lockstep.Core.Physics2D {
                 dynamicTree._nodes[index] = newTn;
             }
         }
-
     }
-
 }

@@ -29,12 +29,9 @@ namespace vFrame.Lockstep.Core.Physics2D
         private T _value0;
         private T _value1;
 
-        public T this[int index]
-        {
-            get
-            {
-                switch (index)
-                {
+        public T this[int index] {
+            get {
+                switch (index) {
                     case 0:
                         return _value0;
                     case 1:
@@ -43,10 +40,8 @@ namespace vFrame.Lockstep.Core.Physics2D
                         throw new IndexOutOfRangeException();
                 }
             }
-            set
-            {
-                switch (index)
-                {
+            set {
+                switch (index) {
                     case 0:
                         _value0 = value;
                         break;
@@ -66,12 +61,9 @@ namespace vFrame.Lockstep.Core.Physics2D
         private T _value1;
         private T _value2;
 
-        public T this[int index]
-        {
-            get
-            {
-                switch (index)
-                {
+        public T this[int index] {
+            get {
+                switch (index) {
                     case 0:
                         return _value0;
                     case 1:
@@ -82,10 +74,8 @@ namespace vFrame.Lockstep.Core.Physics2D
                         throw new IndexOutOfRangeException();
                 }
             }
-            set
-            {
-                switch (index)
-                {
+            set {
+                switch (index) {
                     case 0:
                         _value0 = value;
                         break;
@@ -109,12 +99,9 @@ namespace vFrame.Lockstep.Core.Physics2D
         private T _value2;
         private T _value3;
 
-        public T this[int index]
-        {
-            get
-            {
-                switch (index)
-                {
+        public T this[int index] {
+            get {
+                switch (index) {
                     case 0:
                         return _value0;
                     case 1:
@@ -127,10 +114,8 @@ namespace vFrame.Lockstep.Core.Physics2D
                         throw new IndexOutOfRangeException();
                 }
             }
-            set
-            {
-                switch (index)
-                {
+            set {
+                switch (index) {
                     case 0:
                         _value0 = value;
                         break;
@@ -161,12 +146,9 @@ namespace vFrame.Lockstep.Core.Physics2D
         private T _value6;
         private T _value7;
 
-        public T this[int index]
-        {
-            get
-            {
-                switch (index)
-                {
+        public T this[int index] {
+            get {
+                switch (index) {
                     case 0:
                         return _value0;
                     case 1:
@@ -187,10 +169,8 @@ namespace vFrame.Lockstep.Core.Physics2D
                         throw new IndexOutOfRangeException();
                 }
             }
-            set
-            {
-                switch (index)
-                {
+            set {
+                switch (index) {
                     case 0:
                         _value0 = value;
                         break;

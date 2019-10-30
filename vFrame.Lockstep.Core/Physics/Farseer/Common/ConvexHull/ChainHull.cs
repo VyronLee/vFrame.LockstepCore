@@ -17,8 +17,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <summary>
         /// Returns the convex hull from the given vertices..
         /// </summary>
-        public static Vertices GetConvexHull(Vertices vertices)
-        {
+        public static Vertices GetConvexHull(Vertices vertices) {
             if (vertices.Count <= 3)
                 return vertices;
 
@@ -36,16 +35,14 @@ namespace vFrame.Lockstep.Core.Physics2D
             // Get the indices of points with min x-coord and min|max y-coord
             const int minmin = 0;
             FixedPoint xmin = pointSet[0].x;
-            for (i = 1; i < pointSet.Count; i++)
-            {
+            for (i = 1; i < pointSet.Count; i++) {
                 if (pointSet[i].x != xmin)
                     break;
             }
 
             // degenerate case: all x-coords == xmin
             int minmax = i - 1;
-            if (minmax == pointSet.Count - 1)
-            {
+            if (minmax == pointSet.Count - 1) {
                 h[++top] = pointSet[minmin];
 
                 if (pointSet[minmax].y != pointSet[minmin].y) // a nontrivial segment
@@ -54,8 +51,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 h[++top] = pointSet[minmin]; // add polygon endpoint
 
                 res = new Vertices(top + 1);
-                for (int j = 0; j < top + 1; j++)
-                {
+                for (int j = 0; j < top + 1; j++) {
                     res.Add(h[j]);
                 }
 
@@ -67,18 +63,17 @@ namespace vFrame.Lockstep.Core.Physics2D
             // Get the indices of points with max x-coord and min|max y-coord
             int maxmax = pointSet.Count - 1;
             FixedPoint xmax = pointSet[pointSet.Count - 1].x;
-            for (i = pointSet.Count - 2; i >= 0; i--)
-            {
+            for (i = pointSet.Count - 2; i >= 0; i--) {
                 if (pointSet[i].x != xmax)
                     break;
             }
+
             int maxmin = i + 1;
 
             // Compute the lower hull on the stack H
             h[++top] = pointSet[minmin]; // push minmin point onto stack
             i = minmax;
-            while (++i <= maxmin)
-            {
+            while (++i <= maxmin) {
                 // the lower line joins P[minmin] with P[maxmin]
                 if (MathUtils.Area(pointSet[minmin], pointSet[maxmin], pointSet[i]) >= 0 && i < maxmin)
                     continue; // ignore P[i] above or on the lower line
@@ -91,6 +86,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
                     top--; // pop top point off stack
                 }
+
                 h[++top] = pointSet[i]; // push P[i] onto stack
             }
 
@@ -99,8 +95,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 h[++top] = pointSet[maxmax]; // push maxmax point onto stack
             int bot = top;
             i = maxmin;
-            while (--i >= minmax)
-            {
+            while (--i >= minmax) {
                 // the upper line joins P[maxmax] with P[minmax]
                 if (MathUtils.Area(pointSet[maxmax], pointSet[minmax], pointSet[i]) >= 0 && i > minmax)
                     continue; // ignore P[i] below or on the upper line
@@ -122,8 +117,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             res = new Vertices(top + 1);
 
-            for (int j = 0; j < top + 1; j++)
-            {
+            for (int j = 0; j < top + 1; j++) {
                 res.Add(h[j]);
             }
 
@@ -132,8 +126,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
         private class PointComparer : Comparer<TSVector2>
         {
-            public override int Compare(TSVector2 a, TSVector2 b)
-            {
+            public override int Compare(TSVector2 a, TSVector2 b) {
                 int f = a.x.CompareTo(b.x);
                 return f != 0 ? f : a.y.CompareTo(b.y);
             }

@@ -45,8 +45,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="vertices">The vertices.</param>
         /// <param name="tolerance">The tolerance.</param>
         // TS - public static List<Vertices> ConvexPartition(Vertices vertices, FP tolerance = 0.001f)
-        public static List<Vertices> ConvexPartition(Vertices vertices, FixedPoint tolerance)
-        {
+        public static List<Vertices> ConvexPartition(Vertices vertices, FixedPoint tolerance) {
             Debug.Assert(vertices.Count > 3);
             Debug.Assert(!vertices.IsCounterClockWise());
 
@@ -71,8 +70,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <remarks>
         /// Only works on simple polygons.
         /// </remarks>
-        private static List<Vertices> TriangulatePolygon(Vertices vertices, FixedPoint tolerance)
-        {
+        private static List<Vertices> TriangulatePolygon(Vertices vertices, FixedPoint tolerance) {
             //FPE note: Check is needed as invalid triangles can be returned in recursive calls.
             if (vertices.Count < 3)
                 return new List<Vertices>();
@@ -82,20 +80,18 @@ namespace vFrame.Lockstep.Core.Physics2D
             //Recurse and split on pinch points
             Vertices pA, pB;
             Vertices pin = new Vertices(vertices);
-            if (ResolvePinchPoint(pin, out pA, out pB, tolerance))
-            {
+            if (ResolvePinchPoint(pin, out pA, out pB, tolerance)) {
                 List<Vertices> mergeA = TriangulatePolygon(pA, tolerance);
                 List<Vertices> mergeB = TriangulatePolygon(pB, tolerance);
 
                 if (mergeA.Count == -1 || mergeB.Count == -1)
                     throw new Exception("Can't triangulate your polygon.");
 
-                for (int i = 0; i < mergeA.Count; ++i)
-                {
+                for (int i = 0; i < mergeA.Count; ++i) {
                     results.Add(new Vertices(mergeA[i]));
                 }
-                for (int i = 0; i < mergeB.Count; ++i)
-                {
+
+                for (int i = 0; i < mergeB.Count; ++i) {
                     results.Add(new Vertices(mergeB[i]));
                 }
 
@@ -106,23 +102,19 @@ namespace vFrame.Lockstep.Core.Physics2D
             int bufferSize = 0;
             FixedPoint[] xrem = new FixedPoint[vertices.Count];
             FixedPoint[] yrem = new FixedPoint[vertices.Count];
-            for (int i = 0; i < vertices.Count; ++i)
-            {
+            for (int i = 0; i < vertices.Count; ++i) {
                 xrem[i] = vertices[i].x;
                 yrem[i] = vertices[i].y;
             }
 
             int vNum = vertices.Count;
 
-            while (vNum > 3)
-            {
+            while (vNum > 3) {
                 // Find an ear
                 int earIndex = -1;
                 FixedPoint earMaxMinCross = -10;
-                for (int i = 0; i < vNum; ++i)
-                {
-                    if (IsEar(i, xrem, yrem, vNum))
-                    {
+                for (int i = 0; i < vNum; ++i) {
+                    if (IsEar(i, xrem, yrem, vNum)) {
                         int lower = Remainder(i - 1, vNum);
                         int upper = Remainder(i + 1, vNum);
                         TSVector2 d1 = new TSVector2(xrem[upper] - xrem[i], yrem[upper] - yrem[i]);
@@ -146,8 +138,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
                         //Find the maximum minimum angle
                         FixedPoint minCross = TSMath.Min(cross12, TSMath.Min(cross23, cross31));
-                        if (minCross > earMaxMinCross)
-                        {
+                        if (minCross > earMaxMinCross) {
                             earIndex = i;
                             earMaxMinCross = minCross;
                         }
@@ -158,10 +149,8 @@ namespace vFrame.Lockstep.Core.Physics2D
                 // Note: sometimes this is happening because the
                 // remaining points are collinear.  Really these
                 // should just be thrown out without halting triangulation.
-                if (earIndex == -1)
-                {
-                    for (int i = 0; i < bufferSize; i++)
-                    {
+                if (earIndex == -1) {
+                    for (int i = 0; i < bufferSize; i++) {
                         results.Add(buffer[i]);
                     }
 
@@ -175,8 +164,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 FixedPoint[] newx = new FixedPoint[vNum];
                 FixedPoint[] newy = new FixedPoint[vNum];
                 int currDest = 0;
-                for (int i = 0; i < vNum; ++i)
-                {
+                for (int i = 0; i < vNum; ++i) {
                     if (currDest == earIndex) ++currDest;
                     newx[i] = xrem[currDest];
                     newy[i] = yrem[currDest];
@@ -187,7 +175,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 int under = (earIndex == 0) ? (vNum) : (earIndex - 1);
                 int over = (earIndex == vNum) ? 0 : (earIndex + 1);
                 Triangle toAdd = new Triangle(xrem[earIndex], yrem[earIndex], xrem[over], yrem[over], xrem[under],
-                                              yrem[under]);
+                    yrem[under]);
                 buffer[bufferSize] = toAdd;
                 ++bufferSize;
 
@@ -200,8 +188,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             buffer[bufferSize] = tooAdd;
             ++bufferSize;
 
-            for (int i = 0; i < bufferSize; i++)
-            {
+            for (int i = 0; i < bufferSize; i++) {
                 results.Add(new Vertices(buffer[i]));
             }
 
@@ -223,8 +210,8 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="poutA">The pout A.</param>
         /// <param name="poutB">The pout B.</param>
         /// <param name="tolerance"></param>
-        private static bool ResolvePinchPoint(Vertices pin, out Vertices poutA, out Vertices poutB, FixedPoint tolerance)
-        {
+        private static bool ResolvePinchPoint(Vertices pin, out Vertices poutA, out Vertices poutB,
+            FixedPoint tolerance) {
             poutA = new Vertices();
             poutB = new Vertices();
 
@@ -234,39 +221,37 @@ namespace vFrame.Lockstep.Core.Physics2D
             bool hasPinchPoint = false;
             int pinchIndexA = -1;
             int pinchIndexB = -1;
-            for (int i = 0; i < pin.Count; ++i)
-            {
-                for (int j = i + 1; j < pin.Count; ++j)
-                {
+            for (int i = 0; i < pin.Count; ++i) {
+                for (int j = i + 1; j < pin.Count; ++j) {
                     //Don't worry about pinch points where the points
                     //are actually just dupe neighbors
-                    if (FixedPoint.Abs(pin[i].x - pin[j].x) < tolerance && FixedPoint.Abs(pin[i].y - pin[j].y) < tolerance && j != i + 1)
-                    {
+                    if (FixedPoint.Abs(pin[i].x - pin[j].x) < tolerance &&
+                        FixedPoint.Abs(pin[i].y - pin[j].y) < tolerance && j != i + 1) {
                         pinchIndexA = i;
                         pinchIndexB = j;
                         hasPinchPoint = true;
                         break;
                     }
                 }
+
                 if (hasPinchPoint) break;
             }
-            if (hasPinchPoint)
-            {
+
+            if (hasPinchPoint) {
                 int sizeA = pinchIndexB - pinchIndexA;
                 if (sizeA == pin.Count) return false; //has dupe points at wraparound, not a problem here
-                for (int i = 0; i < sizeA; ++i)
-                {
+                for (int i = 0; i < sizeA; ++i) {
                     int ind = Remainder(pinchIndexA + i, pin.Count); // is this right
                     poutA.Add(pin[ind]);
                 }
 
                 int sizeB = pin.Count - sizeA;
-                for (int i = 0; i < sizeB; ++i)
-                {
+                for (int i = 0; i < sizeB; ++i) {
                     int ind = Remainder(pinchIndexB + i, pin.Count); // is this right    
                     poutB.Add(pin[ind]);
                 }
             }
+
             return hasPinchPoint;
         }
 
@@ -276,13 +261,12 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="x">The x.</param>
         /// <param name="modulus">The modulus.</param>
         /// <returns></returns>
-        private static int Remainder(int x, int modulus)
-        {
+        private static int Remainder(int x, int modulus) {
             int rem = x % modulus;
-            while (rem < 0)
-            {
+            while (rem < 0) {
                 rem += modulus;
             }
+
             return rem;
         }
 
@@ -299,33 +283,29 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <returns>
         /// 	<c>true</c> if the specified i is ear; otherwise, <c>false</c>.
         /// </returns>
-        private static bool IsEar(int i, FixedPoint[] xv, FixedPoint[] yv, int xvLength)
-        {
+        private static bool IsEar(int i, FixedPoint[] xv, FixedPoint[] yv, int xvLength) {
             FixedPoint dx0, dy0, dx1, dy1;
-            if (i >= xvLength || i < 0 || xvLength < 3)
-            {
+            if (i >= xvLength || i < 0 || xvLength < 3) {
                 return false;
             }
+
             int upper = i + 1;
             int lower = i - 1;
-            if (i == 0)
-            {
+            if (i == 0) {
                 dx0 = xv[0] - xv[xvLength - 1];
                 dy0 = yv[0] - yv[xvLength - 1];
                 dx1 = xv[1] - xv[0];
                 dy1 = yv[1] - yv[0];
                 lower = xvLength - 1;
             }
-            else if (i == xvLength - 1)
-            {
+            else if (i == xvLength - 1) {
                 dx0 = xv[i] - xv[i - 1];
                 dy0 = yv[i] - yv[i - 1];
                 dx1 = xv[0] - xv[i];
                 dy1 = yv[0] - yv[i];
                 upper = 0;
             }
-            else
-            {
+            else {
                 dx0 = xv[i] - xv[i - 1];
                 dy0 = yv[i] - yv[i - 1];
                 dx1 = xv[i + 1] - xv[i];
@@ -339,38 +319,34 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             Triangle myTri = new Triangle(xv[i], yv[i], xv[upper], yv[upper], xv[lower], yv[lower]);
 
-            for (int j = 0; j < xvLength; ++j)
-            {
+            for (int j = 0; j < xvLength; ++j) {
                 if (j == i || j == lower || j == upper)
                     continue;
                 if (myTri.IsInside(xv[j], yv[j]))
                     return false;
             }
+
             return true;
         }
 
         private class Triangle : Vertices
         {
             //Constructor automatically fixes orientation to ccw
-            public Triangle(FixedPoint x1, FixedPoint y1, FixedPoint x2, FixedPoint y2, FixedPoint x3, FixedPoint y3)
-            {
+            public Triangle(FixedPoint x1, FixedPoint y1, FixedPoint x2, FixedPoint y2, FixedPoint x3, FixedPoint y3) {
                 FixedPoint cross = (x2 - x1) * (y3 - y1) - (x3 - x1) * (y2 - y1);
-                if (cross > 0)
-                {
+                if (cross > 0) {
                     Add(new TSVector2(x1, y1));
                     Add(new TSVector2(x2, y2));
                     Add(new TSVector2(x3, y3));
                 }
-                else
-                {
+                else {
                     Add(new TSVector2(x1, y1));
                     Add(new TSVector2(x3, y3));
                     Add(new TSVector2(x2, y2));
                 }
             }
 
-            public bool IsInside(FixedPoint x, FixedPoint y)
-            {
+            public bool IsInside(FixedPoint x, FixedPoint y) {
                 TSVector2 a = this[0];
                 TSVector2 b = this[1];
                 TSVector2 c = this[2];

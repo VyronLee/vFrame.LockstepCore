@@ -37,7 +37,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
     internal class TriangulationUtil
     {
-        public static FixedPoint EPSILON = FixedPoint.EN12;//1e-12;
+        public static FixedPoint EPSILON = FixedPoint.EN12; //1e-12;
 
         /// <summary>
         ///   Requirements:
@@ -64,8 +64,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="pd">point opposite a</param>
         /// <returns>true if d is inside circle, false if on circle edge</returns>
         public static bool SmartIncircle(TriangulationPoint pa, TriangulationPoint pb, TriangulationPoint pc,
-                                         TriangulationPoint pd)
-        {
+            TriangulationPoint pd) {
             FixedPoint pdx = pd.X;
             FixedPoint pdy = pd.Y;
             FixedPoint adx = pa.X - pdx;
@@ -134,19 +133,18 @@ namespace vFrame.Lockstep.Core.Physics2D
         }
         */
 
-        public static bool InScanArea(TriangulationPoint pa, TriangulationPoint pb, TriangulationPoint pc, TriangulationPoint pd)
-        {
+        public static bool InScanArea(TriangulationPoint pa, TriangulationPoint pb, TriangulationPoint pc,
+            TriangulationPoint pd) {
             FixedPoint oadb = (pa.X - pb.X) * (pd.Y - pb.Y) - (pd.X - pb.X) * (pa.Y - pb.Y);
-            if (oadb >= -EPSILON)
-            {
+            if (oadb >= -EPSILON) {
                 return false;
             }
 
             FixedPoint oadc = (pa.X - pc.X) * (pd.Y - pc.Y) - (pd.X - pc.X) * (pa.Y - pc.Y);
-            if (oadc <= EPSILON)
-            {
+            if (oadc <= EPSILON) {
                 return false;
             }
+
             return true;
         }
 
@@ -156,19 +154,17 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// 0 if collinear
         /// A[P1,P2,P3]  =  (x1*y2 - y1*x2) + (x2*y3 - y2*x3) + (x3*y1 - y3*x1)
         ///              =  (x1-x3)*(y2-y3) - (y1-y3)*(x2-x3)
-        public static Orientation Orient2d(TriangulationPoint pa, TriangulationPoint pb, TriangulationPoint pc)
-        {
+        public static Orientation Orient2d(TriangulationPoint pa, TriangulationPoint pb, TriangulationPoint pc) {
             FixedPoint detleft = (pa.X - pc.X) * (pb.Y - pc.Y);
             FixedPoint detright = (pa.Y - pc.Y) * (pb.X - pc.X);
             FixedPoint val = detleft - detright;
-            if (val > -EPSILON && val < EPSILON)
-            {
+            if (val > -EPSILON && val < EPSILON) {
                 return Orientation.Collinear;
             }
-            else if (val > 0)
-            {
+            else if (val > 0) {
                 return Orientation.CCW;
             }
+
             return Orientation.CW;
         }
     }

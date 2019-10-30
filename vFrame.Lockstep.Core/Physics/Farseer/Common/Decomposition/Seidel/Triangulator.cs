@@ -13,12 +13,11 @@ namespace vFrame.Lockstep.Core.Physics2D
         private Trapezoid _boundingBox;
         private List<Edge> _edgeList;
         private QueryGraph _queryGraph;
-        private FixedPoint _sheer = FixedPoint.EN3;//0.001f;
+        private FixedPoint _sheer = FixedPoint.EN3; //0.001f;
         private TrapezoidalMap _trapezoidalMap;
         private List<MonotoneMountain> _xMonoPoly;
 
-        public Triangulator(List<Point> polyLine, FixedPoint sheer)
-        {
+        public Triangulator(List<Point> polyLine, FixedPoint sheer) {
             _sheer = sheer;
             Triangles = new List<List<Point>>();
             Trapezoids = new List<Trapezoid>();
@@ -32,61 +31,52 @@ namespace vFrame.Lockstep.Core.Physics2D
         }
 
         // Build the trapezoidal map and query graph
-        private void Process()
-        {
-            foreach (Edge edge in _edgeList)
-            {
+        private void Process() {
+            foreach (Edge edge in _edgeList) {
                 List<Trapezoid> traps = _queryGraph.FollowEdge(edge);
 
                 // Remove trapezoids from trapezoidal Map
-                foreach (Trapezoid t in traps)
-                {
+                foreach (Trapezoid t in traps) {
                     _trapezoidalMap.Map.Remove(t);
 
                     bool cp = t.Contains(edge.P);
                     bool cq = t.Contains(edge.Q);
                     Trapezoid[] tList;
 
-                    if (cp && cq)
-                    {
+                    if (cp && cq) {
                         tList = _trapezoidalMap.Case1(t, edge);
                         _queryGraph.Case1(t.Sink, edge, tList);
                     }
-                    else if (cp && !cq)
-                    {
+                    else if (cp && !cq) {
                         tList = _trapezoidalMap.Case2(t, edge);
                         _queryGraph.Case2(t.Sink, edge, tList);
                     }
-                    else if (!cp && !cq)
-                    {
+                    else if (!cp && !cq) {
                         tList = _trapezoidalMap.Case3(t, edge);
                         _queryGraph.Case3(t.Sink, edge, tList);
                     }
-                    else
-                    {
+                    else {
                         tList = _trapezoidalMap.Case4(t, edge);
                         _queryGraph.Case4(t.Sink, edge, tList);
                     }
+
                     // Add new trapezoids to map
-                    foreach (Trapezoid y in tList)
-                    {
+                    foreach (Trapezoid y in tList) {
                         _trapezoidalMap.Map.Add(y);
                     }
                 }
+
                 _trapezoidalMap.Clear();
             }
 
             // Mark outside trapezoids
-            foreach (Trapezoid t in _trapezoidalMap.Map)
-            {
+            foreach (Trapezoid t in _trapezoidalMap.Map) {
                 MarkOutside(t);
             }
 
             // Collect interior trapezoids
-            foreach (Trapezoid t in _trapezoidalMap.Map)
-            {
-                if (t.Inside)
-                {
+            foreach (Trapezoid t in _trapezoidalMap.Map) {
+                if (t.Inside) {
                     Trapezoids.Add(t);
                     t.AddPoints();
                 }
@@ -97,12 +87,9 @@ namespace vFrame.Lockstep.Core.Physics2D
         }
 
         // Build a list of x-monotone mountains
-        private void CreateMountains()
-        {
-            foreach (Edge edge in _edgeList)
-            {
-                if (edge.MPoints.Count > 2)
-                {
+        private void CreateMountains() {
+            foreach (Edge edge in _edgeList) {
+                if (edge.MPoints.Count > 2) {
                     MonotoneMountain mountain = new MonotoneMountain();
 
                     // Sorting is a perfromance hit. Literature says this can be accomplised in
@@ -122,8 +109,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                     mountain.Process();
 
                     // Extract the triangles into a single list
-                    foreach (List<Point> t in mountain.Triangles)
-                    {
+                    foreach (List<Point> t in mountain.Triangles) {
                         Triangles.Add(t);
                     }
 
@@ -133,42 +119,36 @@ namespace vFrame.Lockstep.Core.Physics2D
         }
 
         // Mark the outside trapezoids surrounding the polygon
-        private void MarkOutside(Trapezoid t)
-        {
+        private void MarkOutside(Trapezoid t) {
             if (t.Top == _boundingBox.Top || t.Bottom == _boundingBox.Bottom)
                 t.TrimNeighbors();
         }
 
         // Create segments and connect end points; update edge event pointer
-        private List<Edge> InitEdges(List<Point> points)
-        {
+        private List<Edge> InitEdges(List<Point> points) {
             List<Edge> edges = new List<Edge>();
 
-            for (int i = 0; i < points.Count - 1; i++)
-            {
+            for (int i = 0; i < points.Count - 1; i++) {
                 edges.Add(new Edge(points[i], points[i + 1]));
             }
+
             edges.Add(new Edge(points[0], points[points.Count - 1]));
             return OrderSegments(edges);
         }
 
-        private List<Edge> OrderSegments(List<Edge> edgeInput)
-        {
+        private List<Edge> OrderSegments(List<Edge> edgeInput) {
             // Ignore vertical segments!
             List<Edge> edges = new List<Edge>();
 
-            foreach (Edge e in edgeInput)
-            {
+            foreach (Edge e in edgeInput) {
                 Point p = ShearTransform(e.P);
                 Point q = ShearTransform(e.Q);
 
                 // Point p must be to the left of point q
-                if (p.X > q.X)
-                {
+                if (p.X > q.X) {
                     edges.Add(new Edge(q, p));
                 }
-                else if (p.X < q.X)
-                {
+                else if (p.X < q.X) {
                     edges.Add(new Edge(p, q));
                 }
             }
@@ -179,12 +159,10 @@ namespace vFrame.Lockstep.Core.Physics2D
             return edges;
         }
 
-        private static void Shuffle<T>(IList<T> list)
-        {
+        private static void Shuffle<T>(IList<T> list) {
             TSRandom rng = TSRandom.New(0);
             int n = list.Count;
-            while (n > 1)
-            {
+            while (n > 1) {
                 n--;
                 int k = rng.Next(0, n + 1);
                 T value = list[k];
@@ -195,8 +173,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
         // Prevents any two distinct endpoints from lying on a common vertical line, and avoiding
         // the degenerate case. See Mark de Berg et al, Chapter 6.3
-        private Point ShearTransform(Point point)
-        {
+        private Point ShearTransform(Point point) {
             return new Point(point.X + _sheer * point.Y, point.Y);
         }
     }

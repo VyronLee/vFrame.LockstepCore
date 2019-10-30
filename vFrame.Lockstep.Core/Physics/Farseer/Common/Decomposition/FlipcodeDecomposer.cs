@@ -28,8 +28,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// 
         /// </summary>
         /// <param name="vertices">The list of points describing the polygon</param>
-        public static List<Vertices> ConvexPartition(Vertices vertices)
-        {
+        public static List<Vertices> ConvexPartition(Vertices vertices) {
             Debug.Assert(vertices.Count > 3);
             Debug.Assert(vertices.IsCounterClockWise());
 
@@ -45,11 +44,9 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             List<Vertices> result = new List<Vertices>();
 
-            for (int v = nv - 1; nv > 2; )
-            {
+            for (int v = nv - 1; nv > 2;) {
                 // If we loop, it is probably a non-simple polygon 
-                if (0 >= (count--))
-                {
+                if (0 >= (count--)) {
                     // Triangulate: ERROR - probable bad polygon!
                     return new List<Vertices>();
                 }
@@ -69,8 +66,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 _tmpB = vertices[polygon[v]];
                 _tmpC = vertices[polygon[w]];
 
-                if (Snip(vertices, u, v, w, nv, polygon))
-                {
+                if (Snip(vertices, u, v, w, nv, polygon)) {
                     int s, t;
 
                     // Output Triangle
@@ -81,10 +77,10 @@ namespace vFrame.Lockstep.Core.Physics2D
                     result.Add(triangle);
 
                     // Remove v from remaining polygon 
-                    for (s = v, t = v + 1; t < nv; s++, t++)
-                    {
+                    for (s = v, t = v + 1; t < nv; s++, t++) {
                         polygon[s] = polygon[t];
                     }
+
                     nv--;
 
                     // Reset error detection counter
@@ -104,8 +100,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="c">The C point.</param>
         /// <param name="p">The point to be tested.</param>
         /// <returns>True if the point is inside the triangle</returns>
-        private static bool InsideTriangle(ref TSVector2 a, ref TSVector2 b, ref TSVector2 c, ref TSVector2 p)
-        {
+        private static bool InsideTriangle(ref TSVector2 a, ref TSVector2 b, ref TSVector2 c, ref TSVector2 p) {
             //A cross bp
             FixedPoint abp = (c.x - b.x) * (p.y - b.y) - (c.y - b.y) * (p.x - b.x);
 
@@ -129,13 +124,11 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="n">The number of elements in the array.</param>
         /// <param name="V">The array to populate with indicies of triangles.</param>
         /// <returns>True if a triangle was found</returns>
-        private static bool Snip(Vertices contour, int u, int v, int w, int n, int[] V)
-        {
+        private static bool Snip(Vertices contour, int u, int v, int w, int n, int[] V) {
             if (Settings.Epsilon > MathUtils.Area(ref _tmpA, ref _tmpB, ref _tmpC))
                 return false;
 
-            for (int p = 0; p < n; p++)
-            {
+            for (int p = 0; p < n; p++) {
                 if ((p == u) || (p == v) || (p == w))
                     continue;
 

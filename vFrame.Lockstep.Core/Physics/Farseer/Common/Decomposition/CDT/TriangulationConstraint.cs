@@ -36,6 +36,7 @@
  * 
  * @author Thomas Åhlén, thahlen@gmail.com
  */
+
 namespace vFrame.Lockstep.Core.Physics2D
 {
     internal class TriangulationConstraint

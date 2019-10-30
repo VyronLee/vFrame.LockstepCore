@@ -2,7 +2,7 @@
 
 namespace vFrame.Lockstep.Core.PathFinding
 {
-    public interface IGraph<TNode> where TNode: INode
+    public interface IGraph<TNode> where TNode : INode
     {
         TNode GetNode(int index);
         int GetNodeCount();

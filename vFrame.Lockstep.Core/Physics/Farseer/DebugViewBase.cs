@@ -70,8 +70,7 @@ namespace vFrame.Lockstep.Core.Physics2D
     /// entities in your game.
     public abstract class DebugViewBase
     {
-        protected DebugViewBase(World world)
-        {
+        protected DebugViewBase(World world) {
             World = world;
         }
 
@@ -87,8 +86,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Append flags to the current flags.
         /// </summary>
         /// <param name="flags">The flags.</param>
-        public void AppendFlags(DebugViewFlags flags)
-        {
+        public void AppendFlags(DebugViewFlags flags) {
             Flags |= flags;
         }
 
@@ -96,8 +94,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Remove flags from the current flags.
         /// </summary>
         /// <param name="flags">The flags.</param>
-        public void RemoveFlags(DebugViewFlags flags)
-        {
+        public void RemoveFlags(DebugViewFlags flags) {
             Flags &= ~flags;
         }
 
@@ -109,7 +106,8 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="red">The red value.</param>
         /// <param name="blue">The blue value.</param>
         /// <param name="green">The green value.</param>
-        public abstract void DrawPolygon(TSVector2[] vertices, int count, FixedPoint red, FixedPoint blue, FixedPoint green, bool closed = true);
+        public abstract void DrawPolygon(TSVector2[] vertices, int count, FixedPoint red, FixedPoint blue,
+            FixedPoint green, bool closed = true);
 
         /// <summary>
         /// Draw a solid closed polygon provided in CCW order.
@@ -119,7 +117,8 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="red">The red value.</param>
         /// <param name="blue">The blue value.</param>
         /// <param name="green">The green value.</param>
-        public abstract void DrawSolidPolygon(TSVector2[] vertices, int count, FixedPoint red, FixedPoint blue, FixedPoint green);
+        public abstract void DrawSolidPolygon(TSVector2[] vertices, int count, FixedPoint red, FixedPoint blue,
+            FixedPoint green);
 
         /// <summary>
         /// Draw a circle.
@@ -129,7 +128,8 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="red">The red value.</param>
         /// <param name="blue">The blue value.</param>
         /// <param name="green">The green value.</param>
-        public abstract void DrawCircle(TSVector2 center, FixedPoint radius, FixedPoint red, FixedPoint blue, FixedPoint green);
+        public abstract void DrawCircle(TSVector2 center, FixedPoint radius, FixedPoint red, FixedPoint blue,
+            FixedPoint green);
 
         /// <summary>
         /// Draw a solid circle.
@@ -140,8 +140,9 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="red">The red value.</param>
         /// <param name="blue">The blue value.</param>
         /// <param name="green">The green value.</param>
-        public abstract void DrawSolidCircle(TSVector2 center, FixedPoint radius, TSVector2 axis, FixedPoint red, FixedPoint blue,
-                                             FixedPoint green);
+        public abstract void DrawSolidCircle(TSVector2 center, FixedPoint radius, TSVector2 axis, FixedPoint red,
+            FixedPoint blue,
+            FixedPoint green);
 
         /// <summary>
         /// Draw a line segment.
@@ -151,7 +152,8 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="red">The red value.</param>
         /// <param name="blue">The blue value.</param>
         /// <param name="green">The green value.</param>
-        public abstract void DrawSegment(TSVector2 start, TSVector2 end, FixedPoint red, FixedPoint blue, FixedPoint green);
+        public abstract void DrawSegment(TSVector2 start, TSVector2 end, FixedPoint red, FixedPoint blue,
+            FixedPoint green);
 
         /// <summary>
         /// Draw a transform. Choose your own length scale.

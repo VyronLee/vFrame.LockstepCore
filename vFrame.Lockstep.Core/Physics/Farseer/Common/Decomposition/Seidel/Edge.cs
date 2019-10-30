@@ -18,8 +18,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         public FixedPoint Slope;
 
 
-        public Edge(Point p, Point q)
-        {
+        public Edge(Point p, Point q) {
             P = p;
             Q = q;
 
@@ -36,20 +35,16 @@ namespace vFrame.Lockstep.Core.Physics2D
             MPoints.Add(q);
         }
 
-        public bool IsAbove(Point point)
-        {
+        public bool IsAbove(Point point) {
             return P.Orient2D(Q, point) < 0;
         }
 
-        public bool IsBelow(Point point)
-        {
+        public bool IsBelow(Point point) {
             return P.Orient2D(Q, point) > 0;
         }
 
-        public void AddMpoint(Point point)
-        {
-            foreach (Point mp in MPoints)
-            {
+        public void AddMpoint(Point point) {
+            foreach (Point mp in MPoints) {
                 if (!mp.Neq(point))
                     return;
             }

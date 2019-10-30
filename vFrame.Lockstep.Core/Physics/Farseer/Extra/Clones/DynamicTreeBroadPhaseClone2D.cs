@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 
-namespace vFrame.Lockstep.Core.Physics2D {
-
-    internal class DynamicTreeBroadPhaseClone2D {
-
+namespace vFrame.Lockstep.Core.Physics2D
+{
+    internal class DynamicTreeBroadPhaseClone2D
+    {
         public int[] _moveBuffer;
         public int _moveCapacity;
         public int _moveCount;
@@ -34,7 +34,7 @@ namespace vFrame.Lockstep.Core.Physics2D {
             dynamicTreeClone.Clone(dynamicTreeBroadPhase._tree);
         }
 
-		public void Restore(DynamicTreeBroadPhase dynamicTreeBroadPhase) {
+        public void Restore(DynamicTreeBroadPhase dynamicTreeBroadPhase) {
             dynamicTreeBroadPhase._moveBuffer = this._moveBuffer;
             dynamicTreeBroadPhase._moveCapacity = this._moveCapacity;
             dynamicTreeBroadPhase._moveCount = this._moveCount;
@@ -54,7 +54,5 @@ namespace vFrame.Lockstep.Core.Physics2D {
 
             dynamicTreeClone.Restore(dynamicTreeBroadPhase._tree);
         }
-
     }
-
 }

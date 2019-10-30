@@ -23,13 +23,11 @@ namespace vFrame.Lockstep.Core
         public static FixedPoint realtimeSinceStartupMS =>
             (DateTime.Now - _initTime).TotalMilliseconds;
 
-        public static void Init()
-        {
+        public static void Init() {
             _initTime = DateTime.Now;
         }
 
-        public static void Update()
-        {
+        public static void Update() {
             var now = DateTime.Now;
             deltaTime = (now - lastFrameTime).TotalSeconds;
             timeSinceLevelLoad = (now - _initTime).TotalSeconds;

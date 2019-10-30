@@ -40,8 +40,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         internal TSVector2 _vertex2;
 
         internal EdgeShape()
-            : base()
-        {
+            : base() {
             ShapeType = ShapeType.Edge;
             _radius = Settings.PolygonRadius;
         }
@@ -52,15 +51,13 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="start">The start of the edge.</param>
         /// <param name="end">The end of the edge.</param>
         public EdgeShape(TSVector2 start, TSVector2 end)
-            : base()
-        {
+            : base() {
             ShapeType = ShapeType.Edge;
             _radius = Settings.PolygonRadius;
             Set(start, end);
         }
 
-        public override int ChildCount
-        {
+        public override int ChildCount {
             get { return 1; }
         }
 
@@ -87,25 +84,17 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <summary>
         /// These are the edge vertices
         /// </summary>
-        public TSVector2 Vertex1
-        {
+        public TSVector2 Vertex1 {
             get { return _vertex1; }
-            set
-            {
-                _vertex1 = value;
-            }
+            set { _vertex1 = value; }
         }
 
         /// <summary>
         /// These are the edge vertices
         /// </summary>
-        public TSVector2 Vertex2
-        {
+        public TSVector2 Vertex2 {
             get { return _vertex2; }
-            set
-            {
-                _vertex2 = value;
-            }
+            set { _vertex2 = value; }
         }
 
         /// <summary>
@@ -113,21 +102,19 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="start">The start.</param>
         /// <param name="end">The end.</param>
-        public void Set(TSVector2 start, TSVector2 end)
-        {
+        public void Set(TSVector2 start, TSVector2 end) {
             _vertex1 = start;
             _vertex2 = end;
             HasVertex0 = false;
             HasVertex3 = false;
         }
 
-        public override bool TestPoint(ref Transform transform, ref TSVector2 point)
-        {
+        public override bool TestPoint(ref Transform transform, ref TSVector2 point) {
             return false;
         }
 
-        public override bool RayCast(out RayCastOutput output, ref RayCastInput input, ref Transform transform, int childIndex)
-        {
+        public override bool RayCast(out RayCastOutput output, ref RayCastInput input, ref Transform transform,
+            int childIndex) {
             // p = p1 + t * d
             // v = v1 + s * e
             // p1 + t * d = v1 + s * e
@@ -152,14 +139,12 @@ namespace vFrame.Lockstep.Core.Physics2D
             FixedPoint numerator = TSVector2.Dot(normal, v1 - p1);
             FixedPoint denominator = TSVector2.Dot(normal, d);
 
-            if (denominator == FixedPoint.Zero)
-            {
+            if (denominator == FixedPoint.Zero) {
                 return false;
             }
 
             FixedPoint t = numerator / denominator;
-            if (t < FixedPoint.Zero || input.MaxFraction < t)
-            {
+            if (t < FixedPoint.Zero || input.MaxFraction < t) {
                 return false;
             }
 
@@ -169,31 +154,27 @@ namespace vFrame.Lockstep.Core.Physics2D
             // s = dot(q - v1, r) / dot(r, r)
             TSVector2 r = v2 - v1;
             FixedPoint rr = TSVector2.Dot(r, r);
-            if (rr == FixedPoint.Zero)
-            {
+            if (rr == FixedPoint.Zero) {
                 return false;
             }
 
             FixedPoint s = TSVector2.Dot(q - v1, r) / rr;
-            if (s < FixedPoint.Zero || FixedPoint.One < s)
-            {
+            if (s < FixedPoint.Zero || FixedPoint.One < s) {
                 return false;
             }
 
             output.Fraction = t;
-            if (numerator > FixedPoint.Zero)
-            {
+            if (numerator > FixedPoint.Zero) {
                 output.Normal = -normal;
             }
-            else
-            {
+            else {
                 output.Normal = normal;
             }
+
             return true;
         }
 
-        public override void ComputeAABB(out AABB aabb, ref Transform transform, int childIndex)
-        {
+        public override void ComputeAABB(out AABB aabb, ref Transform transform, int childIndex) {
             TSVector2 v1 = MathUtils.Mul(ref transform, _vertex1);
             TSVector2 v2 = MathUtils.Mul(ref transform, _vertex2);
 
@@ -205,8 +186,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             aabb.UpperBound = upper + r;
         }
 
-        public bool CompareTo(EdgeShape shape)
-        {
+        public bool CompareTo(EdgeShape shape) {
             return (HasVertex0 == shape.HasVertex0 &&
                     HasVertex3 == shape.HasVertex3 &&
                     Vertex0 == shape.Vertex0 &&
@@ -215,8 +195,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                     Vertex3 == shape.Vertex3);
         }
 
-        public override Shape Clone()
-        {
+        public override Shape Clone() {
             EdgeShape clone = new EdgeShape();
             clone.ShapeType = ShapeType;
             clone._radius = _radius;

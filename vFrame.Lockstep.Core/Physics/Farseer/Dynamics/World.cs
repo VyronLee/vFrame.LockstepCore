@@ -82,8 +82,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <summary>
         /// Initializes a new instance of the <see cref="World"/> class.
         /// </summary>
-        public World(TSVector2 gravity)
-        {
+        public World(TSVector2 gravity) {
             Enabled = true;
             BodyList = new List<Body>(32);
 
@@ -106,20 +105,15 @@ namespace vFrame.Lockstep.Core.Physics2D
             Gravity = gravity;
         }
 
-        private void ProcessRemovedJoints()
-        {
+        private void ProcessRemovedJoints() {
         }
 
-        private void ProcessAddedJoints()
-        {
+        private void ProcessAddedJoints() {
         }
 
-        public void ProcessAddedBodies()
-        {
-            if (_bodyAddList.Count > 0)
-            {
-                foreach (Body body in _bodyAddList)
-                {
+        public void ProcessAddedBodies() {
+            if (_bodyAddList.Count > 0) {
+                foreach (Body body in _bodyAddList) {
 #if USE_AWAKE_BODY_SET
                     Debug.Assert(!body.IsDisposed);
                     if (body.Awake)
@@ -148,12 +142,9 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
         }
 
-        public void ProcessRemovedBodies()
-        {
-            if (_bodyRemoveList.Count > 0)
-            {
-                foreach (Body body in _bodyRemoveList)
-                {
+        public void ProcessRemovedBodies() {
+            if (_bodyRemoveList.Count > 0) {
+                foreach (Body body in _bodyRemoveList) {
                     Debug.Assert(BodyList.Count > 0);
 
                     // You tried to remove a body that is not contained in the BodyList.
@@ -171,8 +162,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 #endif
 
                     // Delete the attached fixtures. This destroys broad-phase proxies.
-                    for (int i = 0; i < body.FixtureList.Count; i++)
-                    {
+                    for (int i = 0; i < body.FixtureList.Count; i++) {
                         body.FixtureList[i].DestroyProxies(BroadPhase);
                         body.FixtureList[i].Destroy();
                     }
@@ -181,7 +171,8 @@ namespace vFrame.Lockstep.Core.Physics2D
 
                     if (isOnAddList) {
                         _bodyAddList.Remove(body);
-                    } else {
+                    }
+                    else {
                         BodyList.Remove(body);
                     }
 
@@ -197,18 +188,15 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
         }
 
-        private bool QueryAABBCallbackWrapper(int proxyId)
-        {
+        private bool QueryAABBCallbackWrapper(int proxyId) {
             FixtureProxy proxy = BroadPhase.GetProxy(proxyId);
             return _queryAABBCallback(proxy.Fixture);
         }
 
-        private FixedPoint RayCastCallbackWrapper(RayCastInput rayCastInput, int proxyId, int layerMask)
-        {
+        private FixedPoint RayCastCallbackWrapper(RayCastInput rayCastInput, int proxyId, int layerMask) {
             FixtureProxy proxy = BroadPhase.GetProxy(proxyId);
             Fixture fixture = proxy.Fixture;
-            if (((int)fixture.CollisionCategories & layerMask) == 0)
-            {
+            if (((int) fixture.CollisionCategories & layerMask) == 0) {
                 return rayCastInput.MaxFraction;
             }
 
@@ -216,8 +204,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             RayCastOutput output;
             bool hit = fixture.RayCast(out output, ref rayCastInput, index);
 
-            if (hit)
-            {
+            if (hit) {
                 FixedPoint fraction = output.Fraction;
                 TSVector2 point = (FixedPoint.One - fraction) * rayCastInput.Point1 + fraction * rayCastInput.Point2;
                 return _rayCastCallback(fixture, point, output.Normal, fraction);
@@ -226,19 +213,18 @@ namespace vFrame.Lockstep.Core.Physics2D
             return rayCastInput.MaxFraction;
         }
 
-        private bool ConvertHitPointAndNormal(Transform transA, Transform transB, Fixture fixtureA, Fixture fixtureB, int shapeIndex,
-                FixedPoint shapeRadiusA, FixedPoint shapeRadiusB,
-                out TSVector2 hitPoint,
-                out TSVector2 hitNoraml,
-                out bool zeroNormal)
-        {
+        private bool ConvertHitPointAndNormal(Transform transA, Transform transB, Fixture fixtureA, Fixture fixtureB,
+            int shapeIndex,
+            FixedPoint shapeRadiusA, FixedPoint shapeRadiusB,
+            out TSVector2 hitPoint,
+            out TSVector2 hitNoraml,
+            out bool zeroNormal) {
             var contact = Contact.Create(this, fixtureA, 0, fixtureB, shapeIndex);
             var NotSwapped = contact.FixtureA == fixtureA;
 
             zeroNormal = false;
 
-            if (!NotSwapped)
-            {
+            if (!NotSwapped) {
                 var tmp = transA;
                 transA = transB;
                 transB = tmp;
@@ -252,22 +238,20 @@ namespace vFrame.Lockstep.Core.Physics2D
             contact.Evaluate(ref manifold, ref transA, ref transB);
 
             var pointCount = manifold.PointCount;
-            if (pointCount > 0)
-            {
+            if (pointCount > 0) {
                 zeroNormal = manifold.LocalNormal == TSVector2.zero;
                 FixedArray2<TSVector2> points;
-                WorldManifold.Initialize(ref manifold, ref transA, shapeRadiusA, ref transB, shapeRadiusB, out hitNoraml, out points);
+                WorldManifold.Initialize(ref manifold, ref transA, shapeRadiusA, ref transB, shapeRadiusB,
+                    out hitNoraml, out points);
 
                 hitPoint = points[0];
 
                 // Invert the normal if the target shape is a circle.
-                if (NotSwapped)
-                {
+                if (NotSwapped) {
                     hitNoraml *= -1;
                 }
             }
-            else
-            {
+            else {
                 hitPoint = TSVector2.zero;
                 hitNoraml = TSVector2.up;
             }
@@ -332,12 +316,10 @@ namespace vFrame.Lockstep.Core.Physics2D
         }
 #endif
 
-        private FixedPoint CircleCastCallbackWrapper(CircleCastInput rayCastInput, int proxyId, int layerMask)
-        {
+        private FixedPoint CircleCastCallbackWrapper(CircleCastInput rayCastInput, int proxyId, int layerMask) {
             FixtureProxy proxy = BroadPhase.GetProxy(proxyId);
             Fixture fixture = proxy.Fixture;
-            if (((int)fixture.CollisionCategories & layerMask) == 0)
-            {
+            if (((int) fixture.CollisionCategories & layerMask) == 0) {
                 return rayCastInput.MaxFraction;
             }
 
@@ -358,8 +340,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             var shapeChildCount = shape.ChildCount;
             int contactShapeIndex = -1;
             FixedPoint fraction = rayCastInput.MaxFraction;
-            for (int shapeIndex = 0; shapeIndex < shapeChildCount; shapeIndex++)
-            {
+            for (int shapeIndex = 0; shapeIndex < shapeChildCount; shapeIndex++) {
                 sweepInput.ProxyB.Set(fixture.Shape, shapeIndex);
 
                 TOIOutput sweepOutput;
@@ -371,8 +352,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                         continue;
                  */
                 if (!(sweepOutput.State == TOIOutputState.Touching ||
-                      sweepOutput.State == TOIOutputState.Overlapped))
-                {
+                      sweepOutput.State == TOIOutputState.Overlapped)) {
                     continue;
                 }
 
@@ -381,23 +361,19 @@ namespace vFrame.Lockstep.Core.Physics2D
                 contactShapeIndex = shapeIndex;
             }
 
-            if (contactShapeIndex < 0)
-            {
+            if (contactShapeIndex < 0) {
                 return rayCastInput.MaxFraction;
             }
 
             //判断距离
             var output = rayCastInput.Output;
-            if (output.fixture != null)
-            {
-                if (fixture == output.fixture || fraction > output.fraction)
-                {
+            if (output.fixture != null) {
+                if (fixture == output.fixture || fraction > output.fraction) {
                     return rayCastInput.MaxFraction;
                 }
 
                 //如果一样的距离，那么优先有normal的
-                if (fraction == output.fraction && !output.isZeroNormal)
-                {
+                if (fraction == output.fraction && !output.isZeroNormal) {
                     return rayCastInput.MaxFraction;
                 }
             }
@@ -414,16 +390,15 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             //var dist = TSVector2.Distance(transA.p, sweepInput.SweepA.C0);
             bool isZeroNormal;
-            if (!ConvertHitPointAndNormal(transA, transB, m_castFixture, fixture, contactShapeIndex, rayCastInput.Radius,
-                fixture.Shape.Radius, out hitPoint, out hitNormal, out isZeroNormal))
-            {
+            if (!ConvertHitPointAndNormal(transA, transB, m_castFixture, fixture, contactShapeIndex,
+                rayCastInput.Radius,
+                fixture.Shape.Radius, out hitPoint, out hitNormal, out isZeroNormal)) {
                 return rayCastInput.MaxFraction;
             }
 
             //如果是背面，也直接忽略
             var hitVec = hitPoint - rayCastInput.Point1;
-            if (TSVector2.Dot(rayCastInput.CastDir, hitVec) <= FixedPoint.Zero)
-            {
+            if (TSVector2.Dot(rayCastInput.CastDir, hitVec) <= FixedPoint.Zero) {
                 //BLogger.Error("leave hit fraction: {0}, zero noarml:{1}, fixture proxy: {2}, hit vec: {3}",
                 //    fraction, isZeroNormal, proxyId, hitVec);
                 return rayCastInput.MaxFraction;
@@ -462,8 +437,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Get the number of broad-phase proxies.
         /// </summary>
         /// <value>The proxy count.</value>
-        public int ProxyCount
-        {
+        public int ProxyCount {
             get { return BroadPhase.ProxyCount; }
         }
 
@@ -498,8 +472,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Add a rigid body.
         /// </summary>
         /// <returns></returns>
-        internal void AddBody(Body body)
-        {
+        internal void AddBody(Body body) {
             Debug.Assert(!_bodyAddList.Contains(body), "You are adding the same body more than once.");
 
             if (!_bodyAddList.Contains(body))
@@ -511,10 +484,9 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Warning: This automatically deletes all associated shapes and joints.
         /// </summary>
         /// <param name="body">The body.</param>
-        public void RemoveBody(Body body)
-        {
+        public void RemoveBody(Body body) {
             Debug.Assert(!_bodyRemoveList.Contains(body),
-                         "The body is already marked for removal. You are removing the body more than once.");
+                "The body is already marked for removal. You are removing the body more than once.");
 
             if (!_bodyRemoveList.Contains(body))
                 _bodyRemoveList.Add(body);
@@ -531,8 +503,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// All adds and removes are cached by the World duing a World step.
         /// To process the changes before the world updates again, call this method.
         /// </summary>
-        public void ProcessChanges()
-        {
+        public void ProcessChanges() {
             ProcessAddedBodies();
             ProcessAddedJoints();
 
@@ -556,8 +527,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="callback">A user implemented callback class.</param>
         /// <param name="aabb">The aabb query box.</param>
-        public void QueryAABB(Func<Fixture, bool> callback, ref AABB aabb)
-        {
+        public void QueryAABB(Func<Fixture, bool> callback, ref AABB aabb) {
             _queryAABBCallback = callback;
             BroadPhase.Query(_queryAABBCallbackWrapper, ref aabb);
             _queryAABBCallback = null;
@@ -569,15 +539,13 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="aabb">The aabb query box.</param>
         /// <returns>A list of fixtures that were in the affected area.</returns>
-        public List<Fixture> QueryAABB(ref AABB aabb)
-        {
+        public List<Fixture> QueryAABB(ref AABB aabb) {
             List<Fixture> affected = new List<Fixture>();
 
-            QueryAABB(fixture =>
-                {
-                    affected.Add(fixture);
-                    return true;
-                }, ref aabb);
+            QueryAABB(fixture => {
+                affected.Add(fixture);
+                return true;
+            }, ref aabb);
 
             return affected;
         }
@@ -597,8 +565,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="point1">The ray starting point.</param>
         /// <param name="point2">The ray ending point.</param>
         public void RayCast(Func<Fixture, TSVector2, TSVector2, FixedPoint, FixedPoint> callback,
-                        TSVector2 point1, TSVector2 point2, int layerMask = (int)Category.All)
-        {
+            TSVector2 point1, TSVector2 point2, int layerMask = (int) Category.All) {
             RayCastInput input = new RayCastInput();
             input.MaxFraction = FixedPoint.One;
             input.Point1 = point1;
@@ -613,9 +580,9 @@ namespace vFrame.Lockstep.Core.Physics2D
         private TOIInput m_sweepInput = new TOIInput();
         private Shape m_circleShape = new CircleShape();
         private CircleCastOutput m_output = new CircleCastOutput();
+
         public void CircleCast(Func<Fixture, TSVector2, TSVector2, FixedPoint, FixedPoint> callback,
-            TSVector2 point1, TSVector2 dir, FixedPoint dist, FixedPoint radius, int layerMask = (int)Category.All)
-        {
+            TSVector2 point1, TSVector2 dir, FixedPoint dist, FixedPoint radius, int layerMask = (int) Category.All) {
             var input = new CircleCastInput();
             input.MaxFraction = FixedPoint.One;
             input.Point1 = point1;
@@ -658,8 +625,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             //}
         }
 
-        private void InitSweep(TOIInput sweepInput, TSVector2 p1, TSVector2 p2, FixedPoint radius)
-        {
+        private void InitSweep(TOIInput sweepInput, TSVector2 p1, TSVector2 p2, FixedPoint radius) {
             m_circleShape.Radius = radius;
             m_castFixture.Initialize(m_circleShape, false);
 
@@ -671,8 +637,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             sweepInput.SweepA.Alpha0 = 0;
         }
 
-        public Fixture TestPoint(TSVector2 point)
-        {
+        public Fixture TestPoint(TSVector2 point) {
             AABB aabb;
             TSVector2 d = new TSVector2(Settings.Epsilon, Settings.Epsilon);
             aabb.LowerBound = point - d;
@@ -687,11 +652,9 @@ namespace vFrame.Lockstep.Core.Physics2D
             return _myFixture;
         }
 
-        private bool TestPointCallback(Fixture fixture)
-        {
+        private bool TestPointCallback(Fixture fixture) {
             bool inside = fixture.TestPoint(ref _point1);
-            if (inside)
-            {
+            if (inside) {
                 _myFixture = fixture;
                 return false;
             }
@@ -705,8 +668,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="point">The point.</param>
         /// <returns></returns>
-        public List<Fixture> TestPointAll(TSVector2 point)
-        {
+        public List<Fixture> TestPointAll(TSVector2 point) {
             AABB aabb;
             TSVector2 d = new TSVector2(Settings.Epsilon, Settings.Epsilon);
             aabb.LowerBound = point - d;
@@ -721,8 +683,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             return _testPointAllFixtures;
         }
 
-        private bool TestPointAllCallback(Fixture fixture)
-        {
+        private bool TestPointAllCallback(Fixture fixture) {
             bool inside = fixture.TestPoint(ref _point2);
             if (inside)
                 _testPointAllFixtures.Add(fixture);
@@ -731,12 +692,10 @@ namespace vFrame.Lockstep.Core.Physics2D
             return true;
         }
 
-        public void Clear()
-        {
+        public void Clear() {
             ProcessChanges();
 
-            for (int i = BodyList.Count - 1; i >= 0; i--)
-            {
+            for (int i = BodyList.Count - 1; i >= 0; i--) {
                 RemoveBody(BodyList[i]);
             }
 
@@ -751,7 +710,5 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             return bodies;
         }
-
     }
-
 }

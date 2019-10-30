@@ -1,7 +1,7 @@
-﻿namespace vFrame.Lockstep.Core.Physics2D {
-
-    internal class TOIClone2D {
-
+﻿namespace vFrame.Lockstep.Core.Physics2D
+{
+    internal class TOIClone2D
+    {
         public DistanceProxy ProxyA = new DistanceProxy();
         public DistanceProxy ProxyB = new DistanceProxy();
         public Sweep SweepA;
@@ -22,7 +22,7 @@
             this.TMax = input.TMax;
         }
 
-		public void Restore(TOIInput input) {
+        public void Restore(TOIInput input) {
             input.ProxyA.Radius = this.ProxyA.Radius;
             input.ProxyA.Vertices.Clear();
             input.ProxyA.Vertices.AddRange(this.ProxyA.Vertices);
@@ -35,7 +35,5 @@
             input.SweepB = this.SweepB;
             input.TMax = this.TMax;
         }
-
     }
-
 }

@@ -10,26 +10,22 @@ namespace vFrame.Lockstep.Core
         public string name;
         public int layer;
         public Body body;
-        
-        public PhyGameObject(string _name)
-        {
+
+        public PhyGameObject(string _name) {
             name = _name;
         }
 
-        public TSVector2 Position
-        {
+        public TSVector2 Position {
             set { body.Position = value; }
             get { return body.Position; }
         }
 
-        public TSVector2 Forward
-        {
+        public TSVector2 Forward {
             set { body.Forward = value; }
             get { return body.Forward; }
         }
 
-        public void SetTransform(TSVector2 pos, TSVector2 forward)
-        {
+        public void SetTransform(TSVector2 pos, TSVector2 forward) {
             body.SetTransform(ref pos, ref forward);
         }
     }

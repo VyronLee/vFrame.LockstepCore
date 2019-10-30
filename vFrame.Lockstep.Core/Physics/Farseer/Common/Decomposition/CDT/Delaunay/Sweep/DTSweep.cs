@@ -59,19 +59,16 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <summary>
         /// Triangulate simple polygon with holes
         /// </summary>
-        public static void Triangulate(DTSweepContext tcx)
-        {
+        public static void Triangulate(DTSweepContext tcx) {
             tcx.CreateAdvancingFront();
 
             Sweep(tcx);
 
             // Finalize triangulation
-            if (tcx.TriangulationMode == TriangulationMode.Polygon)
-            {
+            if (tcx.TriangulationMode == TriangulationMode.Polygon) {
                 FinalizationPolygon(tcx);
             }
-            else
-            {
+            else {
                 FinalizationConvexHull(tcx);
             }
 
@@ -81,23 +78,20 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <summary>
         /// Start sweeping the Y-sorted point set from bottom to top
         /// </summary>
-        private static void Sweep(DTSweepContext tcx)
-        {
+        private static void Sweep(DTSweepContext tcx) {
             List<TriangulationPoint> points = tcx.Points;
 
-            for (int i = 1; i < points.Count; i++)
-            {
+            for (int i = 1; i < points.Count; i++) {
                 TriangulationPoint point = points[i];
 
                 AdvancingFrontNode node = PointEvent(tcx, point);
 
-                if (point.HasEdges)
-                {
-                    foreach (DTSweepConstraint e in point.Edges)
-                    {
+                if (point.HasEdges) {
+                    foreach (DTSweepConstraint e in point.Edges) {
                         EdgeEvent(tcx, e, node);
                     }
                 }
+
                 tcx.Update(null);
             }
         }
@@ -105,8 +99,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <summary>
         /// If this is a Delaunay Triangulation of a pointset we need to fill so the triangle mesh gets a ConvexHull
         /// </summary>
-        private static void FinalizationConvexHull(DTSweepContext tcx)
-        {
+        private static void FinalizationConvexHull(DTSweepContext tcx) {
             DelaunayTriangle t1, t2;
 
             AdvancingFrontNode n1 = tcx.aFront.Head.Next;
@@ -124,16 +117,15 @@ namespace vFrame.Lockstep.Core.Physics2D
             // !!! If I implement ConvexHull for lower right and left boundary this fix should not be
             //     needed and the removed triangles will be added again by default
             n1 = tcx.aFront.Tail.Prev;
-            if (n1.Triangle.Contains(n1.Next.Point) && n1.Triangle.Contains(n1.Prev.Point))
-            {
+            if (n1.Triangle.Contains(n1.Next.Point) && n1.Triangle.Contains(n1.Prev.Point)) {
                 t1 = n1.Triangle.NeighborAcross(n1.Point);
                 RotateTrianglePair(n1.Triangle, n1.Point, t1, t1.OppositePoint(n1.Triangle, n1.Point));
                 tcx.MapTriangleToNodes(n1.Triangle);
                 tcx.MapTriangleToNodes(t1);
             }
+
             n1 = tcx.aFront.Head.Next;
-            if (n1.Triangle.Contains(n1.Prev.Point) && n1.Triangle.Contains(n1.Next.Point))
-            {
+            if (n1.Triangle.Contains(n1.Prev.Point) && n1.Triangle.Contains(n1.Next.Point)) {
                 t1 = n1.Triangle.NeighborAcross(n1.Point);
                 RotateTrianglePair(n1.Triangle, n1.Point, t1, t1.OppositePoint(n1.Triangle, n1.Point));
                 tcx.MapTriangleToNodes(n1.Triangle);
@@ -146,8 +138,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             t1 = n2.Triangle;
             TriangulationPoint p1 = n2.Point;
             n2.Triangle = null;
-            do
-            {
+            do {
                 tcx.RemoveFromList(t1);
                 p1 = t1.PointCCW(p1);
                 if (p1 == first) break;
@@ -184,28 +175,22 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <summary>
         /// We will traverse the entire advancing front and fill it to form a convex hull.
         /// </summary>
-        private static void TurnAdvancingFrontConvex(DTSweepContext tcx, AdvancingFrontNode b, AdvancingFrontNode c)
-        {
+        private static void TurnAdvancingFrontConvex(DTSweepContext tcx, AdvancingFrontNode b, AdvancingFrontNode c) {
             AdvancingFrontNode first = b;
-            while (c != tcx.aFront.Tail)
-            {
-                if (TriangulationUtil.Orient2d(b.Point, c.Point, c.Next.Point) == Orientation.CCW)
-                {
+            while (c != tcx.aFront.Tail) {
+                if (TriangulationUtil.Orient2d(b.Point, c.Point, c.Next.Point) == Orientation.CCW) {
                     // [b,c,d] Concave - fill around c
                     Fill(tcx, c);
                     c = c.Next;
                 }
-                else
-                {
+                else {
                     // [b,c,d] Convex
-                    if (b != first && TriangulationUtil.Orient2d(b.Prev.Point, b.Point, c.Point) == Orientation.CCW)
-                    {
+                    if (b != first && TriangulationUtil.Orient2d(b.Prev.Point, b.Point, c.Point) == Orientation.CCW) {
                         // [a,b,c] Concave - fill around b
                         Fill(tcx, b);
                         b = b.Prev;
                     }
-                    else
-                    {
+                    else {
                         // [a,b,c] Convex - nothing to fill
                         b = c;
                         c = c.Next;
@@ -214,13 +199,11 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
         }
 
-        private static void FinalizationPolygon(DTSweepContext tcx)
-        {
+        private static void FinalizationPolygon(DTSweepContext tcx) {
             // Get an Internal triangle to start with
             DelaunayTriangle t = tcx.aFront.Head.Next.Triangle;
             TriangulationPoint p = tcx.aFront.Head.Next.Point;
-            while (!t.GetConstrainedEdgeCW(p))
-            {
+            while (!t.GetConstrainedEdgeCW(p)) {
                 t = t.NeighborCCW(p);
             }
 
@@ -233,15 +216,13 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// create a new triangle. If needed new holes and basins
         /// will be filled to.
         /// </summary>
-        private static AdvancingFrontNode PointEvent(DTSweepContext tcx, TriangulationPoint point)
-        {
+        private static AdvancingFrontNode PointEvent(DTSweepContext tcx, TriangulationPoint point) {
             AdvancingFrontNode node = tcx.LocateNode(point);
             AdvancingFrontNode newNode = NewFrontTriangle(tcx, point, node);
 
             // Only need to check +epsilon since point never have smaller
             // x value than node due to how we fetch nodes from the front
-            if (point.X <= node.Point.X + TriangulationUtil.EPSILON)
-            {
+            if (point.X <= node.Point.X + TriangulationUtil.EPSILON) {
                 Fill(tcx, node);
             }
 
@@ -254,8 +235,8 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <summary>
         /// Creates a new front triangle and legalize it
         /// </summary>
-        private static AdvancingFrontNode NewFrontTriangle(DTSweepContext tcx, TriangulationPoint point, AdvancingFrontNode node)
-        {
+        private static AdvancingFrontNode NewFrontTriangle(DTSweepContext tcx, TriangulationPoint point,
+            AdvancingFrontNode node) {
             DelaunayTriangle triangle = new DelaunayTriangle(point, node.Point, node.Next.Point);
             triangle.MarkNeighbor(node.Triangle);
             tcx.Triangles.Add(triangle);
@@ -268,23 +249,19 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             tcx.AddNode(newNode); // XXX: BST
 
-            if (!Legalize(tcx, triangle))
-            {
+            if (!Legalize(tcx, triangle)) {
                 tcx.MapTriangleToNodes(triangle);
             }
 
             return newNode;
         }
 
-        private static void EdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node)
-        {
-            try
-            {
+        private static void EdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node) {
+            try {
                 tcx.EdgeEvent.ConstrainedEdge = edge;
                 tcx.EdgeEvent.Right = edge.P.X > edge.Q.X;
 
-                if (IsEdgeSideOfTriangle(node.Triangle, edge.P, edge.Q))
-                {
+                if (IsEdgeSideOfTriangle(node.Triangle, edge.P, edge.Q)) {
                     return;
                 }
 
@@ -295,83 +272,69 @@ namespace vFrame.Lockstep.Core.Physics2D
 
                 EdgeEvent(tcx, edge.P, edge.Q, node.Triangle, edge.Q);
             }
-            catch (PointOnEdgeException e)
-            {
+            catch (PointOnEdgeException e) {
                 Debug.WriteLine("Skipping Edge: " + e.Message);
             }
         }
 
-        private static void FillEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node)
-        {
-            if (tcx.EdgeEvent.Right)
-            {
+        private static void FillEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node) {
+            if (tcx.EdgeEvent.Right) {
                 FillRightAboveEdgeEvent(tcx, edge, node);
             }
-            else
-            {
+            else {
                 FillLeftAboveEdgeEvent(tcx, edge, node);
             }
         }
 
         private static void FillRightConcaveEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge,
-                                                      AdvancingFrontNode node)
-        {
+            AdvancingFrontNode node) {
             Fill(tcx, node.Next);
-            if (node.Next.Point != edge.P)
-            {
+            if (node.Next.Point != edge.P) {
                 // Next above or below edge?
-                if (TriangulationUtil.Orient2d(edge.Q, node.Next.Point, edge.P) == Orientation.CCW)
-                {
+                if (TriangulationUtil.Orient2d(edge.Q, node.Next.Point, edge.P) == Orientation.CCW) {
                     // Below
-                    if (TriangulationUtil.Orient2d(node.Point, node.Next.Point, node.Next.Next.Point) == Orientation.CCW)
-                    {
+                    if (TriangulationUtil.Orient2d(node.Point, node.Next.Point, node.Next.Next.Point) ==
+                        Orientation.CCW) {
                         // Next is concave
                         FillRightConcaveEdgeEvent(tcx, edge, node);
                     }
-                    else
-                    {
+                    else {
                         // Next is convex
                     }
                 }
             }
         }
 
-        private static void FillRightConvexEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node)
-        {
+        private static void FillRightConvexEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge,
+            AdvancingFrontNode node) {
             // Next concave or convex?
             if (TriangulationUtil.Orient2d(node.Next.Point, node.Next.Next.Point, node.Next.Next.Next.Point) ==
-                Orientation.CCW)
-            {
+                Orientation.CCW) {
                 // Concave
                 FillRightConcaveEdgeEvent(tcx, edge, node.Next);
             }
-            else
-            {
+            else {
                 // Convex
                 // Next above or below edge?
-                if (TriangulationUtil.Orient2d(edge.Q, node.Next.Next.Point, edge.P) == Orientation.CCW)
-                {
+                if (TriangulationUtil.Orient2d(edge.Q, node.Next.Next.Point, edge.P) == Orientation.CCW) {
                     // Below
                     FillRightConvexEdgeEvent(tcx, edge, node.Next);
                 }
-                else
-                {
+                else {
                     // Above
                 }
             }
         }
 
-        private static void FillRightBelowEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node)
-        {
+        private static void FillRightBelowEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge,
+            AdvancingFrontNode node) {
             if (node.Point.X < edge.P.X) // needed?
             {
-                if (TriangulationUtil.Orient2d(node.Point, node.Next.Point, node.Next.Next.Point) == Orientation.CCW)
-                {
+                if (TriangulationUtil.Orient2d(node.Point, node.Next.Point, node.Next.Next.Point) == Orientation.CCW) {
                     // Concave
                     FillRightConcaveEdgeEvent(tcx, edge, node);
                 }
-                else
-                {
+                else {
                     // Convex
                     FillRightConvexEdgeEvent(tcx, edge, node);
                     // Retry this one
@@ -380,81 +343,68 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
         }
 
-        private static void FillRightAboveEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node)
-        {
-            while (node.Next.Point.X < edge.P.X)
-            {
+        private static void FillRightAboveEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge,
+            AdvancingFrontNode node) {
+            while (node.Next.Point.X < edge.P.X) {
                 // Check if next node is below the edge
                 Orientation o1 = TriangulationUtil.Orient2d(edge.Q, node.Next.Point, edge.P);
-                if (o1 == Orientation.CCW)
-                {
+                if (o1 == Orientation.CCW) {
                     FillRightBelowEdgeEvent(tcx, edge, node);
                 }
-                else
-                {
+                else {
                     node = node.Next;
                 }
             }
         }
 
-        private static void FillLeftConvexEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node)
-        {
+        private static void FillLeftConvexEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge,
+            AdvancingFrontNode node) {
             // Next concave or convex?
             if (TriangulationUtil.Orient2d(node.Prev.Point, node.Prev.Prev.Point, node.Prev.Prev.Prev.Point) ==
-                Orientation.CW)
-            {
+                Orientation.CW) {
                 // Concave
                 FillLeftConcaveEdgeEvent(tcx, edge, node.Prev);
             }
-            else
-            {
+            else {
                 // Convex
                 // Next above or below edge?
-                if (TriangulationUtil.Orient2d(edge.Q, node.Prev.Prev.Point, edge.P) == Orientation.CW)
-                {
+                if (TriangulationUtil.Orient2d(edge.Q, node.Prev.Prev.Point, edge.P) == Orientation.CW) {
                     // Below
                     FillLeftConvexEdgeEvent(tcx, edge, node.Prev);
                 }
-                else
-                {
+                else {
                     // Above
                 }
             }
         }
 
-        private static void FillLeftConcaveEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node)
-        {
+        private static void FillLeftConcaveEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge,
+            AdvancingFrontNode node) {
             Fill(tcx, node.Prev);
-            if (node.Prev.Point != edge.P)
-            {
+            if (node.Prev.Point != edge.P) {
                 // Next above or below edge?
-                if (TriangulationUtil.Orient2d(edge.Q, node.Prev.Point, edge.P) == Orientation.CW)
-                {
+                if (TriangulationUtil.Orient2d(edge.Q, node.Prev.Point, edge.P) == Orientation.CW) {
                     // Below
-                    if (TriangulationUtil.Orient2d(node.Point, node.Prev.Point, node.Prev.Prev.Point) == Orientation.CW)
-                    {
+                    if (TriangulationUtil.Orient2d(node.Point, node.Prev.Point, node.Prev.Prev.Point) ==
+                        Orientation.CW) {
                         // Next is concave
                         FillLeftConcaveEdgeEvent(tcx, edge, node);
                     }
-                    else
-                    {
+                    else {
                         // Next is convex
                     }
                 }
             }
         }
 
-        private static void FillLeftBelowEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node)
-        {
-            if (node.Point.X > edge.P.X)
-            {
-                if (TriangulationUtil.Orient2d(node.Point, node.Prev.Point, node.Prev.Prev.Point) == Orientation.CW)
-                {
+        private static void FillLeftBelowEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge,
+            AdvancingFrontNode node) {
+            if (node.Point.X > edge.P.X) {
+                if (TriangulationUtil.Orient2d(node.Point, node.Prev.Point, node.Prev.Prev.Point) == Orientation.CW) {
                     // Concave
                     FillLeftConcaveEdgeEvent(tcx, edge, node);
                 }
-                else
-                {
+                else {
                     // Convex
                     FillLeftConvexEdgeEvent(tcx, edge, node);
                     // Retry this one
@@ -463,50 +413,45 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
         }
 
-        private static void FillLeftAboveEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge, AdvancingFrontNode node)
-        {
-            while (node.Prev.Point.X > edge.P.X)
-            {
+        private static void FillLeftAboveEdgeEvent(DTSweepContext tcx, DTSweepConstraint edge,
+            AdvancingFrontNode node) {
+            while (node.Prev.Point.X > edge.P.X) {
                 // Check if next node is below the edge
                 Orientation o1 = TriangulationUtil.Orient2d(edge.Q, node.Prev.Point, edge.P);
-                if (o1 == Orientation.CW)
-                {
+                if (o1 == Orientation.CW) {
                     FillLeftBelowEdgeEvent(tcx, edge, node);
                 }
-                else
-                {
+                else {
                     node = node.Prev;
                 }
             }
         }
 
-        private static bool IsEdgeSideOfTriangle(DelaunayTriangle triangle, TriangulationPoint ep, TriangulationPoint eq)
-        {
+        private static bool IsEdgeSideOfTriangle(DelaunayTriangle triangle, TriangulationPoint ep,
+            TriangulationPoint eq) {
             int index = triangle.EdgeIndex(ep, eq);
-            if (index != -1)
-            {
+            if (index != -1) {
                 triangle.MarkConstrainedEdge(index);
                 triangle = triangle.Neighbors[index];
-                if (triangle != null)
-                {
+                if (triangle != null) {
                     triangle.MarkConstrainedEdge(ep, eq);
                 }
+
                 return true;
             }
+
             return false;
         }
 
-        private static void EdgeEvent(DTSweepContext tcx, TriangulationPoint ep, TriangulationPoint eq, DelaunayTriangle triangle, TriangulationPoint point)
-        {
+        private static void EdgeEvent(DTSweepContext tcx, TriangulationPoint ep, TriangulationPoint eq,
+            DelaunayTriangle triangle, TriangulationPoint point) {
             if (IsEdgeSideOfTriangle(triangle, ep, eq))
                 return;
 
             TriangulationPoint p1 = triangle.PointCCW(point);
             Orientation o1 = TriangulationUtil.Orient2d(eq, p1, ep);
-            if (o1 == Orientation.Collinear)
-            {
-                if (triangle.Contains(eq, p1))
-                {
+            if (o1 == Orientation.Collinear) {
+                if (triangle.Contains(eq, p1)) {
                     triangle.MarkConstrainedEdge(eq, p1);
                     // We are modifying the constraint maybe it would be better to
                     // not change the given constraint and just keep a variable for the new constraint
@@ -514,23 +459,21 @@ namespace vFrame.Lockstep.Core.Physics2D
                     triangle = triangle.NeighborAcross(point);
                     EdgeEvent(tcx, ep, p1, triangle, p1);
                 }
-                else
-                {
+                else {
                     throw new PointOnEdgeException("EdgeEvent - Point on constrained edge not supported yet");
                 }
-                if (tcx.IsDebugEnabled)
-                {
+
+                if (tcx.IsDebugEnabled) {
                     Debug.WriteLine("EdgeEvent - Point on constrained edge");
                 }
+
                 return;
             }
 
             TriangulationPoint p2 = triangle.PointCW(point);
             Orientation o2 = TriangulationUtil.Orient2d(eq, p2, ep);
-            if (o2 == Orientation.Collinear)
-            {
-                if (triangle.Contains(eq, p2))
-                {
+            if (o2 == Orientation.Collinear) {
+                if (triangle.Contains(eq, p2)) {
                     triangle.MarkConstrainedEdge(eq, p2);
                     // We are modifying the constraint maybe it would be better to
                     // not change the given constraint and just keep a variable for the new constraint
@@ -538,82 +481,73 @@ namespace vFrame.Lockstep.Core.Physics2D
                     triangle = triangle.NeighborAcross(point);
                     EdgeEvent(tcx, ep, p2, triangle, p2);
                 }
-                else
-                {
+                else {
                     throw new PointOnEdgeException("EdgeEvent - Point on constrained edge not supported yet");
                 }
-                if (tcx.IsDebugEnabled)
-                {
+
+                if (tcx.IsDebugEnabled) {
                     Debug.WriteLine("EdgeEvent - Point on constrained edge");
                 }
+
                 return;
             }
 
-            if (o1 == o2)
-            {
+            if (o1 == o2) {
                 // Need to decide if we are rotating CW or CCW to get to a triangle
                 // that will cross edge
-                if (o1 == Orientation.CW)
-                {
+                if (o1 == Orientation.CW) {
                     triangle = triangle.NeighborCCW(point);
                 }
-                else
-                {
+                else {
                     triangle = triangle.NeighborCW(point);
                 }
+
                 EdgeEvent(tcx, ep, eq, triangle, point);
             }
-            else
-            {
+            else {
                 // This triangle crosses constraint so lets flippin start!
                 FlipEdgeEvent(tcx, ep, eq, triangle, point);
             }
         }
 
-        private static void FlipEdgeEvent(DTSweepContext tcx, TriangulationPoint ep, TriangulationPoint eq, DelaunayTriangle t, TriangulationPoint p)
-        {
+        private static void FlipEdgeEvent(DTSweepContext tcx, TriangulationPoint ep, TriangulationPoint eq,
+            DelaunayTriangle t, TriangulationPoint p) {
             DelaunayTriangle ot = t.NeighborAcross(p);
             TriangulationPoint op = ot.OppositePoint(t, p);
 
-            if (ot == null)
-            {
+            if (ot == null) {
                 // If we want to integrate the fillEdgeEvent do it here
                 // With current implementation we should never get here
                 throw new InvalidOperationException("[BUG:FIXME] FLIP failed due to missing triangle");
             }
 
-            if (t.GetConstrainedEdgeAcross(p))
-            {
+            if (t.GetConstrainedEdgeAcross(p)) {
                 throw new Exception("Intersecting Constraints");
             }
 
             bool inScanArea = TriangulationUtil.InScanArea(p, t.PointCCW(p), t.PointCW(p), op);
-            if (inScanArea)
-            {
+            if (inScanArea) {
                 // Lets rotate shared edge one vertex CW
                 RotateTrianglePair(t, p, ot, op);
                 tcx.MapTriangleToNodes(t);
                 tcx.MapTriangleToNodes(ot);
 
-                if (p == eq && op == ep)
-                {
+                if (p == eq && op == ep) {
                     if (eq == tcx.EdgeEvent.ConstrainedEdge.Q
-                        && ep == tcx.EdgeEvent.ConstrainedEdge.P)
-                    {
-                        if (tcx.IsDebugEnabled) System.Console.WriteLine("[FLIP] - constrained edge done"); // TODO: remove
+                        && ep == tcx.EdgeEvent.ConstrainedEdge.P) {
+                        if (tcx.IsDebugEnabled)
+                            System.Console.WriteLine("[FLIP] - constrained edge done"); // TODO: remove
                         t.MarkConstrainedEdge(ep, eq);
                         ot.MarkConstrainedEdge(ep, eq);
                         Legalize(tcx, t);
                         Legalize(tcx, ot);
                     }
-                    else
-                    {
+                    else {
                         if (tcx.IsDebugEnabled) System.Console.WriteLine("[FLIP] - subedge done"); // TODO: remove
                         // XXX: I think one of the triangles should be legalized here?
                     }
                 }
-                else
-                {
+                else {
                     if (tcx.IsDebugEnabled)
                         System.Console.WriteLine("[FLIP] - flipping and continuing with triangle still crossing edge");
                     // TODO: remove
@@ -622,8 +556,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                     FlipEdgeEvent(tcx, ep, eq, t, p);
                 }
             }
-            else
-            {
+            else {
                 TriangulationPoint newP = NextFlipPoint(ep, eq, ot, op);
                 FlipScanEdgeEvent(tcx, ep, eq, t, ot, newP);
                 EdgeEvent(tcx, ep, eq, t, p);
@@ -635,21 +568,18 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// the point in current triangle that is the opposite point to the next
         /// triangle.
         /// </summary>
-        private static TriangulationPoint NextFlipPoint(TriangulationPoint ep, TriangulationPoint eq, DelaunayTriangle ot, TriangulationPoint op)
-        {
+        private static TriangulationPoint NextFlipPoint(TriangulationPoint ep, TriangulationPoint eq,
+            DelaunayTriangle ot, TriangulationPoint op) {
             Orientation o2d = TriangulationUtil.Orient2d(eq, op, ep);
-            if (o2d == Orientation.CW)
-            {
+            if (o2d == Orientation.CW) {
                 // Right
                 return ot.PointCCW(op);
             }
-            else if (o2d == Orientation.CCW)
-            {
+            else if (o2d == Orientation.CCW) {
                 // Left
                 return ot.PointCW(op);
             }
-            else
-            {
+            else {
                 // TODO: implement support for point on constraint edge
                 throw new PointOnEdgeException("Point on constrained edge not supported yet");
             }
@@ -666,11 +596,10 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="p">a point shared by both triangles</param>
         /// <param name="op">another point shared by both triangles</param>
         /// <returns>returns the triangle still intersecting the edge</returns>
-        private static DelaunayTriangle NextFlipTriangle(DTSweepContext tcx, Orientation o, DelaunayTriangle t, DelaunayTriangle ot, TriangulationPoint p, TriangulationPoint op)
-        {
+        private static DelaunayTriangle NextFlipTriangle(DTSweepContext tcx, Orientation o, DelaunayTriangle t,
+            DelaunayTriangle ot, TriangulationPoint p, TriangulationPoint op) {
             int edgeIndex;
-            if (o == Orientation.CCW)
-            {
+            if (o == Orientation.CCW) {
                 // ot is not crossing edge after flip
                 edgeIndex = ot.EdgeIndex(p, op);
                 ot.EdgeIsDelaunay[edgeIndex] = true;
@@ -678,6 +607,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 ot.EdgeIsDelaunay.Clear();
                 return t;
             }
+
             // t is not crossing edge after flip
             edgeIndex = t.EdgeIndex(p, op);
             t.EdgeIsDelaunay[edgeIndex] = true;
@@ -698,21 +628,19 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="flipTriangle">the current triangle sharing the point eq with edge</param>
         /// <param name="t"></param>
         /// <param name="p"></param>
-        private static void FlipScanEdgeEvent(DTSweepContext tcx, TriangulationPoint ep, TriangulationPoint eq, DelaunayTriangle flipTriangle, DelaunayTriangle t, TriangulationPoint p)
-        {
+        private static void FlipScanEdgeEvent(DTSweepContext tcx, TriangulationPoint ep, TriangulationPoint eq,
+            DelaunayTriangle flipTriangle, DelaunayTriangle t, TriangulationPoint p) {
             DelaunayTriangle ot = t.NeighborAcross(p);
             TriangulationPoint op = ot.OppositePoint(t, p);
 
-            if (ot == null)
-            {
+            if (ot == null) {
                 // If we want to integrate the fillEdgeEvent do it here
                 // With current implementation we should never get here
                 throw new Exception("[BUG:FIXME] FLIP failed due to missing triangle");
             }
 
             bool inScanArea = TriangulationUtil.InScanArea(eq, flipTriangle.PointCCW(eq), flipTriangle.PointCW(eq), op);
-            if (inScanArea)
-            {
+            if (inScanArea) {
                 // flip with new edge op->eq
                 FlipEdgeEvent(tcx, eq, op, ot, op);
                 // TODO: Actually I just figured out that it should be possible to
@@ -723,8 +651,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                 // Turns out at first glance that this is somewhat complicated
                 // so it will have to wait.
             }
-            else
-            {
+            else {
                 TriangulationPoint newP = NextFlipPoint(ep, eq, ot, op);
                 FlipScanEdgeEvent(tcx, ep, eq, flipTriangle, ot, newP);
             }
@@ -733,14 +660,12 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <summary>
         /// Fills holes in the Advancing Front
         /// </summary>
-        private static void FillAdvancingFront(DTSweepContext tcx, AdvancingFrontNode n)
-        {
+        private static void FillAdvancingFront(DTSweepContext tcx, AdvancingFrontNode n) {
             FixedPoint angle;
 
             // Fill right holes
             AdvancingFrontNode node = n.Next;
-            while (node.HasNext)
-            {
+            while (node.HasNext) {
                 // if HoleAngle exceeds 90 degrees then break.
                 if (LargeHole_DontFill(node))
                     break;
@@ -751,35 +676,31 @@ namespace vFrame.Lockstep.Core.Physics2D
 
             // Fill left holes
             node = n.Prev;
-            while (node.HasPrev)
-            {
+            while (node.HasPrev) {
                 // if HoleAngle exceeds 90 degrees then break.
                 if (LargeHole_DontFill(node))
                     break;
 
                 angle = HoleAngle(node);
-                if (angle > PI_div2 || angle < -PI_div2)
-                {
+                if (angle > PI_div2 || angle < -PI_div2) {
                     break;
                 }
+
                 Fill(tcx, node);
                 node = node.Prev;
             }
 
             // Fill right basins
-            if (n.HasNext && n.Next.HasNext)
-            {
+            if (n.HasNext && n.Next.HasNext) {
                 angle = BasinAngle(n);
-                if (angle < PI_3div4)
-                {
+                if (angle < PI_3div4) {
                     FillBasin(tcx, n);
                 }
             }
         }
 
         // True if HoleAngle exceeds 90 degrees.
-        private static bool LargeHole_DontFill(AdvancingFrontNode node)
-        {
+        private static bool LargeHole_DontFill(AdvancingFrontNode node) {
             AdvancingFrontNode nextNode = node.Next;
             AdvancingFrontNode prevNode = node.Prev;
             if (!AngleExceeds90Degrees(node.Point, nextNode.Point, prevNode.Point))
@@ -788,33 +709,34 @@ namespace vFrame.Lockstep.Core.Physics2D
             // Check additional points on front.
             AdvancingFrontNode next2Node = nextNode.Next;
             // "..Plus.." because only want angles on same side as point being added.
-            if ((next2Node != null) && !AngleExceedsPlus90DegreesOrIsNegative(node.Point, next2Node.Point, prevNode.Point))
+            if ((next2Node != null) &&
+                !AngleExceedsPlus90DegreesOrIsNegative(node.Point, next2Node.Point, prevNode.Point))
                 return false;
 
             AdvancingFrontNode prev2Node = prevNode.Prev;
             // "..Plus.." because only want angles on same side as point being added.
-            if ((prev2Node != null) && !AngleExceedsPlus90DegreesOrIsNegative(node.Point, nextNode.Point, prev2Node.Point))
+            if ((prev2Node != null) &&
+                !AngleExceedsPlus90DegreesOrIsNegative(node.Point, nextNode.Point, prev2Node.Point))
                 return false;
 
             return true;
         }
 
-        private static bool AngleExceeds90Degrees(TriangulationPoint origin, TriangulationPoint pa, TriangulationPoint pb)
-        {
+        private static bool AngleExceeds90Degrees(TriangulationPoint origin, TriangulationPoint pa,
+            TriangulationPoint pb) {
             FixedPoint angle = Angle(origin, pa, pb);
             bool exceeds90Degrees = ((angle > PI_div2) || (angle < -PI_div2));
             return exceeds90Degrees;
         }
 
-        private static bool AngleExceedsPlus90DegreesOrIsNegative(TriangulationPoint origin, TriangulationPoint pa, TriangulationPoint pb)
-        {
+        private static bool AngleExceedsPlus90DegreesOrIsNegative(TriangulationPoint origin, TriangulationPoint pa,
+            TriangulationPoint pb) {
             FixedPoint angle = Angle(origin, pa, pb);
             bool exceedsPlus90DegreesOrIsNegative = (angle > PI_div2) || (angle < 0);
             return exceedsPlus90DegreesOrIsNegative;
         }
 
-        private static FixedPoint Angle(TriangulationPoint origin, TriangulationPoint pa, TriangulationPoint pb)
-        {
+        private static FixedPoint Angle(TriangulationPoint origin, TriangulationPoint pa, TriangulationPoint pb) {
             /* Complex plane
             * ab = cosA +i*sinA
             * ab = (ax + ay*i)(bx + by*i) = (ax*bx + ay*by) + i(ax*by-ay*bx)
@@ -843,39 +765,32 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="tcx"></param>
         /// <param name="node">starting node, this or next node will be left node</param>
-        private static void FillBasin(DTSweepContext tcx, AdvancingFrontNode node)
-        {
-            if (TriangulationUtil.Orient2d(node.Point, node.Next.Point, node.Next.Next.Point) == Orientation.CCW)
-            {
+        private static void FillBasin(DTSweepContext tcx, AdvancingFrontNode node) {
+            if (TriangulationUtil.Orient2d(node.Point, node.Next.Point, node.Next.Next.Point) == Orientation.CCW) {
                 // tcx.basin.leftNode = node.next.next;
                 tcx.Basin.leftNode = node;
             }
-            else
-            {
+            else {
                 tcx.Basin.leftNode = node.Next;
             }
 
             // Find the bottom and right node
             tcx.Basin.bottomNode = tcx.Basin.leftNode;
-            while (tcx.Basin.bottomNode.HasNext && tcx.Basin.bottomNode.Point.Y >= tcx.Basin.bottomNode.Next.Point.Y)
-            {
+            while (tcx.Basin.bottomNode.HasNext && tcx.Basin.bottomNode.Point.Y >= tcx.Basin.bottomNode.Next.Point.Y) {
                 tcx.Basin.bottomNode = tcx.Basin.bottomNode.Next;
             }
 
-            if (tcx.Basin.bottomNode == tcx.Basin.leftNode)
-            {
+            if (tcx.Basin.bottomNode == tcx.Basin.leftNode) {
                 // No valid basins
                 return;
             }
 
             tcx.Basin.rightNode = tcx.Basin.bottomNode;
-            while (tcx.Basin.rightNode.HasNext && tcx.Basin.rightNode.Point.Y < tcx.Basin.rightNode.Next.Point.Y)
-            {
+            while (tcx.Basin.rightNode.HasNext && tcx.Basin.rightNode.Point.Y < tcx.Basin.rightNode.Next.Point.Y) {
                 tcx.Basin.rightNode = tcx.Basin.rightNode.Next;
             }
 
-            if (tcx.Basin.rightNode == tcx.Basin.bottomNode)
-            {
+            if (tcx.Basin.rightNode == tcx.Basin.bottomNode) {
                 // No valid basins
                 return;
             }
@@ -889,68 +804,59 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <summary>
         /// Recursive algorithm to fill a Basin with triangles
         /// </summary>
-        private static void FillBasinReq(DTSweepContext tcx, AdvancingFrontNode node)
-        {
+        private static void FillBasinReq(DTSweepContext tcx, AdvancingFrontNode node) {
             // if shallow stop filling
-            if (IsShallow(tcx, node))
-            {
+            if (IsShallow(tcx, node)) {
                 return;
             }
 
             Fill(tcx, node);
-            if (node.Prev == tcx.Basin.leftNode && node.Next == tcx.Basin.rightNode)
-            {
+            if (node.Prev == tcx.Basin.leftNode && node.Next == tcx.Basin.rightNode) {
                 return;
             }
-            else if (node.Prev == tcx.Basin.leftNode)
-            {
+            else if (node.Prev == tcx.Basin.leftNode) {
                 Orientation o = TriangulationUtil.Orient2d(node.Point, node.Next.Point, node.Next.Next.Point);
-                if (o == Orientation.CW)
-                {
+                if (o == Orientation.CW) {
                     return;
                 }
+
                 node = node.Next;
             }
-            else if (node.Next == tcx.Basin.rightNode)
-            {
+            else if (node.Next == tcx.Basin.rightNode) {
                 Orientation o = TriangulationUtil.Orient2d(node.Point, node.Prev.Point, node.Prev.Prev.Point);
-                if (o == Orientation.CCW)
-                {
+                if (o == Orientation.CCW) {
                     return;
                 }
+
                 node = node.Prev;
             }
-            else
-            {
+            else {
                 // Continue with the neighbor node with lowest Y value
-                if (node.Prev.Point.Y < node.Next.Point.Y)
-                {
+                if (node.Prev.Point.Y < node.Next.Point.Y) {
                     node = node.Prev;
                 }
-                else
-                {
+                else {
                     node = node.Next;
                 }
             }
+
             FillBasinReq(tcx, node);
         }
 
-        private static bool IsShallow(DTSweepContext tcx, AdvancingFrontNode node)
-        {
+        private static bool IsShallow(DTSweepContext tcx, AdvancingFrontNode node) {
             FixedPoint height;
 
-            if (tcx.Basin.leftHighest)
-            {
+            if (tcx.Basin.leftHighest) {
                 height = tcx.Basin.leftNode.Point.Y - node.Point.Y;
             }
-            else
-            {
+            else {
                 height = tcx.Basin.rightNode.Point.Y - node.Point.Y;
             }
-            if (tcx.Basin.width > height)
-            {
+
+            if (tcx.Basin.width > height) {
                 return true;
             }
+
             return false;
         }
 
@@ -959,8 +865,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="node">middle node</param>
         /// <returns>the angle between 3 front nodes</returns>
-        private static FixedPoint HoleAngle(AdvancingFrontNode node)
-        {
+        private static FixedPoint HoleAngle(AdvancingFrontNode node) {
             // XXX: do we really need a signed angle for holeAngle?
             //      could possible save some cycles here
             /* Complex plane
@@ -983,8 +888,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <summary>
         /// The basin angle is decided against the horizontal line [1,0]
         /// </summary>
-        private static FixedPoint BasinAngle(AdvancingFrontNode node)
-        {
+        private static FixedPoint BasinAngle(AdvancingFrontNode node) {
             FixedPoint ax = node.Point.X - node.Next.Next.Point.X;
             FixedPoint ay = node.Point.Y - node.Next.Next.Point.Y;
             return FixedPoint.Atan2(ay, ax);
@@ -995,8 +899,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="tcx"></param>
         /// <param name="node">middle node, that is the bottom of the hole</param>
-        private static void Fill(DTSweepContext tcx, AdvancingFrontNode node)
-        {
+        private static void Fill(DTSweepContext tcx, AdvancingFrontNode node) {
             DelaunayTriangle triangle = new DelaunayTriangle(node.Prev.Point, node.Point, node.Next.Point);
             // TODO: should copy the cEdge value from neighbor triangles
             //       for now cEdge values are copied during the legalize
@@ -1010,8 +913,7 @@ namespace vFrame.Lockstep.Core.Physics2D
             tcx.RemoveNode(node);
 
             // If it was legalized the triangle has already been mapped
-            if (!Legalize(tcx, triangle))
-            {
+            if (!Legalize(tcx, triangle)) {
                 tcx.MapTriangleToNodes(triangle);
             }
         }
@@ -1019,29 +921,24 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <summary>
         /// Returns true if triangle was legalized
         /// </summary>
-        private static bool Legalize(DTSweepContext tcx, DelaunayTriangle t)
-        {
+        private static bool Legalize(DTSweepContext tcx, DelaunayTriangle t) {
             // To legalize a triangle we start by finding if any of the three edges
             // violate the Delaunay condition
-            for (int i = 0; i < 3; i++)
-            {
+            for (int i = 0; i < 3; i++) {
                 // TODO: fix so that cEdge is always valid when creating new triangles then we can check it here
                 //       instead of below with ot
-                if (t.EdgeIsDelaunay[i])
-                {
+                if (t.EdgeIsDelaunay[i]) {
                     continue;
                 }
 
                 DelaunayTriangle ot = t.Neighbors[i];
-                if (ot != null)
-                {
+                if (ot != null) {
                     TriangulationPoint p = t.Points[i];
                     TriangulationPoint op = ot.OppositePoint(t, p);
                     int oi = ot.IndexOf(op);
                     // If this is a Constrained Edge or a Delaunay Edge(only during recursive legalization)
                     // then we should not try to legalize
-                    if (ot.EdgeIsConstrained[oi] || ot.EdgeIsDelaunay[oi])
-                    {
+                    if (ot.EdgeIsConstrained[oi] || ot.EdgeIsDelaunay[oi]) {
                         t.EdgeIsConstrained[i] = ot.EdgeIsConstrained[oi];
                         // XXX: have no good way of setting this property when creating new triangles so lets set it here
                         continue;
@@ -1049,8 +946,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
                     bool inside = TriangulationUtil.SmartIncircle(p, t.PointCCW(p), t.PointCW(p), op);
 
-                    if (inside)
-                    {
+                    if (inside) {
                         // Lets mark this shared edge as Delaunay
                         t.EdgeIsDelaunay[i] = true;
                         ot.EdgeIsDelaunay[oi] = true;
@@ -1064,13 +960,12 @@ namespace vFrame.Lockstep.Core.Physics2D
                         // Make sure that triangle to node mapping is done only one time for a specific triangle
                         bool notLegalized = !Legalize(tcx, t);
 
-                        if (notLegalized)
-                        {
+                        if (notLegalized) {
                             tcx.MapTriangleToNodes(t);
                         }
+
                         notLegalized = !Legalize(tcx, ot);
-                        if (notLegalized)
-                        {
+                        if (notLegalized) {
                             tcx.MapTriangleToNodes(ot);
                         }
 
@@ -1087,6 +982,7 @@ namespace vFrame.Lockstep.Core.Physics2D
                     }
                 }
             }
+
             return false;
         }
 
@@ -1102,8 +998,8 @@ namespace vFrame.Lockstep.Core.Physics2D
         ///    +-----+ oP            +-----+
         ///       n4                    n4
         /// </summary>
-        private static void RotateTrianglePair(DelaunayTriangle t, TriangulationPoint p, DelaunayTriangle ot, TriangulationPoint op)
-        {
+        private static void RotateTrianglePair(DelaunayTriangle t, TriangulationPoint p, DelaunayTriangle ot,
+            TriangulationPoint op) {
             DelaunayTriangle n1 = t.NeighborCCW(p);
             DelaunayTriangle n2 = t.NeighborCW(p);
             DelaunayTriangle n3 = ot.NeighborCCW(op);

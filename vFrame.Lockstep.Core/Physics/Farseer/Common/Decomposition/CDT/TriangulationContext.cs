@@ -40,8 +40,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         public readonly List<TriangulationPoint> Points = new List<TriangulationPoint>(200);
         public readonly List<DelaunayTriangle> Triangles = new List<DelaunayTriangle>();
 
-        public TriangulationContext()
-        {
+        public TriangulationContext() {
             Terminated = false;
         }
 
@@ -54,13 +53,11 @@ namespace vFrame.Lockstep.Core.Physics2D
         public int StepCount { get; private set; }
         public virtual bool IsDebugEnabled { get; protected set; }
 
-        public void Done()
-        {
+        public void Done() {
             StepCount++;
         }
 
-        public virtual void PrepareTriangulation(Triangulatable t)
-        {
+        public virtual void PrepareTriangulation(Triangulatable t) {
             Triangulatable = t;
             TriangulationMode = t.TriangulationMode;
             t.PrepareTriangulation(this);
@@ -69,12 +66,10 @@ namespace vFrame.Lockstep.Core.Physics2D
         public abstract TriangulationConstraint NewConstraint(TriangulationPoint a, TriangulationPoint b);
 
         [MethodImpl(MethodImplOptions.Synchronized)]
-        public void Update(string message)
-        {
+        public void Update(string message) {
         }
 
-        public virtual void Clear()
-        {
+        public virtual void Clear() {
             Points.Clear();
             Terminated = false;
             StepCount = 0;

@@ -59,8 +59,7 @@ namespace vFrame.Lockstep.Core.Physics2D
 
         public FixedArray3Enum<TriangulationPoint> Points;
 
-        public DelaunayTriangle(TriangulationPoint p1, TriangulationPoint p2, TriangulationPoint p3)
-        {
+        public DelaunayTriangle(TriangulationPoint p1, TriangulationPoint p2, TriangulationPoint p3) {
             Points[0] = p1;
             Points[1] = p2;
             Points[2] = p3;
@@ -68,19 +67,16 @@ namespace vFrame.Lockstep.Core.Physics2D
 
         public bool IsInterior { get; set; }
 
-        public int IndexOf(TriangulationPoint p)
-        {
+        public int IndexOf(TriangulationPoint p) {
             int i = Points.IndexOf(p);
             if (i == -1) throw new Exception("Calling index with a point that doesn't exist in triangle");
             return i;
         }
 
         //TODO: Port note - different implementation
-        public int IndexCW(TriangulationPoint p)
-        {
+        public int IndexCW(TriangulationPoint p) {
             int index = IndexOf(p);
-            switch (index)
-            {
+            switch (index) {
                 case 0:
                     return 2;
                 case 1:
@@ -91,11 +87,9 @@ namespace vFrame.Lockstep.Core.Physics2D
         }
 
         //TODO: Port note - different implementation
-        public int IndexCCW(TriangulationPoint p)
-        {
+        public int IndexCCW(TriangulationPoint p) {
             int index = IndexOf(p);
-            switch (index)
-            {
+            switch (index) {
                 case 0:
                     return 1;
                 case 1:
@@ -105,18 +99,15 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
         }
 
-        public bool Contains(TriangulationPoint p)
-        {
+        public bool Contains(TriangulationPoint p) {
             return (p == Points[0] || p == Points[1] || p == Points[2]);
         }
 
-        public bool Contains(DTSweepConstraint e)
-        {
+        public bool Contains(DTSweepConstraint e) {
             return (Contains(e.P) && Contains(e.Q));
         }
 
-        public bool Contains(TriangulationPoint p, TriangulationPoint q)
-        {
+        public bool Contains(TriangulationPoint p, TriangulationPoint q) {
             return (Contains(p) && Contains(q));
         }
 
@@ -126,22 +117,17 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="p1">Point 1 of the shared edge</param>
         /// <param name="p2">Point 2 of the shared edge</param>
         /// <param name="t">This triangle's new neighbor</param>
-        private void MarkNeighbor(TriangulationPoint p1, TriangulationPoint p2, DelaunayTriangle t)
-        {
-            if ((p1 == Points[2] && p2 == Points[1]) || (p1 == Points[1] && p2 == Points[2]))
-            {
+        private void MarkNeighbor(TriangulationPoint p1, TriangulationPoint p2, DelaunayTriangle t) {
+            if ((p1 == Points[2] && p2 == Points[1]) || (p1 == Points[1] && p2 == Points[2])) {
                 Neighbors[0] = t;
             }
-            else if ((p1 == Points[0] && p2 == Points[2]) || (p1 == Points[2] && p2 == Points[0]))
-            {
+            else if ((p1 == Points[0] && p2 == Points[2]) || (p1 == Points[2] && p2 == Points[0])) {
                 Neighbors[1] = t;
             }
-            else if ((p1 == Points[0] && p2 == Points[1]) || (p1 == Points[1] && p2 == Points[0]))
-            {
+            else if ((p1 == Points[0] && p2 == Points[1]) || (p1 == Points[1] && p2 == Points[0])) {
                 Neighbors[2] = t;
             }
-            else
-            {
+            else {
                 Debug.WriteLine("Neighbor error, please report!");
                 // throw new Exception("Neighbor error, please report!");
             }
@@ -150,46 +136,36 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <summary>
         /// Exhaustive search to update neighbor pointers
         /// </summary>
-        public void MarkNeighbor(DelaunayTriangle t)
-        {
-            if (t.Contains(Points[1], Points[2]))
-            {
+        public void MarkNeighbor(DelaunayTriangle t) {
+            if (t.Contains(Points[1], Points[2])) {
                 Neighbors[0] = t;
                 t.MarkNeighbor(Points[1], Points[2], this);
             }
-            else if (t.Contains(Points[0], Points[2]))
-            {
+            else if (t.Contains(Points[0], Points[2])) {
                 Neighbors[1] = t;
                 t.MarkNeighbor(Points[0], Points[2], this);
             }
-            else if (t.Contains(Points[0], Points[1]))
-            {
+            else if (t.Contains(Points[0], Points[1])) {
                 Neighbors[2] = t;
                 t.MarkNeighbor(Points[0], Points[1], this);
             }
-            else
-            {
+            else {
                 Debug.WriteLine("markNeighbor failed");
             }
         }
 
-        public void ClearNeighbors()
-        {
+        public void ClearNeighbors() {
             Neighbors[0] = Neighbors[1] = Neighbors[2] = null;
         }
 
-        public void ClearNeighbor(DelaunayTriangle triangle)
-        {
-            if (Neighbors[0] == triangle)
-            {
+        public void ClearNeighbor(DelaunayTriangle triangle) {
+            if (Neighbors[0] == triangle) {
                 Neighbors[0] = null;
             }
-            else if (Neighbors[1] == triangle)
-            {
+            else if (Neighbors[1] == triangle) {
                 Neighbors[1] = null;
             }
-            else
-            {
+            else {
                 Neighbors[2] = null;
             }
         }
@@ -198,56 +174,47 @@ namespace vFrame.Lockstep.Core.Physics2D
          * Clears all references to all other triangles and points
          */
 
-        public void Clear()
-        {
+        public void Clear() {
             DelaunayTriangle t;
-            for (int i = 0; i < 3; i++)
-            {
+            for (int i = 0; i < 3; i++) {
                 t = Neighbors[i];
-                if (t != null)
-                {
+                if (t != null) {
                     t.ClearNeighbor(this);
                 }
             }
+
             ClearNeighbors();
             Points[0] = Points[1] = Points[2] = null;
         }
 
         /// <param name="t">Opposite triangle</param>
         /// <param name="p">The point in t that isn't shared between the triangles</param>
-        public TriangulationPoint OppositePoint(DelaunayTriangle t, TriangulationPoint p)
-        {
+        public TriangulationPoint OppositePoint(DelaunayTriangle t, TriangulationPoint p) {
             Debug.Assert(t != this, "self-pointer error");
             return PointCW(t.PointCW(p));
         }
 
-        public DelaunayTriangle NeighborCW(TriangulationPoint point)
-        {
-            return Neighbors[(Points.IndexOf(point) + 1)%3];
+        public DelaunayTriangle NeighborCW(TriangulationPoint point) {
+            return Neighbors[(Points.IndexOf(point) + 1) % 3];
         }
 
-        public DelaunayTriangle NeighborCCW(TriangulationPoint point)
-        {
-            return Neighbors[(Points.IndexOf(point) + 2)%3];
+        public DelaunayTriangle NeighborCCW(TriangulationPoint point) {
+            return Neighbors[(Points.IndexOf(point) + 2) % 3];
         }
 
-        public DelaunayTriangle NeighborAcross(TriangulationPoint point)
-        {
+        public DelaunayTriangle NeighborAcross(TriangulationPoint point) {
             return Neighbors[Points.IndexOf(point)];
         }
 
-        public TriangulationPoint PointCCW(TriangulationPoint point)
-        {
-            return Points[(IndexOf(point) + 1)%3];
+        public TriangulationPoint PointCCW(TriangulationPoint point) {
+            return Points[(IndexOf(point) + 1) % 3];
         }
 
-        public TriangulationPoint PointCW(TriangulationPoint point)
-        {
-            return Points[(IndexOf(point) + 2)%3];
+        public TriangulationPoint PointCW(TriangulationPoint point) {
+            return Points[(IndexOf(point) + 2) % 3];
         }
 
-        private void RotateCW()
-        {
+        private void RotateCW() {
             var t = Points[2];
             Points[2] = Points[1];
             Points[1] = Points[0];
@@ -259,79 +226,66 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <param name="oPoint">The origin point to rotate around</param>
         /// <param name="nPoint">???</param>
-        public void Legalize(TriangulationPoint oPoint, TriangulationPoint nPoint)
-        {
+        public void Legalize(TriangulationPoint oPoint, TriangulationPoint nPoint) {
             RotateCW();
             Points[IndexCCW(oPoint)] = nPoint;
         }
 
-        public override string ToString()
-        {
+        public override string ToString() {
             return Points[0] + "," + Points[1] + "," + Points[2];
         }
 
         /// <summary>
         /// Finalize edge marking
         /// </summary>
-        public void MarkNeighborEdges()
-        {
+        public void MarkNeighborEdges() {
             for (int i = 0; i < 3; i++)
-                if (EdgeIsConstrained[i] && Neighbors[i] != null)
-                {
-                    Neighbors[i].MarkConstrainedEdge(Points[(i + 1)%3], Points[(i + 2)%3]);
+                if (EdgeIsConstrained[i] && Neighbors[i] != null) {
+                    Neighbors[i].MarkConstrainedEdge(Points[(i + 1) % 3], Points[(i + 2) % 3]);
                 }
         }
 
-        public void MarkEdge(DelaunayTriangle triangle)
-        {
+        public void MarkEdge(DelaunayTriangle triangle) {
             for (int i = 0; i < 3; i++)
-                if (EdgeIsConstrained[i])
-                {
-                    triangle.MarkConstrainedEdge(Points[(i + 1)%3], Points[(i + 2)%3]);
+                if (EdgeIsConstrained[i]) {
+                    triangle.MarkConstrainedEdge(Points[(i + 1) % 3], Points[(i + 2) % 3]);
                 }
         }
 
-        public void MarkEdge(List<DelaunayTriangle> tList)
-        {
+        public void MarkEdge(List<DelaunayTriangle> tList) {
             foreach (DelaunayTriangle t in tList)
                 for (int i = 0; i < 3; i++)
-                    if (t.EdgeIsConstrained[i])
-                    {
-                        MarkConstrainedEdge(t.Points[(i + 1)%3], t.Points[(i + 2)%3]);
+                    if (t.EdgeIsConstrained[i]) {
+                        MarkConstrainedEdge(t.Points[(i + 1) % 3], t.Points[(i + 2) % 3]);
                     }
         }
 
-        public void MarkConstrainedEdge(int index)
-        {
+        public void MarkConstrainedEdge(int index) {
             EdgeIsConstrained[index] = true;
         }
 
-        public void MarkConstrainedEdge(DTSweepConstraint edge)
-        {
+        public void MarkConstrainedEdge(DTSweepConstraint edge) {
             MarkConstrainedEdge(edge.P, edge.Q);
         }
 
         /// <summary>
         /// Mark edge as constrained
         /// </summary>
-        public void MarkConstrainedEdge(TriangulationPoint p, TriangulationPoint q)
-        {
+        public void MarkConstrainedEdge(TriangulationPoint p, TriangulationPoint q) {
             int i = EdgeIndex(p, q);
             if (i != -1) EdgeIsConstrained[i] = true;
         }
 
-        public FixedPoint Area()
-        {
+        public FixedPoint Area() {
             FixedPoint b = Points[0].X - Points[1].X;
             FixedPoint h = Points[2].Y - Points[1].Y;
 
-            return FixedPoint.Abs((b*h*FixedPoint.Half));
+            return FixedPoint.Abs((b * h * FixedPoint.Half));
         }
 
-        public TriangulationPoint Centroid()
-        {
-            FixedPoint cx = (Points[0].X + Points[1].X + Points[2].X)/3;
-            FixedPoint cy = (Points[0].Y + Points[1].Y + Points[2].Y)/3;
+        public TriangulationPoint Centroid() {
+            FixedPoint cx = (Points[0].X + Points[1].X + Points[2].X) / 3;
+            FixedPoint cy = (Points[0].Y + Points[1].Y + Points[2].Y) / 3;
             return new TriangulationPoint(cx, cy);
         }
 
@@ -339,8 +293,7 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// Get the index of the neighbor that shares this edge (or -1 if it isn't shared)
         /// </summary>
         /// <returns>index of the shared edge or -1 if edge isn't shared</returns>
-        public int EdgeIndex(TriangulationPoint p1, TriangulationPoint p2)
-        {
+        public int EdgeIndex(TriangulationPoint p1, TriangulationPoint p2) {
             int i1 = Points.IndexOf(p1);
             int i2 = Points.IndexOf(p2);
 
@@ -355,63 +308,51 @@ namespace vFrame.Lockstep.Core.Physics2D
             return -1;
         }
 
-        public bool GetConstrainedEdgeCCW(TriangulationPoint p)
-        {
-            return EdgeIsConstrained[(IndexOf(p) + 2)%3];
+        public bool GetConstrainedEdgeCCW(TriangulationPoint p) {
+            return EdgeIsConstrained[(IndexOf(p) + 2) % 3];
         }
 
-        public bool GetConstrainedEdgeCW(TriangulationPoint p)
-        {
-            return EdgeIsConstrained[(IndexOf(p) + 1)%3];
+        public bool GetConstrainedEdgeCW(TriangulationPoint p) {
+            return EdgeIsConstrained[(IndexOf(p) + 1) % 3];
         }
 
-        public bool GetConstrainedEdgeAcross(TriangulationPoint p)
-        {
+        public bool GetConstrainedEdgeAcross(TriangulationPoint p) {
             return EdgeIsConstrained[IndexOf(p)];
         }
 
-        public void SetConstrainedEdgeCCW(TriangulationPoint p, bool ce)
-        {
-            EdgeIsConstrained[(IndexOf(p) + 2)%3] = ce;
+        public void SetConstrainedEdgeCCW(TriangulationPoint p, bool ce) {
+            EdgeIsConstrained[(IndexOf(p) + 2) % 3] = ce;
         }
 
-        public void SetConstrainedEdgeCW(TriangulationPoint p, bool ce)
-        {
-            EdgeIsConstrained[(IndexOf(p) + 1)%3] = ce;
+        public void SetConstrainedEdgeCW(TriangulationPoint p, bool ce) {
+            EdgeIsConstrained[(IndexOf(p) + 1) % 3] = ce;
         }
 
-        public void SetConstrainedEdgeAcross(TriangulationPoint p, bool ce)
-        {
+        public void SetConstrainedEdgeAcross(TriangulationPoint p, bool ce) {
             EdgeIsConstrained[IndexOf(p)] = ce;
         }
 
-        public bool GetDelaunayEdgeCCW(TriangulationPoint p)
-        {
-            return EdgeIsDelaunay[(IndexOf(p) + 2)%3];
+        public bool GetDelaunayEdgeCCW(TriangulationPoint p) {
+            return EdgeIsDelaunay[(IndexOf(p) + 2) % 3];
         }
 
-        public bool GetDelaunayEdgeCW(TriangulationPoint p)
-        {
-            return EdgeIsDelaunay[(IndexOf(p) + 1)%3];
+        public bool GetDelaunayEdgeCW(TriangulationPoint p) {
+            return EdgeIsDelaunay[(IndexOf(p) + 1) % 3];
         }
 
-        public bool GetDelaunayEdgeAcross(TriangulationPoint p)
-        {
+        public bool GetDelaunayEdgeAcross(TriangulationPoint p) {
             return EdgeIsDelaunay[IndexOf(p)];
         }
 
-        public void SetDelaunayEdgeCCW(TriangulationPoint p, bool ce)
-        {
-            EdgeIsDelaunay[(IndexOf(p) + 2)%3] = ce;
+        public void SetDelaunayEdgeCCW(TriangulationPoint p, bool ce) {
+            EdgeIsDelaunay[(IndexOf(p) + 2) % 3] = ce;
         }
 
-        public void SetDelaunayEdgeCW(TriangulationPoint p, bool ce)
-        {
-            EdgeIsDelaunay[(IndexOf(p) + 1)%3] = ce;
+        public void SetDelaunayEdgeCW(TriangulationPoint p, bool ce) {
+            EdgeIsDelaunay[(IndexOf(p) + 1) % 3] = ce;
         }
 
-        public void SetDelaunayEdgeAcross(TriangulationPoint p, bool ce)
-        {
+        public void SetDelaunayEdgeAcross(TriangulationPoint p, bool ce) {
             EdgeIsDelaunay[IndexOf(p)] = ce;
         }
     }

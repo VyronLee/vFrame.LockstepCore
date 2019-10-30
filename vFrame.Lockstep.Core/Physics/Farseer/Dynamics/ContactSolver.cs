@@ -19,11 +19,11 @@
 * misrepresented as being the original software. 
 * 3. This notice may not be removed or altered from any source distribution. 
 */
+
 #pragma warning disable 0162
 
 namespace vFrame.Lockstep.Core.Physics2D
 {
-
     public static class WorldManifold
     {
         /// <summary>
@@ -40,25 +40,20 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="normal">World vector pointing from A to B</param>
         /// <param name="points">Torld contact point (point of intersection).</param>
         public static void Initialize(ref Manifold manifold, ref Transform xfA, FixedPoint radiusA, ref Transform xfB,
-            FixedPoint radiusB, out TSVector2 normal, out FixedArray2<TSVector2> points)
-        {
+            FixedPoint radiusB, out TSVector2 normal, out FixedArray2<TSVector2> points) {
             normal = TSVector2.zero;
             points = new FixedArray2<TSVector2>();
 
-            if (manifold.PointCount == 0)
-            {
+            if (manifold.PointCount == 0) {
                 return;
             }
 
-            switch (manifold.Type)
-            {
-                case ManifoldType.Circles:
-                {
+            switch (manifold.Type) {
+                case ManifoldType.Circles: {
                     normal = new TSVector2(FixedPoint.One, FixedPoint.Zero);
                     TSVector2 pointA = MathUtils.Mul(ref xfA, manifold.LocalPoint);
                     TSVector2 pointB = MathUtils.Mul(ref xfB, manifold.Points[0].LocalPoint);
-                    if (TSVector2.DistanceSquared(pointA, pointB) > Settings.EpsilonSqr)
-                    {
+                    if (TSVector2.DistanceSquared(pointA, pointB) > Settings.EpsilonSqr) {
                         normal = pointB - pointA;
                         normal.Normalize();
                     }
@@ -69,13 +64,11 @@ namespace vFrame.Lockstep.Core.Physics2D
                 }
                     break;
 
-                case ManifoldType.FaceA:
-                {
+                case ManifoldType.FaceA: {
                     normal = MathUtils.Mul(xfA.q, manifold.LocalNormal);
                     TSVector2 planePoint = MathUtils.Mul(ref xfA, manifold.LocalPoint);
 
-                    for (int i = 0; i < manifold.PointCount; ++i)
-                    {
+                    for (int i = 0; i < manifold.PointCount; ++i) {
                         TSVector2 clipPoint = MathUtils.Mul(ref xfB, manifold.Points[i].LocalPoint);
                         TSVector2 cA = clipPoint + (radiusA - TSVector2.Dot(clipPoint - planePoint, normal)) * normal;
                         TSVector2 cB = clipPoint - radiusB * normal;
@@ -84,13 +77,11 @@ namespace vFrame.Lockstep.Core.Physics2D
                 }
                     break;
 
-                case ManifoldType.FaceB:
-                {
+                case ManifoldType.FaceB: {
                     normal = MathUtils.Mul(xfB.q, manifold.LocalNormal);
                     TSVector2 planePoint = MathUtils.Mul(ref xfB, manifold.LocalPoint);
 
-                    for (int i = 0; i < manifold.PointCount; ++i)
-                    {
+                    for (int i = 0; i < manifold.PointCount; ++i) {
                         TSVector2 clipPoint = MathUtils.Mul(ref xfA, manifold.Points[i].LocalPoint);
                         TSVector2 cB = clipPoint + (radiusB - TSVector2.Dot(clipPoint - planePoint, normal)) * normal;
                         TSVector2 cA = clipPoint - radiusA * normal;
@@ -104,5 +95,4 @@ namespace vFrame.Lockstep.Core.Physics2D
             }
         }
     }
-
 }

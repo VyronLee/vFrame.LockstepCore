@@ -45,11 +45,10 @@ namespace vFrame.Lockstep.Core.Physics2D
         internal FixedPoint _radius;
         internal FixedPoint _2radius;
 
-        protected Shape()
-        {
+        protected Shape() {
             ShapeType = ShapeType.Unknown;
         }
-        
+
         /// <summary>
         /// Get the type of this shape.
         /// </summary>
@@ -61,16 +60,14 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// </summary>
         /// <value></value>
         public abstract int ChildCount { get; }
-        
+
         /// <summary>
         /// Radius of the Shape
         /// Changing the radius causes a recalculation of shape properties.
         /// </summary>
-        public FixedPoint Radius
-        {
+        public FixedPoint Radius {
             get { return _radius; }
-            set
-            {
+            set {
                 Debug.Assert(value >= 0);
 
                 _radius = value;
@@ -101,7 +98,8 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="transform">The transform to be applied to the shape.</param>
         /// <param name="childIndex">The child shape index.</param>
         /// <returns>True if the ray-cast hits the shape</returns>
-        public abstract bool RayCast(out RayCastOutput output, ref RayCastInput input, ref Transform transform, int childIndex);
+        public abstract bool RayCast(out RayCastOutput output, ref RayCastInput input, ref Transform transform,
+            int childIndex);
 
         /// <summary>
         /// Given a transform, compute the associated axis aligned bounding box for a child shape.
@@ -110,28 +108,26 @@ namespace vFrame.Lockstep.Core.Physics2D
         /// <param name="transform">The world transform of the shape.</param>
         /// <param name="childIndex">The child shape index.</param>
         public abstract void ComputeAABB(out AABB aabb, ref Transform transform, int childIndex);
-        
+
         /// <summary>
         /// Compare this shape to another shape based on type and properties.
         /// </summary>
         /// <param name="shape">The other shape</param>
         /// <returns>True if the two shapes are the same.</returns>
-        public bool CompareTo(Shape shape)
-        {
+        public bool CompareTo(Shape shape) {
             if (shape is PolygonShape && this is PolygonShape)
-                return ((PolygonShape)this).CompareTo((PolygonShape)shape);
+                return ((PolygonShape) this).CompareTo((PolygonShape) shape);
 
             if (shape is CircleShape && this is CircleShape)
-                return ((CircleShape)this).CompareTo((CircleShape)shape);
+                return ((CircleShape) this).CompareTo((CircleShape) shape);
 
             if (shape is EdgeShape && this is EdgeShape)
-                return ((EdgeShape)this).CompareTo((EdgeShape)shape);
+                return ((EdgeShape) this).CompareTo((EdgeShape) shape);
 
             if (shape is ChainShape && this is ChainShape)
-                return ((ChainShape)this).CompareTo((ChainShape)shape);
+                return ((ChainShape) this).CompareTo((ChainShape) shape);
 
             return false;
         }
-
     }
 }
