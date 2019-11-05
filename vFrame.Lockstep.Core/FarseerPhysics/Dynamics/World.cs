@@ -215,6 +215,8 @@ namespace vFrame.Lockstep.Core.FarseerPhysics.Dynamics
         private Stopwatch _watch = new Stopwatch();
 #endif
 
+        public static World Instance { get; private set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="World"/> class.
         /// </summary>
@@ -236,6 +238,7 @@ namespace vFrame.Lockstep.Core.FarseerPhysics.Dynamics
 #if OPTIMIZE_TOI
             TOISet = new HashSet<Body>();
 #endif
+            Instance = this;
         }
 
         public World(TSVector2 gravity, AABB span)
