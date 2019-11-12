@@ -3,7 +3,7 @@
 SET CURDIR=%~dp0
 
 echo Building for platform: Editor
-msbuild vFrame.Lockstep.Core.sln /t:Clean,Rebuild /p:Configuration=Debug /p:Platform="Any CPU" /p:DefineConstants="TRACE DEBUG UNITY_EDITOR"
+msbuild vFrame.Lockstep.Core.sln /t:Clean,Rebuild /p:Configuration=Debug /p:Platform="Any CPU"
 if not exist "%CURDIR%\Output\vFrame.Lockstep.Core\Runtime" mkdir %CURDIR%\Output\vFrame.Lockstep.Core\Runtime
 copy /Y %CURDIR%\Build\vFrame.Lockstep.Core\Debug\vFrame.Lockstep.Core.* %CURDIR%\Output\vFrame.Lockstep.Core\Runtime\
 

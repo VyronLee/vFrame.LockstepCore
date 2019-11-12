@@ -1,7 +1,7 @@
 ﻿using System;
 
 /* Copyright (C) <2009-2011> <Thorben Linneweber, Jitter Physics>
-* 
+*
 *  This software is provided 'as-is', without any express or implied
 *  warranty.  In no event will the authors be held liable for any damages
 *  arising from the use of this software.
@@ -16,7 +16,7 @@
 *      appreciated but is not required.
 *  2. Altered source versions must be plainly marked as such, and must not be
 *      misrepresented as being the original software.
-*  3. This notice may not be removed or altered from any source distribution. 
+*  3. This notice may not be removed or altered from any source distribution.
 */
 
 namespace vFrame.Lockstep.Core
@@ -37,7 +37,7 @@ namespace vFrame.Lockstep.Core
         public static FixedPoint PiOver2 = FixedPoint.PiOver2;
 
         /// <summary>
-        /// A small value often used to decide if numeric 
+        /// A small value often used to decide if numeric
         /// results are zero.
         /// </summary>
         public static FixedPoint Epsilon = FixedPoint.Epsilon;
@@ -358,7 +358,7 @@ namespace vFrame.Lockstep.Core
 
             /* The algorithm is based on the power series for exp(x):
              * http://en.wikipedia.org/wiki/Exponential_function#Formal_definition
-             * 
+             *
              * From term n, we get term n+1 by multiplying with x/n.
              * When the sum term drops to zero, we can stop summing.
              */
@@ -530,6 +530,29 @@ namespace vFrame.Lockstep.Core
             }
 
             return num8;
+        }
+
+        public static FixedPoint Dot(TSVector2 u, TSVector2 v) {
+            return u.x * v.x + u.y * v.y;
+        }
+
+        public static FixedPoint Dot(TSVector lhs, TSVector rhs) {
+            return lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z;
+        }
+
+        public static TSVector Cross(TSVector lhs, TSVector rhs) {
+            return new TSVector(lhs.y * rhs.z - lhs.z * rhs.y,
+                lhs.z * rhs.x - lhs.x * rhs.z,
+                lhs.x * rhs.y - lhs.y * rhs.x
+            );
+        }
+
+        public static FixedPoint Cross2D(TSVector2 u, TSVector2 v) {
+            return u.x * v.y - u.y * v.x;
+        }
+
+        public static FixedPoint Dot2D(TSVector2 u, TSVector2 v) {
+            return u.x * v.x + u.y * v.y;
         }
     }
 }

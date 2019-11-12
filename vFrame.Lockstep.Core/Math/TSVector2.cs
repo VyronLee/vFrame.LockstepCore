@@ -268,6 +268,14 @@ namespace vFrame.Lockstep.Core
             result = value1.x * value2.x + value1.y * value2.y;
         }
 
+        public static FixedPoint Cross(TSVector2 value1, TSVector2 value2) {
+            return value1.x * value2.y - value1.y * value2.x;
+        }
+
+        public static void Cross(ref TSVector2 value1, ref TSVector2 value2, out FixedPoint result) {
+            result = value1.x * value2.y - value1.y * value2.x;
+        }
+
         public override bool Equals(object obj) {
             return (obj is TSVector2) ? this == ((TSVector2) obj) : false;
         }

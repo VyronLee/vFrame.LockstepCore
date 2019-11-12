@@ -11,7 +11,7 @@
     <AssemblyName>vFrame.Lockstep.Core</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <LangVersion>default</LangVersion>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -35,10 +35,50 @@
     </DocumentationFile>
     <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
+  <PropertyGroup>
+    <NoConfig>true</NoConfig>
+    <NoStdLib>true</NoStdLib>
+    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
+    <ImplicitlyExpandNETStandardFacades>false</ImplicitlyExpandNETStandardFacades>
+    <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="mscorlib" />
-    <Reference Include="System" />
-    <Reference Include="System.Xml" />
+    <Reference Include="vFrame.Core, Version=1.0.1.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\Libraries\vFrame.Core\Runtime\vFrame.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="mscorlib">
+      <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/System.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core">
+      <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/System.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="netstandard">
+      <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/Facades/netstandard.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml">
+      <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/System.Xml.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.ReaderWriter">
+      <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/Facades/System.Xml.ReaderWriter.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.XDocument">
+      <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/Facades/System.Xml.XDocument.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.XmlDocument">
+      <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/Facades/System.Xml.XmlDocument.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.XmlSerializer">
+      <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/Facades/System.Xml.XmlSerializer.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.XPath">
+      <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/Facades/System.Xml.XPath.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.XPath.XDocument">
+      <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/Facades/System.Xml.XPath.XDocument.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FarseerPhysics\Collision\Collision.cs" />
@@ -155,12 +195,36 @@
     <Compile Include="Math\TSVector.cs" />
     <Compile Include="Math\TSVector2.cs" />
     <Compile Include="Math\TSVector4.cs" />
+    <Compile Include="PathFinding\BSP\BspNode.cs" />
+    <Compile Include="PathFinding\BSP\BspTree.cs" />
+    <Compile Include="PathFinding\BSP\ESplitType.cs" />
+    <Compile Include="PathFinding\BSP\SplitPlane.cs" />
+    <Compile Include="PathFinding\BSP\TriRef.cs" />
     <Compile Include="PathFinding\IConnection.cs" />
     <Compile Include="PathFinding\IGraph.cs" />
+    <Compile Include="PathFinding\IGraphPath.cs" />
     <Compile Include="PathFinding\IHeuristic.cs" />
-    <Compile Include="PathFinding\INode.cs" />
-    <Compile Include="PathFinding\IPath.cs" />
+    <Compile Include="PathFinding\IIndexedGraph.cs" />
     <Compile Include="PathFinding\IPathFinder.cs" />
+    <Compile Include="PathFinding\NavMesh\Geometry\GeometryUtil.cs" />
+    <Compile Include="PathFinding\NavMesh\Geometry\Plane.cs" />
+    <Compile Include="PathFinding\NavMesh\Geometry\Ray.cs" />
+    <Compile Include="PathFinding\NavMesh\NavMesh\EdgePoint.cs" />
+    <Compile Include="PathFinding\NavMesh\NavMesh\Funnel.cs" />
+    <Compile Include="PathFinding\NavMesh\NavMesh\Triangle.cs" />
+    <Compile Include="PathFinding\NavMesh\NavMesh\TriangleData.cs" />
+    <Compile Include="PathFinding\NavMesh\NavMesh\TriangleEdge.cs" />
+    <Compile Include="PathFinding\NavMesh\NavMesh\TriangleGraph.cs" />
+    <Compile Include="PathFinding\NavMesh\NavMesh\TriangleGraphPath.cs" />
+    <Compile Include="PathFinding\NavMesh\NavMesh\TriangleHeuristic.cs" />
+    <Compile Include="PathFinding\NavMesh\NavMesh\TriangleNavMesh.cs" />
+    <Compile Include="PathFinding\NavMesh\NavMesh\TrianglePointPath.cs" />
+    <Compile Include="PathFinding\NavMesh\PathFinder\DefaultGraphPath.cs" />
+    <Compile Include="PathFinding\NavMesh\PathFinder\IndexedAStarPathFinder.cs" />
+    <Compile Include="PathFinding\NavMesh\PathFinder\NavMesh.cs" />
+    <Compile Include="PathFinding\NavMesh\PathFinder\NavMeshData.cs" />
+    <Compile Include="PathFinding\NavMesh\PathFinder\NodeBinaryHeap.cs" />
+    <Compile Include="PathFinding\NavMesh\VectorExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RVO2\Agent.cs" />
     <Compile Include="RVO2\KdTree.cs" />
@@ -175,7 +239,7 @@
     <Content Include="RVO2\LICENSE" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
          Other similar extension points exist, see Microsoft.Common.targets.
     <Target Name="BeforeBuild">
     </Target>

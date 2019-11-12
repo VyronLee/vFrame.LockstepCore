@@ -859,6 +859,13 @@ namespace vFrame.Lockstep.Core
 
         #endregion
 
+        public static TSVector operator -(TSVector value1) {
+            value1.x = -value1.x;
+            value1.y = -value1.y;
+            value1.z = -value1.z;
+            return value1;
+        }
+
         /// <summary>
         /// Adds two vectors.
         /// </summary>
@@ -890,6 +897,10 @@ namespace vFrame.Lockstep.Core
 
         public TSVector2 ToTSVector2() {
             return new TSVector2(this.x, this.y);
+        }
+
+        public TSVector2 ToTSVector2XZ() {
+            return new TSVector2(this.x, this.z);
         }
 
         public TSVector4 ToTSVector4() {

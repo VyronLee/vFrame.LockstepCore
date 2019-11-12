@@ -1,8 +1,9 @@
 ﻿namespace vFrame.Lockstep.Core.PathFinding
 {
-    public interface IPathFinder<TNode> where TNode : INode
+    public interface IPathFinder<N>
     {
-        bool SearchPath(TNode startNode, TNode endNode,
-            IHeuristic<TNode> heuristic, IPath<TNode> path);
+        bool SearchPath(N startNode, N endNode, IHeuristic<N> heuristic, IGraphPath<IConnection<N>> outPath);
+
+        bool SearchNodePath(N startNode, N endNode, IHeuristic<N> heuristic, IGraphPath<N> outPath);
     }
 }

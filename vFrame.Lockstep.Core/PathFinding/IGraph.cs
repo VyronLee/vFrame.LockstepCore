@@ -1,11 +1,28 @@
 ﻿using System.Collections.Generic;
+/**
+ * 图接口
+ * <br>
+ * A graph is a collection of nodes, each one having a collection of
+ * outgoing {@link Connection connections}.
+ *
+ * @param <N>
+ *            Type of node
+ *
+ * @author davebaol
+ */
+using System.Collections.Generic;
 
 namespace vFrame.Lockstep.Core.PathFinding
 {
-    public interface IGraph<TNode> where TNode : INode
+    public interface IGraph<N>
     {
-        TNode GetNode(int index);
-        int GetNodeCount();
-        List<IConnection<TNode>> GetConnections(TNode fromNode);
+        /**和当前节点相连的连接关系
+         * Returns the connections outgoing from the given node.
+         *
+         * @param fromNode
+         *            the node whose outgoing connections will be returned
+         * @return the array of connections outgoing from the given node.
+         */
+        List<IConnection<N>> GetConnections(N fromNode);
     }
 }
