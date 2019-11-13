@@ -88,7 +88,6 @@
         </Reference>
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="Editor\EditorCreateLUT.cs" />
         <Compile Include="Editor\EditorFixedPoint.cs" />
         <Compile Include="Editor\EditorGUILayoutExt.cs" />
         <Compile Include="Editor\EditorNavMeshTool.cs" />
