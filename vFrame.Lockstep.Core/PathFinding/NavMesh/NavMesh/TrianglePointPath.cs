@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using vFrame.Lockstep.Core.PathFinding.NavMesh.Geometry;
 
-namespace vFrame.Lockstep.Core.PathFinding
+namespace vFrame.Lockstep.Core.PathFinding.NavMesh.NavMesh
 {
     public enum PlaneSide
     {
@@ -42,11 +42,11 @@ namespace vFrame.Lockstep.Core.PathFinding
             // project it to the closest
             // triangle edge. Otherwise the funnel calculation might generate spurious path
             // segments.
-            Ray ray = new Ray((V3_UP.scl(1000)).Add(start), V3_DOWN); // 起始坐标从上向下的射线
+            var ray = new Ray(V3_UP.scl(1000).Add(start), V3_DOWN); // 起始坐标从上向下的射线
             if (!GeometryUtil.IntersectRayTriangle(ray, startTri.a, startTri.b, startTri.c, out var ss)) {
-                FixedPoint minDst = FixedPoint.MaxValue;
-                TSVector projection = new TSVector(); // 规划坐标
-                TSVector newStart = new TSVector(); // 新坐标
+                var minDst = FixedPoint.MaxValue;
+                var projection = new TSVector(); // 规划坐标
+                var newStart = new TSVector(); // 新坐标
                 FixedPoint dst;
                 // A-B
                 if ((dst = GeometryUtil.nearestSegmentPointSquareDistance(projection, startTri.a, startTri.b,
@@ -94,7 +94,7 @@ namespace vFrame.Lockstep.Core.PathFinding
         }
 
         private TriangleEdge getEdge(int index) {
-            return (TriangleEdge) ((index == nodes.Count) ? lastEdge : nodes[index]);
+            return (TriangleEdge) (index == nodes.Count ? lastEdge : nodes[index]);
         }
 
         private int numEdges() {
@@ -147,19 +147,19 @@ namespace vFrame.Lockstep.Core.PathFinding
          * @return
          */
         private void CalculateEdgePoints(bool calculateCrossPoint) {
-            TriangleEdge edge = getEdge(0);
+            var edge = getEdge(0);
             addPoint(start, edge.fromNode);
             lastPointAdded.fromNode = edge.fromNode;
 
-            Funnel funnel = new Funnel();
-            funnel.pivot = (start); // 起点为漏斗点
+            var funnel = new Funnel();
+            funnel.pivot = start; // 起点为漏斗点
             funnel.setPlanes(funnel.pivot, edge); // 设置第一对平面
 
-            int leftIndex = 0; // 左顶点索引
-            int rightIndex = 0; // 右顶点索引
-            int lastRestart = 0;
+            var leftIndex = 0; // 左顶点索引
+            var rightIndex = 0; // 右顶点索引
+            var lastRestart = 0;
 
-            for (int i = 1; i < numEdges(); ++i) {
+            for (var i = 1; i < numEdges(); ++i) {
                 edge = getEdge(i); // 下一条边
 
                 var leftPlaneLeftDP = funnel.sideLeftPlane(edge.leftVertex);
@@ -178,14 +178,12 @@ namespace vFrame.Lockstep.Core.PathFinding
                     else {
                         // Right over left, insert left to path and restart scan from portal left point.
                         // 右顶点在左平面外面，设置左顶点为漏斗顶点和路径点，从新已该漏斗开始扫描
-                        if (calculateCrossPoint) {
+                        if (calculateCrossPoint)
                             CalculateEdgeCrossings(lastRestart, leftIndex, funnel.pivot, funnel.leftPortal);
-                        }
-                        else {
+                        else
                             vectors.Add(funnel.leftPortal);
-                        }
 
-                        funnel.pivot = (funnel.leftPortal);
+                        funnel.pivot = funnel.leftPortal;
                         i = leftIndex;
                         rightIndex = i;
                         if (i < numEdges() - 1) {
@@ -209,14 +207,12 @@ namespace vFrame.Lockstep.Core.PathFinding
                     else {
                         // Left over right, insert right to path and restart scan from portal right
                         // point.
-                        if (calculateCrossPoint) {
+                        if (calculateCrossPoint)
                             CalculateEdgeCrossings(lastRestart, rightIndex, funnel.pivot, funnel.rightPortal);
-                        }
-                        else {
+                        else
                             vectors.Add(funnel.rightPortal);
-                        }
 
-                        funnel.pivot = (funnel.rightPortal);
+                        funnel.pivot = funnel.rightPortal;
                         i = rightIndex;
                         leftIndex = i;
                         if (i < numEdges() - 1) {
@@ -230,15 +226,13 @@ namespace vFrame.Lockstep.Core.PathFinding
                 }
             }
 
-            if (calculateCrossPoint) {
+            if (calculateCrossPoint)
                 CalculateEdgeCrossings(lastRestart, numEdges() - 1, funnel.pivot, end);
-            }
-            else {
+            else
                 vectors.Add(end);
-            }
 
-            for (int i = 1; i < pathPoints.Count; i++) {
-                EdgePoint p = pathPoints.get(i);
+            for (var i = 1; i < pathPoints.Count; i++) {
+                var p = pathPoints.get(i);
                 p.fromNode = pathPoints.get(i - 1).toNode;
             }
 
@@ -254,54 +248,44 @@ namespace vFrame.Lockstep.Core.PathFinding
          * end and up vectors.
          */
         private void CalculateEdgeCrossings(int startIndex, int endIndex, TSVector startPoint, TSVector endPoint) {
-            if (startIndex >= numEdges() || endIndex >= numEdges()) {
-                return;
-            }
+            if (startIndex >= numEdges() || endIndex >= numEdges()) return;
 
             crossingPlane.set(startPoint, tmp1.set(startPoint).Add(V3_UP), endPoint);
 
-            EdgePoint previousLast = lastPointAdded;
+            var previousLast = lastPointAdded;
 
             var edge = getEdge(endIndex);
-            EdgePoint end = new EdgePoint(endPoint, edge.toNode);
+            var end = new EdgePoint(endPoint, edge.toNode);
 
-            for (int i = startIndex; i < endIndex; i++) {
+            for (var i = startIndex; i < endIndex; i++) {
                 edge = getEdge(i);
 
                 if (edge.rightVertex.Equals(startPoint) || edge.leftVertex.Equals(startPoint)) {
                     previousLast.toNode = edge.toNode;
-                    if (!previousLast.connectingEdges.Contains(edge)) {
-                        previousLast.connectingEdges.Add(edge);
-                    }
+                    if (!previousLast.connectingEdges.Contains(edge)) previousLast.connectingEdges.Add(edge);
                 }
                 else if (edge.leftVertex.Equals(endPoint) || edge.rightVertex.Equals(endPoint)) {
-                    if (!end.connectingEdges.Contains(edge)) {
-                        end.connectingEdges.Add(edge);
-                    }
+                    if (!end.connectingEdges.Contains(edge)) end.connectingEdges.Add(edge);
                 }
                 else if (IntersectSegmentPlane(edge.leftVertex, edge.rightVertex, crossingPlane, tmp1)) {
                     if (i != startIndex || i == 0) {
                         lastPointAdded.toNode = edge.fromNode;
-                        EdgePoint crossing = new EdgePoint(tmp1, edge.toNode);
+                        var crossing = new EdgePoint(tmp1, edge.toNode);
                         crossing.connectingEdges.Add(edge);
                         addPoint(crossing);
                     }
                 }
             }
 
-            if (endIndex < numEdges() - 1) {
-                end.connectingEdges.Add(getEdge(endIndex));
-            }
+            if (endIndex < numEdges() - 1) end.connectingEdges.Add(getEdge(endIndex));
 
-            if (!lastPointAdded.Equals(end)) {
-                addPoint(end);
-            }
+            if (!lastPointAdded.Equals(end)) addPoint(end);
         }
 
         public static bool IntersectSegmentPlane(TSVector start, TSVector end, Plane plane, TSVector intersection) {
-            TSVector dir = end.sub(start);
-            FixedPoint denom = dir.dot(plane.getNormal());
-            FixedPoint t = -(start.dot(plane.getNormal()) + plane.getD()) / denom;
+            var dir = end.sub(start);
+            var denom = dir.dot(plane.getNormal());
+            var t = -(start.dot(plane.getNormal()) + plane.getD()) / denom;
             if (t < 0 || t > 1)
                 return false;
 

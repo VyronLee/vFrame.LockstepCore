@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using vFrame.Lockstep.Core.PathFinding.NavMesh.BSP;
 
-namespace vFrame.Lockstep.Core.PathFinding
+namespace vFrame.Lockstep.Core.PathFinding.NavMesh.NavMesh
 {
     public class TriangleGraph : IIndexedGraph<Triangle>
     {
@@ -19,12 +20,10 @@ namespace vFrame.Lockstep.Core.PathFinding
         public BspTree bspTree;
 
         public TriangleGraph(NavMeshData navMeshData, int scale) {
-            this._navMeshData = navMeshData;
+            _navMeshData = navMeshData;
             navMeshData.check(scale);
             var pathTriangles = CreateTriangles(scale);
-            foreach (var triangle in pathTriangles) {
-                _id2Tri[triangle.index] = triangle;
-            }
+            foreach (var triangle in pathTriangles) _id2Tri[triangle.index] = triangle;
 
             var pathIndexConnections = GetIndexConnections(navMeshData.GetPathTriangles());
             _sharedEdges =
@@ -33,13 +32,9 @@ namespace vFrame.Lockstep.Core.PathFinding
             bspTree = new BspTree();
             bspTree.Init(pathTriangles);
             // Count edges of different types
-            foreach (var edges in _isolatedEdgesMap.Values) {
-                _numDisconnectedEdges += edges.Count;
-            }
+            foreach (var edges in _isolatedEdgesMap.Values) _numDisconnectedEdges += edges.Count;
 
-            foreach (var edges in _sharedEdges.Values) {
-                _numConnectedEdges += edges.Count;
-            }
+            foreach (var edges in _sharedEdges.Values) _numConnectedEdges += edges.Count;
 
             _numConnectedEdges /= 2;
             _numTotalEdges = _numConnectedEdges + _numDisconnectedEdges;
@@ -66,22 +61,20 @@ namespace vFrame.Lockstep.Core.PathFinding
         private List<Triangle> CreateTriangles(int scale) {
             var vertexIndexs = _navMeshData.GetPathTriangles();
             var vertices = _navMeshData.GetPathVertices();
-            int triangleIndex = 0; // 三角形下标
-            int length = vertexIndexs.Length - 3;
-            for (int i = 0; i <= length;) {
-                int aIndex = vertexIndexs[i++];
-                int bIndex = vertexIndexs[i++];
-                int cIndex = vertexIndexs[i++];
+            var triangleIndex = 0; // 三角形下标
+            var length = vertexIndexs.Length - 3;
+            for (var i = 0; i <= length;) {
+                var aIndex = vertexIndexs[i++];
+                var bIndex = vertexIndexs[i++];
+                var cIndex = vertexIndexs[i++];
                 try {
                     Triangle triangle = null;
-                    if (scale != 1) {
+                    if (scale != 1)
                         triangle = new Triangle(vertices[aIndex], vertices[bIndex], vertices[cIndex], triangleIndex++,
                             aIndex,
                             bIndex, cIndex);
-                    }
-                    else {
+                    else
                         triangle = new Triangle(vertices[aIndex], vertices[bIndex], vertices[cIndex], triangleIndex++);
-                    }
 
                     _triangles.Add(triangle);
                 }
@@ -134,8 +127,8 @@ namespace vFrame.Lockstep.Core.PathFinding
          * edge direction to triangle B.
          */
         private static bool HasSharedEdgeIndices(int a0, int a1, int a2, int b0, int b1, int b2, int[] edge) {
-            bool match0 = (a0 == b0 || a0 == b1 || a0 == b2);
-            bool match1 = (a1 == b0 || a1 == b1 || a1 == b2);
+            var match0 = a0 == b0 || a0 == b1 || a0 == b2;
+            var match1 = a1 == b0 || a1 == b1 || a1 == b2;
             if (!match0 && !match1) { // 无两个共享点
                 return false;
             }
@@ -145,7 +138,7 @@ namespace vFrame.Lockstep.Core.PathFinding
                 return true;
             }
 
-            bool match2 = (a2 == b0 || a2 == b1 || a2 == b2);
+            var match2 = a2 == b0 || a2 == b1 || a2 == b2;
             if (match0 && match2) {
                 edge[0] = a2;
                 edge[1] = a0;
@@ -164,11 +157,9 @@ namespace vFrame.Lockstep.Core.PathFinding
             HashSet<IndexConnection> indexConnections, List<Triangle> triangles, TSVector[] vertexVectors) {
             var connectionMap = new Dictionary<Triangle, List<IConnection<Triangle>>>();
 
-            foreach (Triangle tri in triangles) {
-                connectionMap.Add(tri, new List<IConnection<Triangle>>());
-            }
+            foreach (var tri in triangles) connectionMap.Add(tri, new List<IConnection<Triangle>>());
 
-            foreach (IndexConnection indexConnection in indexConnections) {
+            foreach (var indexConnection in indexConnections) {
                 var fromNode = triangles.get(indexConnection.fromTriIndex);
                 var toNode = triangles.get(indexConnection.toTriIndex);
                 var edgeVertexA = vertexVectors[indexConnection.edgeVertexIndex1];
@@ -200,21 +191,21 @@ namespace vFrame.Lockstep.Core.PathFinding
             public int toTriIndex;
 
             public IndexConnection(int sharedEdgeVertex1Index, int edgeVertexIndex2, int fromTriIndex, int toTriIndex) {
-                this.edgeVertexIndex1 = sharedEdgeVertex1Index;
+                edgeVertexIndex1 = sharedEdgeVertex1Index;
                 this.edgeVertexIndex2 = edgeVertexIndex2;
                 this.fromTriIndex = fromTriIndex;
                 this.toTriIndex = toTriIndex;
             }
 
-            public override String ToString() {
+            public override string ToString() {
                 return "IndexConnection [edgeVertexIndex1=" + edgeVertexIndex1 + ", edgeVertexIndex2=" +
                        edgeVertexIndex2
                        + ", fromTriIndex=" + fromTriIndex + ", toTriIndex=" + toTriIndex + "]";
             }
 
             public override int GetHashCode() {
-                int prime = 31;
-                int result = 1;
+                var prime = 31;
+                var result = 1;
                 result = prime * result + edgeVertexIndex1;
                 result = prime * result + edgeVertexIndex2;
                 result = prime * result + fromTriIndex;
@@ -229,7 +220,7 @@ namespace vFrame.Lockstep.Core.PathFinding
                     return false;
                 if (GetType() != obj.GetType())
                     return false;
-                IndexConnection other = (IndexConnection) obj;
+                var other = (IndexConnection) obj;
                 if (edgeVertexIndex1 != other.edgeVertexIndex1)
                     return false;
                 if (edgeVertexIndex2 != other.edgeVertexIndex2)
@@ -261,9 +252,7 @@ namespace vFrame.Lockstep.Core.PathFinding
 
         private Triangle _GetTriangle(TSVector point) {
             var triId = bspTree.GetTriangle(point);
-            if (_id2Tri.TryGetValue(triId, out var tri)) {
-                return tri;
-            }
+            if (_id2Tri.TryGetValue(triId, out var tri)) return tri;
 
             //foreach (var triangle in _triangles) {
             //    if (triangle.IsInnerPoint(point)) {
@@ -277,7 +266,7 @@ namespace vFrame.Lockstep.Core.PathFinding
             Dictionary<Triangle, List<IConnection<Triangle>>> connectionMap) {
             var disconnectionMap = new Dictionary<Triangle, List<IConnection<Triangle>>>();
 
-            foreach (Triangle tri in connectionMap.Keys) {
+            foreach (var tri in connectionMap.Keys) {
                 var connectedEdges = connectionMap.get(tri);
 
                 var disconnectedEdges = new List<IConnection<Triangle>>();
@@ -285,9 +274,9 @@ namespace vFrame.Lockstep.Core.PathFinding
 
                 if (connectedEdges.Count < 3) {
                     // This triangle does not have all edges connected to other triangles
-                    bool ab = true;
-                    bool bc = true;
-                    bool ca = true;
+                    var ab = true;
+                    var bc = true;
+                    var ca = true;
                     foreach (var item in connectedEdges) {
                         var edge = item as TriangleEdge;
                         if (edge.rightVertex == tri.a && edge.leftVertex == tri.b)
@@ -306,7 +295,7 @@ namespace vFrame.Lockstep.Core.PathFinding
                         disconnectedEdges.Add(new TriangleEdge(tri, null, tri.c, tri.a));
                 }
 
-                int totalEdges = (connectedEdges.Count + disconnectedEdges.Count);
+                var totalEdges = connectedEdges.Count + disconnectedEdges.Count;
                 if (totalEdges != 3) {
 //                    Debug.LogError("Wrong number of edges (" + totalEdges + ") in triangle " +
 //                                               tri.getIndex());

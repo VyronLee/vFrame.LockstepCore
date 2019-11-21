@@ -1,4 +1,6 @@
-﻿namespace vFrame.Lockstep.Core.PathFinding
+﻿using vFrame.Lockstep.Core.PathFinding.NavMesh.Geometry;
+
+namespace vFrame.Lockstep.Core.PathFinding.NavMesh.NavMesh
 {
     public class Funnel
     {
@@ -17,7 +19,7 @@
             rightPlane.set(pivot, pivot.Add(TSVector.up), rightEdgeVertex); // 高度
             rightPlane.normal = -rightPlane.normal; // 平面方向取反
             rightPlane.d = -rightPlane.d;
-            rightPortal = (rightEdgeVertex);
+            rightPortal = rightEdgeVertex;
         }
 
         public void setPlanes(TSVector pivot, TriangleEdge edge) {

@@ -1,4 +1,6 @@
 ﻿
+
+using vFrame.Lockstep.Core.PathFinding.NavMesh.NavMesh;
 #if UNITY_EDITOR
 using LitJson;
 using vFrame.Lockstep.Core.PathFinding;

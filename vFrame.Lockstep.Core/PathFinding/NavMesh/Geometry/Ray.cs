@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace vFrame.Lockstep.Core.PathFinding
+namespace vFrame.Lockstep.Core.PathFinding.NavMesh.Geometry
 {
     public class Ray
     {
@@ -18,7 +18,7 @@ namespace vFrame.Lockstep.Core.PathFinding
 
         /** @return a copy of this ray. */
         public Ray cpy() {
-            return new Ray(this.origin, this.direction);
+            return new Ray(origin, direction);
         }
 
 
@@ -26,11 +26,11 @@ namespace vFrame.Lockstep.Core.PathFinding
             return _out.set(direction).scl(distance).Add(origin);
         }
 
-        static TSVector tmp = new TSVector();
+        private static TSVector tmp = new TSVector();
 
 
         /** {@inheritDoc} */
-        public String toString() {
+        public string toString() {
             return "ray [" + origin + ":" + direction + "]";
         }
 
@@ -42,15 +42,15 @@ namespace vFrame.Lockstep.Core.PathFinding
         }
 
         public Ray set(FixedPoint x, FixedPoint y, FixedPoint z, FixedPoint dx, FixedPoint dy, FixedPoint dz) {
-            this.origin.set(x, y, z);
-            this.direction.set(dx, dy, dz);
+            origin.set(x, y, z);
+            direction.set(dx, dy, dz);
             return this;
         }
 
 
         public Ray set(Ray ray) {
-            this.origin.set(ray.origin);
-            this.direction.set(ray.direction);
+            origin.set(ray.origin);
+            direction.set(ray.direction);
             return this;
         }
     }

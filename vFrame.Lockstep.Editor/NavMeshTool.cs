@@ -2,6 +2,7 @@
 using UnityEngine;
 using vFrame.Lockstep.Core;
 using vFrame.Lockstep.Core.PathFinding;
+using vFrame.Lockstep.Core.PathFinding.NavMesh.NavMesh;
 
 namespace vFrame.Lockstep.Core.Editor
 {

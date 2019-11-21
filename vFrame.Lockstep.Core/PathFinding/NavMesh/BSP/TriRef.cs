@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using vFrame.Lockstep.Core.PathFinding.NavMesh.NavMesh;
 
-namespace vFrame.Lockstep.Core.PathFinding
+namespace vFrame.Lockstep.Core.PathFinding.NavMesh.BSP
 {
     public class TriRef
     {
@@ -51,12 +52,10 @@ namespace vFrame.Lockstep.Core.PathFinding
             CheckValid();
         }
 
-        void CheckValid() {
-            for (int i = 0; i < 3; i++) {
-                if (borders[i].dir == TSVector2.zero) {
+        private void CheckValid() {
+            for (var i = 0; i < 3; i++)
+                if (borders[i].dir == TSVector2.zero)
                     Debug.Assert(false);
-                }
-            }
         }
 
         public TSVector2 a;

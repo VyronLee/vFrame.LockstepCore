@@ -1,4 +1,4 @@
-﻿namespace vFrame.Lockstep.Core.PathFinding
+﻿namespace vFrame.Lockstep.Core.PathFinding.NavMesh.BSP
 {
     public struct SplitPlane
     {
@@ -27,16 +27,12 @@
             var isA = valA <= 0;
             var isB = valB <= 0;
             var isC = valC <= 0;
-            if (isA == isB && isB == isC) {
-                return isRight ? ESplitType.Right : ESplitType.Left;
-            }
+            if (isA == isB && isB == isC) return isRight ? ESplitType.Right : ESplitType.Left;
 
             isA = valA >= 0;
             isB = valB >= 0;
             isC = valC >= 0;
-            if (isA == isB && isB == isC) {
-                return isRight ? ESplitType.Right : ESplitType.Left;
-            }
+            if (isA == isB && isB == isC) return isRight ? ESplitType.Right : ESplitType.Left;
 
             return ESplitType.OnPlane;
         }
@@ -45,9 +41,8 @@
             var val = TSVector2.Cross(plane.dir, vertex - plane.a);
             if (val == 0)
                 return ESplitType.OnPlane;
-            else {
+            else
                 return val < 0 ? ESplitType.Right : ESplitType.Left;
-            }
         }
 
         public static TSVector2 GetIntersectPoint(TSVector2 p0, TSVector2 p1, TSVector2 p2, TSVector2 p3) {

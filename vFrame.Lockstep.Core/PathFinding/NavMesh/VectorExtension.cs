@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace vFrame.Lockstep.Core.PathFinding
+namespace vFrame.Lockstep.Core.PathFinding.NavMesh
 {
-    public static class VectorExtension
+    internal static class VectorExtension
     {
         public static TSVector set(this TSVector vec, FixedPoint x, FixedPoint y, FixedPoint z) {
             vec.x = x;
@@ -69,7 +68,7 @@ namespace vFrame.Lockstep.Core.PathFinding
         public static FixedPoint dst2(FixedPoint x1, FixedPoint z1, FixedPoint x2, FixedPoint z2) {
             x1 -= x2;
             z1 -= z2;
-            return (x1 * x1 + z1 * z1);
+            return x1 * x1 + z1 * z1;
         }
 
         public static T get<T>(this List<T> lst, int idx) {

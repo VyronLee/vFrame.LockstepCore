@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace vFrame.Lockstep.Core.PathFinding
+namespace vFrame.Lockstep.Core.PathFinding.NavMesh.NavMesh
 {
     public class EdgePoint
     {

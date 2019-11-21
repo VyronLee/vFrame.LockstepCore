@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace vFrame.Lockstep.Core.PathFinding
+﻿namespace vFrame.Lockstep.Core.PathFinding.NavMesh.NavMesh
 {
     public class TriangleGraphPath : DefaultGraphPath<IConnection<Triangle>>
     {
@@ -24,7 +21,7 @@ namespace vFrame.Lockstep.Core.PathFinding
          * @return Last triangle in the path.
          */
         public Triangle GetEndTriangle() {
-            return (GetCount() > 0) ? Get(GetCount() - 1).GetToNode() : startTri;
+            return GetCount() > 0 ? Get(GetCount() - 1).GetToNode() : startTri;
         }
     }
 }

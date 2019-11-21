@@ -1,6 +1,6 @@
-﻿using System;
+﻿using vFrame.Lockstep.Core.PathFinding.NavMesh.NavMesh;
 
-namespace vFrame.Lockstep.Core.PathFinding
+namespace vFrame.Lockstep.Core.PathFinding.NavMesh.Geometry
 {
     public class GeometryUtil
     {
@@ -85,8 +85,8 @@ namespace vFrame.Lockstep.Core.PathFinding
 
             // Check if P in edge region of BC, if so return projection of P onto BC
             var va = d3 * d6 - d5 * d4;
-            if (va <= 0 && (d4 - d3) >= 0 && (d5 - d6) >= 0) {
-                var w = (d4 - d3) / ((d4 - d3) + (d5 - d6));
+            if (va <= 0 && d4 - d3 >= 0 && d5 - d6 >= 0) {
+                var w = (d4 - d3) / (d4 - d3 + (d5 - d6));
                 _out.set(b).mulAdd(c.sub(b), w); // barycentric coordinates (0,1-w,w)
                 return _out.dst2(p);
             }
@@ -94,8 +94,8 @@ namespace vFrame.Lockstep.Core.PathFinding
             // P inside face region. Compute Q through its barycentric coordinates (u,v,w)
             var denom = 1 / (va + vb + vc);
             {
-                FixedPoint v = vb * denom;
-                FixedPoint w = vc * denom;
+                var v = vb * denom;
+                var w = vc * denom;
                 _out.set(a).mulAdd(ab, v).mulAdd(ac, w);
             }
             return _out.dst2(p);
@@ -104,11 +104,11 @@ namespace vFrame.Lockstep.Core.PathFinding
         public static bool IntersectRayTriangle(Ray ray, TSVector t1, TSVector t2, TSVector t3,
             out TSVector intersection) {
             intersection = TSVector.zero;
-            TSVector edge1 = t2.sub(t1);
-            TSVector edge2 = t3.sub(t1);
+            var edge1 = t2.sub(t1);
+            var edge2 = t3.sub(t1);
 
-            TSVector pvec = ray.direction.cross(edge2);
-            FixedPoint det = edge1.dot(pvec);
+            var pvec = ray.direction.cross(edge2);
+            var det = edge1.dot(pvec);
             if (IsZero(det)) {
                 var p = new Plane(t1, t2, t3);
                 if (p.testPoint(ray.origin) == PlaneSide.OnPlane && IsPointInTriangle(ray.origin, t1, t2, t3)) {
@@ -121,34 +121,32 @@ namespace vFrame.Lockstep.Core.PathFinding
 
             det = 1 / det;
 
-            TSVector tvec = ray.origin.sub(t1);
-            FixedPoint u = tvec.dot(pvec) * det;
+            var tvec = ray.origin.sub(t1);
+            var u = tvec.dot(pvec) * det;
             if (u < 0 || u > 1)
                 return false;
 
-            TSVector qvec = tvec.cross(edge1);
-            FixedPoint v = ray.direction.dot(qvec) * det;
+            var qvec = tvec.cross(edge1);
+            var v = ray.direction.dot(qvec) * det;
             if (v < 0 || u + v > 1)
                 return false;
 
-            FixedPoint t = edge2.dot(qvec) * det;
+            var t = edge2.dot(qvec) * det;
             if (t < 0)
                 return false;
 
-            if (t <= FLOAT_ROUNDING_ERROR) {
+            if (t <= FLOAT_ROUNDING_ERROR)
                 intersection.set(ray.origin);
-            }
-            else {
+            else
                 ray.getEndPoint(intersection, t);
-            }
 
             return true;
         }
 
         public static bool IsPointInTriangle(TSVector point, TSVector t1, TSVector t2, TSVector t3) {
-            var v0 = (t1).sub(point);
-            var v1 = (t2).sub(point);
-            var v2 = (t3).sub(point);
+            var v0 = t1.sub(point);
+            var v1 = t2.sub(point);
+            var v2 = t3.sub(point);
 
             var ab = v0.dot(v1);
             var ac = v0.dot(v2);
@@ -164,7 +162,7 @@ namespace vFrame.Lockstep.Core.PathFinding
         }
 
         public static bool IsZero(FixedPoint value) {
-            return TSMath.Abs(value) <= GeometryUtil.FLOAT_ROUNDING_ERROR;
+            return TSMath.Abs(value) <= FLOAT_ROUNDING_ERROR;
         }
     }
 }

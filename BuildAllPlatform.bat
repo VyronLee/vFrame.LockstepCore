@@ -6,6 +6,8 @@ echo Building for platform: Editor
 msbuild vFrame.Lockstep.Core.sln /t:Clean,Rebuild /p:Configuration=Debug /p:Platform="Any CPU"
 if not exist "%CURDIR%\Output\vFrame.Lockstep.Core\Runtime" mkdir %CURDIR%\Output\vFrame.Lockstep.Core\Runtime
 copy /Y %CURDIR%\Build\vFrame.Lockstep.Core\Debug\vFrame.Lockstep.Core.* %CURDIR%\Output\vFrame.Lockstep.Core\Runtime\
+if not exist "%CURDIR%\Output\vFrame.Lockstep.Core\Editor" mkdir %CURDIR%\Output\vFrame.Lockstep.Core\Editor
+copy /Y %CURDIR%\Build\vFrame.Lockstep.Editor\Debug\vFrame.Lockstep.Editor.* %CURDIR%\Output\vFrame.Lockstep.Core\Editor\
 
 echo Building for platform: Standalone
 msbuild vFrame.Lockstep.Core.sln /t:Clean,Rebuild /p:Configuration=Release /p:Platform="Any CPU" /p:DefineConstants="TRACE UNITY_STANDALONE"

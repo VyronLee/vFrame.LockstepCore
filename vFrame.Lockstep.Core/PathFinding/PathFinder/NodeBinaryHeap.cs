@@ -3,7 +3,6 @@ using System.Text;
 
 namespace vFrame.Lockstep.Core.PathFinding
 {
-
     public class Node
     {
         public FixedPoint value; //节点排序比较值
@@ -17,7 +16,7 @@ namespace vFrame.Lockstep.Core.PathFinding
             return value;
         }
 
-        public override String ToString() {
+        public override string ToString() {
             return value.ToString();
         }
     }
@@ -33,14 +32,14 @@ namespace vFrame.Lockstep.Core.PathFinding
         }
 
         public NodeBinaryHeap(int capacity, bool isMaxHeap) {
-            this._isMaxHeap = isMaxHeap;
+            _isMaxHeap = isMaxHeap;
             _nodes = new Node[capacity];
         }
 
         public T Add(T node) {
             // Expand if necessary.
             if (size == _nodes.Length) {
-                Node[] newNodes = new Node[size << 1];
+                var newNodes = new Node[size << 1];
                 Array.Copy(_nodes, 0, newNodes, 0, size);
                 _nodes = newNodes;
             }
@@ -72,8 +71,8 @@ namespace vFrame.Lockstep.Core.PathFinding
         }
 
         private T Remove(int index) {
-            Node[] nodes = this._nodes;
-            Node removed = nodes[index];
+            var nodes = _nodes;
+            var removed = nodes[index];
             nodes[index] = nodes[--size];
             nodes[size] = null;
             if (size > 0 && index < size)
@@ -83,14 +82,14 @@ namespace vFrame.Lockstep.Core.PathFinding
 
         //TODO 可以不用对nodes 进行清零
         public void Clear() {
-            Node[] nodes = this._nodes;
+            var nodes = _nodes;
             for (int i = 0, n = size; i < n; i++)
                 nodes[i] = null;
             size = 0;
         }
 
         public void SetValue(T node, FixedPoint value) {
-            FixedPoint oldValue = node.value;
+            var oldValue = node.value;
             node.value = value;
             if ((value < oldValue) ^ _isMaxHeap)
                 Up(node.index);
@@ -99,19 +98,20 @@ namespace vFrame.Lockstep.Core.PathFinding
         }
 
         private void Up(int index) {
-            Node[] nodes = this._nodes;
-            Node node = nodes[index];
-            FixedPoint value = node.value;
+            var nodes = _nodes;
+            var node = nodes[index];
+            var value = node.value;
             while (index > 0) {
-                int parentIndex = (index - 1) >> 1;
-                Node parent = nodes[parentIndex];
+                var parentIndex = (index - 1) >> 1;
+                var parent = nodes[parentIndex];
                 if ((value < parent.value) ^ _isMaxHeap) {
                     nodes[index] = parent;
                     parent.index = index;
                     index = parentIndex;
                 }
-                else
+                else {
                     break;
+                }
             }
 
             nodes[index] = node;
@@ -121,23 +121,23 @@ namespace vFrame.Lockstep.Core.PathFinding
         public static readonly FixedPoint MinValue = new FixedPoint(int.MinValue);
 
         private void Down(int index) {
-            Node[] nodes = this._nodes;
-            int size = this.size;
+            var nodes = _nodes;
+            var size = this.size;
 
-            Node node = nodes[index];
-            FixedPoint value = node.value;
+            var node = nodes[index];
+            var value = node.value;
 
             while (true) {
-                int leftIndex = 1 + (index << 1);
+                var leftIndex = 1 + (index << 1);
                 if (leftIndex >= size)
                     break;
 
                 // Always have a left child.
-                Node leftNode = nodes[leftIndex];
-                FixedPoint leftValue = leftNode.value;
+                var leftNode = nodes[leftIndex];
+                var leftValue = leftNode.value;
 
                 // May have a right child.
-                int rightIndex = leftIndex + 1;
+                var rightIndex = leftIndex + 1;
                 Node rightNode;
                 FixedPoint rightValue;
                 if (rightIndex >= size) {
@@ -151,14 +151,14 @@ namespace vFrame.Lockstep.Core.PathFinding
 
                 // The smallest of the three values is the parent.
                 if ((leftValue < rightValue) ^ _isMaxHeap) {
-                    if (leftValue == value || ((leftValue > value) ^ _isMaxHeap))
+                    if (leftValue == value || (leftValue > value) ^ _isMaxHeap)
                         break;
                     nodes[index] = leftNode;
                     leftNode.index = index;
                     index = leftIndex;
                 }
                 else {
-                    if (rightValue == value || ((rightValue > value) ^ _isMaxHeap))
+                    if (rightValue == value || (rightValue > value) ^ _isMaxHeap)
                         break;
                     nodes[index] = rightNode;
                     rightNode.index = index;
@@ -172,21 +172,21 @@ namespace vFrame.Lockstep.Core.PathFinding
 
 
         public override int GetHashCode() {
-            int h = 1;
+            var h = 1;
             for (int i = 0, n = size; i < n; i++)
                 h = h * 31 + _nodes[i].value.AsInt() * 1000;
             return h;
         }
 
 
-        public override String ToString() {
+        public override string ToString() {
             if (size == 0)
                 return "[]";
-            Node[] nodes = this._nodes;
-            StringBuilder buffer = new StringBuilder(32);
+            var nodes = _nodes;
+            var buffer = new StringBuilder(32);
             buffer.Append('[');
             buffer.Append(nodes[0].value);
-            for (int i = 1; i < size; i++) {
+            for (var i = 1; i < size; i++) {
                 buffer.Append(", ");
                 buffer.Append(nodes[i].value);
             }

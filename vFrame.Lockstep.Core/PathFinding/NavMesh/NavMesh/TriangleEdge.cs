@@ -1,14 +1,14 @@
 ﻿using System;
+using System.Text;
+
 /**
  * 相连接三角形的共享边
  *
  * @author JiangZhiYong
  * @QQ 359135103 2017年11月7日 下午4:50:11
  */
-using System;
-using System.Text;
 
-namespace vFrame.Lockstep.Core.PathFinding
+namespace vFrame.Lockstep.Core.PathFinding.NavMesh.NavMesh
 {
     public class TriangleEdge : IConnection<Triangle>
     {
@@ -44,8 +44,8 @@ namespace vFrame.Lockstep.Core.PathFinding
             return toNode;
         }
 
-        public override String ToString() {
-            StringBuilder sb = new StringBuilder("Edge{");
+        public override string ToString() {
+            var sb = new StringBuilder("Edge{");
             sb.Append("fromNode=").Append(fromNode.index);
             //sb.Append(", toNode=").Append(toNode == null ? "null" : toNode.index);
             sb.Append(", rightVertex=").Append(rightVertex);

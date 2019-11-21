@@ -1,6 +1,7 @@
 ﻿using System;
+using vFrame.Lockstep.Core.PathFinding.NavMesh.NavMesh;
 
-namespace vFrame.Lockstep.Core.PathFinding
+namespace vFrame.Lockstep.Core.PathFinding.NavMesh.Geometry
 {
     public class Plane
     {
@@ -19,7 +20,7 @@ namespace vFrame.Lockstep.Core.PathFinding
 
         public Plane(TSVector normal, TSVector point) {
             this.normal.set(normal).nor();
-            this.d = -this.normal.dot(point);
+            d = -this.normal.dot(point);
         }
 
         public Plane(TSVector point1, TSVector point2, TSVector point3) {
@@ -27,7 +28,7 @@ namespace vFrame.Lockstep.Core.PathFinding
         }
 
         public void set(TSVector point1, TSVector point2, TSVector point3) {
-            normal = (point1).sub(point2).cross(point2.x - point3.x, point2.y - point3.y, point2.z - point3.z).nor();
+            normal = point1.sub(point2).cross(point2.x - point3.x, point2.y - point3.y, point2.z - point3.z).nor();
             d = -point1.dot(normal);
         }
 
@@ -37,7 +38,7 @@ namespace vFrame.Lockstep.Core.PathFinding
         }
 
         public PlaneSide testPoint(TSVector point) {
-            FixedPoint dist = normal.dot(point) + d;
+            var dist = normal.dot(point) + d;
 
             if (dist == 0)
                 return PlaneSide.OnPlane;
@@ -49,7 +50,7 @@ namespace vFrame.Lockstep.Core.PathFinding
 
 
         public PlaneSide testPoint(FixedPoint x, FixedPoint y, FixedPoint z) {
-            FixedPoint dist = normal.dot(x, y, z) + d;
+            var dist = normal.dot(x, y, z) + d;
 
             if (dist == 0)
                 return PlaneSide.OnPlane;
@@ -61,7 +62,7 @@ namespace vFrame.Lockstep.Core.PathFinding
 
 
         public bool isFrontFacing(TSVector direction) {
-            FixedPoint dot = normal.dot(direction);
+            var dot = normal.dot(direction);
             return dot <= 0;
         }
 
@@ -83,17 +84,17 @@ namespace vFrame.Lockstep.Core.PathFinding
 
         public void set(FixedPoint pointX, FixedPoint pointY, FixedPoint pointZ, FixedPoint norX, FixedPoint norY,
             FixedPoint norZ) {
-            this.normal.set(norX, norY, norZ);
+            normal.set(norX, norY, norZ);
             d = -(pointX * norX + pointY * norY + pointZ * norZ);
         }
 
 
         public void set(Plane plane) {
-            this.normal.set(plane.normal);
-            this.d = plane.d;
+            normal.set(plane.normal);
+            d = plane.d;
         }
 
-        public override String ToString() {
+        public override string ToString() {
             return normal.ToString() + ", " + d;
         }
     }

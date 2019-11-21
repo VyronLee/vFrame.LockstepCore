@@ -1,4 +1,4 @@
-﻿namespace vFrame.Lockstep.Core.PathFinding
+﻿namespace vFrame.Lockstep.Core.PathFinding.NavMesh.BSP
 {
     public enum ESplitType
     {

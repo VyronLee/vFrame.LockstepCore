@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace vFrame.Lockstep.Core.PathFinding
+namespace vFrame.Lockstep.Core.PathFinding.NavMesh.NavMesh
 {
     [Serializable]
     public class NavMeshData
@@ -39,22 +39,20 @@ namespace vFrame.Lockstep.Core.PathFinding
             amendmentSameVector(pathTriangles, pathVertices);
             scaleVector(pathVertices, scale);
 
-            this.width = TSMath.Abs(this.getEndX() - this.getStartX());
-            this.height = TSMath.Abs(this.getEndZ() - this.getStartZ());
+            width = TSMath.Abs(getEndX() - getStartX());
+            height = TSMath.Abs(getEndZ() - getStartZ());
         }
 
         /**
          * 缩放向量
          */
         protected void scaleVector(TSVector[] vertices, int scale) {
-            if (vertices == null || scale == 1) {
-                return;
-            }
+            if (vertices == null || scale == 1) return;
 
             var lscale = new FixedPoint(scale);
-            for (int i = 0; i < vertices.Length; i++) {
-                vertices[i].x += (-this.startX); // 缩放移动
-                vertices[i].z += (-this.startZ);
+            for (var i = 0; i < vertices.Length; i++) {
+                vertices[i].x += -startX; // 缩放移动
+                vertices[i].z += -startZ;
                 vertices[i] = vertices[i] * lscale;
             }
         }
@@ -66,29 +64,21 @@ namespace vFrame.Lockstep.Core.PathFinding
          * </p>
          */
         public void amendmentSameVector(int[] indexs, TSVector[] vertices) {
-            if (indexs == null || vertices == null) {
-                return;
-            }
+            if (indexs == null || vertices == null) return;
 
-            Dictionary<TSVector, int> map = new Dictionary<TSVector, int>();
+            var map = new Dictionary<TSVector, int>();
             // 检测路径重复点
-            for (int i = 0; i < vertices.Length; i++) {
-                // 重复出现的坐标
-                if (map.ContainsKey(vertices[i])) {
-                    for (int j = 0; j < indexs.Length; j++) {
-                        if (indexs[j] == i) { // 修正重复的坐标
+            for (var i = 0; i < vertices.Length; i++) // 重复出现的坐标
+                if (map.ContainsKey(vertices[i]))
+                    for (var j = 0; j < indexs.Length; j++)
+                        if (indexs[j] == i) // 修正重复的坐标
                             // System.out.println(String.format("坐标重复为%s",
                             // indexs[j],i,vertices[i].ToString()));
                             indexs[j] = map.get(vertices[i]);
-                        }
-                    }
 
-                    // vertices[i] = null;
-                }
-                else {
+                // vertices[i] = null;
+                else
                     map.Add(vertices[i], i);
-                }
-            }
         }
 
 

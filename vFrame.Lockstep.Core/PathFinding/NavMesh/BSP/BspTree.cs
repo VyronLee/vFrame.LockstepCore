@@ -1,8 +1,7 @@
 ﻿//#define SHOW_BSP_TREE_GIZOMS
 
 using System.Collections.Generic;
-using System.Drawing;
-using vFrame.Lockstep.Core;
+using vFrame.Lockstep.Core.PathFinding.NavMesh.NavMesh;
 
 #if UNITY_EDITOR
 using UnityEngine;
@@ -10,7 +9,7 @@ using Color = UnityEngine.Color;
 
 #endif
 
-namespace vFrame.Lockstep.Core.PathFinding
+namespace vFrame.Lockstep.Core.PathFinding.NavMesh.BSP
 {
     public class BspTree
     {
@@ -22,10 +21,8 @@ namespace vFrame.Lockstep.Core.PathFinding
         public static int maxDepthNodeId;
 
         public void Init(List<Triangle> rawTriangles) {
-            this.allRawTriangle = rawTriangles;
-            foreach (var tri in rawTriangles) {
-                allTriangle.Add(new TriRef(tri));
-            }
+            allRawTriangle = rawTriangles;
+            foreach (var tri in rawTriangles) allTriangle.Add(new TriRef(tri));
 
             root = new BspNode();
             root.Init(allTriangle);

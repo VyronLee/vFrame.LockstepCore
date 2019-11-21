@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace vFrame.Lockstep.Core.PathFinding
+namespace vFrame.Lockstep.Core.PathFinding.NavMesh.NavMesh
 {
     public class Triangle
     {
@@ -26,19 +26,19 @@ namespace vFrame.Lockstep.Core.PathFinding
             this.a = a;
             this.b = b;
             this.c = c;
-            this.y = (a.y + b.y + c.y) / 3;
+            y = (a.y + b.y + c.y) / 3;
             this.index = index;
-            this.center = a.Add(b).Add(c).scl(1 / (new FixedPoint(3)));
-            this.connections = new List<IConnection<Triangle>>();
+            center = a.Add(b).Add(c).scl(1 / new FixedPoint(3));
+            connections = new List<IConnection<Triangle>>();
             this.vectorIndex = vectorIndex;
         }
 
-        public override String ToString() {
+        public override string ToString() {
             return "Triangle [index=" + index + ", a=" + a + ", b=" + b + ", c=" + c + ", center=" + center + "]";
         }
 
         public int getIndex() {
-            return this.index;
+            return index;
         }
 
         public List<IConnection<Triangle>> getConnections() {
@@ -47,18 +47,13 @@ namespace vFrame.Lockstep.Core.PathFinding
 
 
         public bool IsInnerPoint(TSVector point) {
-            bool res = pointInLineLeft(a, b, point);
-            if (res != pointInLineLeft(b, c, point)) {
-                return false;
-            }
+            var res = pointInLineLeft(a, b, point);
+            if (res != pointInLineLeft(b, c, point)) return false;
 
-            if (res != pointInLineLeft(c, a, point)) {
-                return false;
-            }
+            if (res != pointInLineLeft(c, a, point)) return false;
 
-            if (cross2D(a, b, c) == 0) { //三点共线
+            if (cross2D(a, b, c) == 0) //三点共线
                 return false;
-            }
 
             return true;
         }
@@ -73,8 +68,8 @@ namespace vFrame.Lockstep.Core.PathFinding
 
 
         public override int GetHashCode() {
-            int prime = 31;
-            int result = 1;
+            var prime = 31;
+            var result = 1;
             result = prime * result + index;
             return result;
         }
@@ -86,7 +81,7 @@ namespace vFrame.Lockstep.Core.PathFinding
                 return false;
             if (GetType() != obj.GetType())
                 return false;
-            Triangle other = (Triangle) obj;
+            var other = (Triangle) obj;
             if (index != other.index)
                 return false;
             return true;

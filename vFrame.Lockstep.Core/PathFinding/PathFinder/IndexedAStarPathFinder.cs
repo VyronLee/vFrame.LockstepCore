@@ -23,40 +23,32 @@ namespace vFrame.Lockstep.Core.PathFinding
         }
 
         public IndexedAStarPathFinder(IIndexedGraph<N> graph, bool calculateMetrics) {
-            this._graph = graph;
-            this._nodeRecords = new NodeRecord<N>[graph.GetNodeCount()];
-            this._openList = new NodeBinaryHeap<NodeRecord<N>>();
-            if (calculateMetrics) this.metrics = new Metrics();
+            _graph = graph;
+            _nodeRecords = new NodeRecord<N>[graph.GetNodeCount()];
+            _openList = new NodeBinaryHeap<NodeRecord<N>>();
+            if (calculateMetrics) metrics = new Metrics();
         }
 
         public bool SearchPath(N startNode, N endNode, IHeuristic<N> heuristic, IGraphPath<IConnection<N>> outPath) {
-            if (startNode == null) {
-                return false;
-            }
+            if (startNode == null) return false;
 
-            if (endNode == null) {
-                return false;
-            }
+            if (endNode == null) return false;
 
             // Perform AStar
-            bool found = Search(startNode, endNode, heuristic);
+            var found = Search(startNode, endNode, heuristic);
 
-            if (found) {
-                // Create a path made of connections
+            if (found) // Create a path made of connections
                 GeneratePath(startNode, outPath);
-            }
 
             return found;
         }
 
         public bool SearchNodePath(N startNode, N endNode, IHeuristic<N> heuristic, IGraphPath<N> outPath) {
             // Perform AStar
-            bool found = Search(startNode, endNode, heuristic);
+            var found = Search(startNode, endNode, heuristic);
 
-            if (found) {
-                // Create a path made of nodes
+            if (found) // Create a path made of nodes
                 GenerateNodePath(startNode, outPath);
-            }
 
             return found;
         }
@@ -90,7 +82,7 @@ namespace vFrame.Lockstep.Core.PathFinding
             _openList.Clear();
 
             // Initialize the record for the start node and add it to the open list
-            NodeRecord<N> startRecord = GetNodeRecord(startNode);
+            var startRecord = GetNodeRecord(startNode);
             startRecord.node = startNode;
             startRecord.connection = null;
             startRecord.costSoFar = new FixedPoint(0);
@@ -104,17 +96,17 @@ namespace vFrame.Lockstep.Core.PathFinding
             var connections = _graph.GetConnections(_current.node);
 
             // Loop through each connection in turn
-            for (int i = 0; i < connections.Count; i++) {
+            for (var i = 0; i < connections.Count; i++) {
                 if (metrics != null) metrics.VisitedNodes++;
 
-                IConnection<N> connection = connections[i];
+                var connection = connections[i];
 
                 // Get the cost estimate for the node
-                N node = connection.GetToNode(); //周围目标节点
-                FixedPoint nodeCost = _current.costSoFar + connection.GetCost(); //节点到目标的消耗
+                var node = connection.GetToNode(); //周围目标节点
+                var nodeCost = _current.costSoFar + connection.GetCost(); //节点到目标的消耗
 
                 FixedPoint nodeHeuristic;
-                NodeRecord<N> nodeRecord = GetNodeRecord(node);
+                var nodeRecord = GetNodeRecord(node);
                 if (nodeRecord.category == CLOSED) { // The node is closed
 
                     // If we didn't find a shorter route, skip 已经是消耗最小的目标点
@@ -188,8 +180,8 @@ namespace vFrame.Lockstep.Core.PathFinding
         }
 
         protected NodeRecord<N> GetNodeRecord(N node) {
-            int index = _graph.GetIndex(node);
-            NodeRecord<N> nr = _nodeRecords[index];
+            var index = _graph.GetIndex(node);
+            var nr = _nodeRecords[index];
             if (nr != null) {
                 if (nr.searchId != _searchId) {
                     nr.category = UNVISITED;

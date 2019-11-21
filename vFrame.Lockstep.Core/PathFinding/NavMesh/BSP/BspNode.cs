@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace vFrame.Lockstep.Core.PathFinding
+namespace vFrame.Lockstep.Core.PathFinding.NavMesh.BSP
 {
     public class BspNode
     {
@@ -12,7 +12,7 @@ namespace vFrame.Lockstep.Core.PathFinding
         public static int _debugNodeId = 0;
 
         public BspNode() {
-            nodeId = BspNode._debugNodeId++;
+            nodeId = _debugNodeId++;
         }
 
         public SplitPlane SplitPlane;
@@ -21,47 +21,41 @@ namespace vFrame.Lockstep.Core.PathFinding
         public int minTriCount = 3;
         public int depth = 0;
 
-        static HashSet<int> uniqueId = new HashSet<int>();
+        private static HashSet<int> uniqueId = new HashSet<int>();
 
         public BspNode leftChild => child[0];
         public BspNode rightChild => child[1];
 
-        static int maxDepth {
+        private static int maxDepth {
             get => BspTree.maxDepth;
             set => BspTree.maxDepth = value;
         }
 
-        static int maxDepthNodeId {
+        private static int maxDepthNodeId {
             get => BspTree.maxDepthNodeId;
             set => BspTree.maxDepthNodeId = value;
         }
 
         public int GetTriangle(TSVector2 pos) {
             if (IsLeaf) {
-                foreach (var tri in tris) {
-                    if (tri.Contain(pos)) {
+                foreach (var tri in tris)
+                    if (tri.Contain(pos))
                         return tri.index;
-                    }
-                }
 
                 return -1;
             }
             else {
                 var isLeft = TSVector2.Cross(SplitPlane.b - SplitPlane.a, pos - SplitPlane.a) >= 0;
-                if (isLeft) {
+                if (isLeft)
                     return leftChild.GetTriangle(pos);
-                }
-                else {
+                else
                     return rightChild.GetTriangle(pos);
-                }
             }
         }
 
         public void Init(List<TriRef> tris, int depth = 0) {
             uniqueId.Clear();
-            foreach (var tri in tris) {
-                uniqueId.Add(tri.index);
-            }
+            foreach (var tri in tris) uniqueId.Add(tri.index);
 
             if (depth > maxDepth) {
                 maxDepth = depth;
@@ -71,12 +65,10 @@ namespace vFrame.Lockstep.Core.PathFinding
             this.depth = depth;
             this.tris = tris;
             if (nodeId == 12) {
-                int i = 0;
+                var i = 0;
             }
 
-            if (uniqueId.Count <= minTriCount) {
-                return;
-            }
+            if (uniqueId.Count <= minTriCount) return;
 
             if (depth > 20)
                 return;
@@ -93,26 +85,24 @@ namespace vFrame.Lockstep.Core.PathFinding
                     lTris.Add(tri);
                 else if (val == ESplitType.Right)
                     rTris.Add(tri);
-                else {
-                    //split triangle into muti polygon
+                else //split triangle into muti polygon
                     SplitTri(lTris, rTris, tri);
-                }
             }
 
             leftChild.Init(lTris, depth + 1);
             rightChild.Init(rTris, depth + 1);
         }
 
-        List<TSVector2> rVerts = new List<TSVector2>();
-        List<TSVector2> lVerts = new List<TSVector2>();
+        private List<TSVector2> rVerts = new List<TSVector2>();
+        private List<TSVector2> lVerts = new List<TSVector2>();
 
         private void SplitTri(List<TriRef> lTris, List<TriRef> rTris, TriRef tri) {
-            int numVerts = 3;
+            var numVerts = 3;
             rVerts.Clear();
             lVerts.Clear();
             var a = tri[2];
             var aSide = SplitPlane.ClassifyPointToPlane(SplitPlane, a);
-            for (int i = 0; i < numVerts; i++) {
+            for (var i = 0; i < numVerts; i++) {
                 var b = tri[i];
                 var bSide = SplitPlane.ClassifyPointToPlane(SplitPlane, b);
                 if (bSide == ESplitType.Right) {
@@ -122,9 +112,7 @@ namespace vFrame.Lockstep.Core.PathFinding
                         lVerts.Add(p);
                     }
                     else if (aSide == ESplitType.OnPlane) {
-                        if (rVerts.Count == 0 || a != rVerts[rVerts.Count - 1]) {
-                            rVerts.Add(a);
-                        }
+                        if (rVerts.Count == 0 || a != rVerts[rVerts.Count - 1]) rVerts.Add(a);
                     }
 
                     rVerts.Add(b);
@@ -136,23 +124,17 @@ namespace vFrame.Lockstep.Core.PathFinding
                         lVerts.Add(p);
                     }
                     else if (aSide == ESplitType.OnPlane) {
-                        if (lVerts.Count == 0 || a != lVerts[lVerts.Count - 1]) {
-                            lVerts.Add(a);
-                        }
+                        if (lVerts.Count == 0 || a != lVerts[lVerts.Count - 1]) lVerts.Add(a);
                     }
 
                     lVerts.Add(b);
                 }
                 else {
                     if (aSide == ESplitType.Right) {
-                        if (!(rVerts.Count == 3 && b == rVerts[0])) {
-                            rVerts.Add(b);
-                        }
+                        if (!(rVerts.Count == 3 && b == rVerts[0])) rVerts.Add(b);
                     }
                     else if (aSide == ESplitType.Left) {
-                        if (!(lVerts.Count == 3 && b == lVerts[0])) {
-                            lVerts.Add(b);
-                        }
+                        if (!(lVerts.Count == 3 && b == lVerts[0])) lVerts.Add(b);
                     }
                 }
 
@@ -184,7 +166,7 @@ namespace vFrame.Lockstep.Core.PathFinding
             }
         }
 
-        void AddTriangle(List<TriRef> rTris, TSVector2 a, TSVector2 b, TSVector2 c, TriRef tri) {
+        private void AddTriangle(List<TriRef> rTris, TSVector2 a, TSVector2 b, TSVector2 c, TriRef tri) {
             if (a == b || b == c || c == a)
                 return;
             rTris.Add(new TriRef(a, b, c, tri));
@@ -192,42 +174,37 @@ namespace vFrame.Lockstep.Core.PathFinding
         }
 
 
-        static SplitPlane PickSplittingPlane(List<TriRef> tris) {
-            int minScore = int.MinValue;
-            int minLCount = 0;
-            int minRCount = 0;
-            SplitPlane bestPlane = new SplitPlane();
-            int[] splitCounter = new int[(int) ESplitType.EnumCount];
+        private static SplitPlane PickSplittingPlane(List<TriRef> tris) {
+            var minScore = int.MinValue;
+            var minLCount = 0;
+            var minRCount = 0;
+            var bestPlane = new SplitPlane();
+            var splitCounter = new int[(int) ESplitType.EnumCount];
             var tirCount = tris.Count;
-            foreach (var tri in tris) {
-                foreach (var plane in tri.borders) {
-                    for (int i = 0; i < (int) ESplitType.EnumCount; i++) {
-                        splitCounter[i] = 0;
-                    }
+            foreach (var tri in tris)
+            foreach (var plane in tri.borders) {
+                for (var i = 0; i < (int) ESplitType.EnumCount; i++) splitCounter[i] = 0;
 
-                    foreach (var otherTri in tris) {
-                        var val = (int) SplitPlane.GetSplitResult(plane, otherTri);
-                        splitCounter[val]++;
-                    }
+                foreach (var otherTri in tris) {
+                    var val = (int) SplitPlane.GetSplitResult(plane, otherTri);
+                    splitCounter[val]++;
+                }
 
-                    // Clock wise =>Left ++   CCW=>Right++// self tri is on the left
-                    var leftCount = splitCounter[(int) ESplitType.Left];
-                    var rightCount = splitCounter[(int) ESplitType.Right];
-                    var splitCount = splitCounter[(int) ESplitType.OnPlane];
-                    if ((leftCount == 0 || rightCount == 0) && leftCount + rightCount == tirCount) {
-                        continue;
-                    }
+                // Clock wise =>Left ++   CCW=>Right++// self tri is on the left
+                var leftCount = splitCounter[(int) ESplitType.Left];
+                var rightCount = splitCounter[(int) ESplitType.Right];
+                var splitCount = splitCounter[(int) ESplitType.OnPlane];
+                if ((leftCount == 0 || rightCount == 0) && leftCount + rightCount == tirCount) continue;
 
-                    var balanceVal = TSMath.Abs(leftCount - rightCount).AsInt();
-                    var sameVal = TSMath.Min(leftCount, rightCount).AsInt();
-                    int score = sameVal * 3 - balanceVal - splitCount * 2;
+                var balanceVal = TSMath.Abs(leftCount - rightCount).AsInt();
+                var sameVal = TSMath.Min(leftCount, rightCount).AsInt();
+                var score = sameVal * 3 - balanceVal - splitCount * 2;
 
-                    if (score > minScore) {
-                        minLCount = leftCount;
-                        minRCount = rightCount;
-                        minScore = score;
-                        bestPlane = plane;
-                    }
+                if (score > minScore) {
+                    minLCount = leftCount;
+                    minRCount = rightCount;
+                    minScore = score;
+                    bestPlane = plane;
                 }
             }
 

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace vFrame.Lockstep.Core.PathFinding
+﻿namespace vFrame.Lockstep.Core.PathFinding.NavMesh.NavMesh
 {
     public class TriangleHeuristic : IHeuristic<Triangle>
     {
@@ -14,14 +11,14 @@ namespace vFrame.Lockstep.Core.PathFinding
 
         public FixedPoint Estimate(Triangle node, Triangle endNode) {
             FixedPoint dst2;
-            FixedPoint minDst2 = FixedPoint.MaxValue;
-            A_AB = (node.a).Add(node.b) * FixedPoint.Half;
-            A_AB = (node.b).Add(node.c) * FixedPoint.Half;
-            A_AB = (node.c).Add(node.a) * FixedPoint.Half;
+            var minDst2 = FixedPoint.MaxValue;
+            A_AB = node.a.Add(node.b) * FixedPoint.Half;
+            A_AB = node.b.Add(node.c) * FixedPoint.Half;
+            A_AB = node.c.Add(node.a) * FixedPoint.Half;
 
-            B_AB = (endNode.a).Add(endNode.b) * FixedPoint.Half;
-            B_BC = (endNode.b).Add(endNode.c) * FixedPoint.Half;
-            B_CA = (endNode.c).Add(endNode.a) * FixedPoint.Half;
+            B_AB = endNode.a.Add(endNode.b) * FixedPoint.Half;
+            B_BC = endNode.b.Add(endNode.c) * FixedPoint.Half;
+            B_CA = endNode.c.Add(endNode.a) * FixedPoint.Half;
 
             if ((dst2 = A_AB.dst2(B_AB)) < minDst2)
                 minDst2 = dst2;

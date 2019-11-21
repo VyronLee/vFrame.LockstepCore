@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using LitJson;
+using vFrame.Lockstep.Core.PathFinding.NavMesh.BSP;
 
-
-namespace vFrame.Lockstep.Core.PathFinding
+namespace vFrame.Lockstep.Core.PathFinding.NavMesh.NavMesh
 {
     public class TriangleNavMesh : NavMesh
     {
@@ -11,12 +11,12 @@ namespace vFrame.Lockstep.Core.PathFinding
         private TriangleHeuristic _heuristic;
         public IndexedAStarPathFinder<Triangle> _pathFinder;
 
-        public TriangleNavMesh(String navMeshStr) : this(navMeshStr, 1) {
+        public TriangleNavMesh(string navMeshStr) : this(navMeshStr, 1) {
         }
 
         public BspTree bspTree => _graph.bspTree;
 
-        public TriangleNavMesh(String navMeshStr, int scale) {
+        public TriangleNavMesh(string navMeshStr, int scale) {
             var data = JsonMapper.ToObject<TriangleData>(navMeshStr);
             _graph = new TriangleGraph(data, scale);
             _pathFinder = new IndexedAStarPathFinder<Triangle>(_graph, true);
@@ -27,10 +27,8 @@ namespace vFrame.Lockstep.Core.PathFinding
 
         public List<TSVector> FindPath(TSVector fromPoint, TSVector toPoint, TrianglePointPath navMeshPointPath) {
             navMeshGraphPath = new TriangleGraphPath();
-            bool find = FindPath(fromPoint, toPoint, navMeshGraphPath);
-            if (!find) {
-                return null;
-            }
+            var find = FindPath(fromPoint, toPoint, navMeshGraphPath);
+            if (!find) return null;
 
             navMeshPointPath.CalculateForGraphPath(navMeshGraphPath, false);
             return navMeshPointPath.getVectors();
@@ -38,7 +36,7 @@ namespace vFrame.Lockstep.Core.PathFinding
 
         private bool FindPath(TSVector fromPoint, TSVector toPoint, TriangleGraphPath path) {
             path.Clear();
-            Triangle fromTriangle = GetTriangle(fromPoint);
+            var fromTriangle = GetTriangle(fromPoint);
             var toTriangle = GetTriangle(toPoint);
             if (_pathFinder.SearchPath(fromTriangle, toTriangle, _heuristic, path)) {
                 path.start = fromPoint;
