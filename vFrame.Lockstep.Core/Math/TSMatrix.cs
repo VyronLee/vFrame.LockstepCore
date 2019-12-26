@@ -1,5 +1,5 @@
 ﻿/* Copyright (C) <2009-2011> <Thorben Linneweber, Jitter Physics>
-* 
+*
 *  This software is provided 'as-is', without any express or implied
 *  warranty.  In no event will the authors be held liable for any damages
 *  arising from the use of this software.
@@ -14,7 +14,7 @@
 *      appreciated but is not required.
 *  2. Altered source versions must be plainly marked as such, and must not be
 *      misrepresented as being the original software.
-*  3. This notice may not be removed or altered from any source distribution. 
+*  3. This notice may not be removed or altered from any source distribution.
 */
 
 namespace vFrame.Lockstep.Core
@@ -111,8 +111,8 @@ namespace vFrame.Lockstep.Core
 
         public static TSMatrix CreateRotationX(FixedPoint radians) {
             TSMatrix matrix;
-            FixedPoint num2 = FixedPoint.Cos(radians);
-            FixedPoint num = FixedPoint.Sin(radians);
+            FixedPoint num2 = FixedPoint.FastCos(radians);
+            FixedPoint num = FixedPoint.FastSin(radians);
             matrix.M11 = FixedPoint.One;
             matrix.M12 = FixedPoint.Zero;
             matrix.M13 = FixedPoint.Zero;
@@ -126,8 +126,8 @@ namespace vFrame.Lockstep.Core
         }
 
         public static void CreateRotationX(FixedPoint radians, out TSMatrix result) {
-            FixedPoint num2 = FixedPoint.Cos(radians);
-            FixedPoint num = FixedPoint.Sin(radians);
+            FixedPoint num2 = FixedPoint.FastCos(radians);
+            FixedPoint num = FixedPoint.FastSin(radians);
             result.M11 = FixedPoint.One;
             result.M12 = FixedPoint.Zero;
             result.M13 = FixedPoint.Zero;
@@ -141,8 +141,8 @@ namespace vFrame.Lockstep.Core
 
         public static TSMatrix CreateRotationY(FixedPoint radians) {
             TSMatrix matrix;
-            FixedPoint num2 = FixedPoint.Cos(radians);
-            FixedPoint num = FixedPoint.Sin(radians);
+            FixedPoint num2 = FixedPoint.FastCos(radians);
+            FixedPoint num = FixedPoint.FastSin(radians);
             matrix.M11 = num2;
             matrix.M12 = FixedPoint.Zero;
             matrix.M13 = -num;
@@ -156,8 +156,8 @@ namespace vFrame.Lockstep.Core
         }
 
         public static void CreateRotationY(FixedPoint radians, out TSMatrix result) {
-            FixedPoint num2 = FixedPoint.Cos(radians);
-            FixedPoint num = FixedPoint.Sin(radians);
+            FixedPoint num2 = FixedPoint.FastCos(radians);
+            FixedPoint num = FixedPoint.FastSin(radians);
             result.M11 = num2;
             result.M12 = FixedPoint.Zero;
             result.M13 = -num;
@@ -171,8 +171,8 @@ namespace vFrame.Lockstep.Core
 
         public static TSMatrix CreateRotationZ(FixedPoint radians) {
             TSMatrix matrix;
-            FixedPoint num2 = FixedPoint.Cos(radians);
-            FixedPoint num = FixedPoint.Sin(radians);
+            FixedPoint num2 = FixedPoint.FastCos(radians);
+            FixedPoint num = FixedPoint.FastSin(radians);
             matrix.M11 = num2;
             matrix.M12 = num;
             matrix.M13 = FixedPoint.Zero;
@@ -187,8 +187,8 @@ namespace vFrame.Lockstep.Core
 
 
         public static void CreateRotationZ(FixedPoint radians, out TSMatrix result) {
-            FixedPoint num2 = FixedPoint.Cos(radians);
-            FixedPoint num = FixedPoint.Sin(radians);
+            FixedPoint num2 = FixedPoint.FastCos(radians);
+            FixedPoint num = FixedPoint.FastSin(radians);
             result.M11 = num2;
             result.M12 = num;
             result.M13 = FixedPoint.Zero;
@@ -684,8 +684,8 @@ namespace vFrame.Lockstep.Core
             FixedPoint x = axis.x;
             FixedPoint y = axis.y;
             FixedPoint z = axis.z;
-            FixedPoint num2 = FixedPoint.Sin(angle);
-            FixedPoint num = FixedPoint.Cos(angle);
+            FixedPoint num2 = FixedPoint.FastSin(angle);
+            FixedPoint num = FixedPoint.FastCos(angle);
             FixedPoint num11 = x * x;
             FixedPoint num10 = y * y;
             FixedPoint num9 = z * z;

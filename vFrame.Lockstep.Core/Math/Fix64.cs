@@ -586,6 +586,7 @@ namespace vFrame.Lockstep.Core
 
             var nearestValue =
                 new FixedPoint(SinLut[flipHorizontal ? SinLut.Length - 1 - (int) roundedIndex : (int) roundedIndex]);
+
             var secondNearestValue =
                 new FixedPoint(SinLut[
                     flipHorizontal
@@ -831,10 +832,18 @@ namespace vFrame.Lockstep.Core
 //                 throw new ArgumentOutOfRangeException("Must between -FP.One and FP.One", "x");
 //             }
 
-            if (x.RawValue == 0) return PiOver2;
+            if (x.RawValue == 0)
+                return PiOver2;
 
-            var result = Atan(Sqrt(One - x * x) / x);
-            return x.RawValue < 0 ? result + Pi : result;
+            // 改为使用速查表
+            var idx = (int)((LUT_SIZE - 1) * x);
+            idx = idx < 0 ? 0 : ((idx >= AcosLut.Length) ? AcosLut.Length - 1 : idx);
+            var rawValue = AcosLut[idx];
+            var result = FromRaw(rawValue);
+            return result;
+
+            //var result = Atan(Sqrt(One - x * x) / x);
+            //return x.RawValue < 0 ? result + Pi : result;
         }
 
         public static implicit operator FixedPoint(long value) {

@@ -60,27 +60,27 @@ namespace vFrame.Lockstep.Core
         }
 
         public void Set(FixedPoint new_x, FixedPoint new_y, FixedPoint new_z, FixedPoint new_w) {
-            this.x = new_x;
-            this.y = new_y;
-            this.z = new_z;
-            this.w = new_w;
+            x = new_x;
+            y = new_y;
+            z = new_z;
+            w = new_w;
         }
 
         public void SetFromToRotation(TSVector fromDirection, TSVector toDirection) {
-            TSQuaternion targetRotation = TSQuaternion.FromToRotation(fromDirection, toDirection);
-            this.Set(targetRotation.x, targetRotation.y, targetRotation.z, targetRotation.w);
+            var targetRotation = FromToRotation(fromDirection, toDirection);
+            Set(targetRotation.x, targetRotation.y, targetRotation.z, targetRotation.w);
         }
 
         public TSVector eulerAngles {
             get {
-                TSVector result = new TSVector();
+                var result = new TSVector();
 
-                FixedPoint ysqr = y * y;
-                FixedPoint t0 = -2 * (ysqr + z * z) + FixedPoint.One;
-                FixedPoint t1 = +2 * (x * y - w * z);
-                FixedPoint t2 = -2 * (x * z + w * y);
-                FixedPoint t3 = +2 * (y * z - w * x);
-                FixedPoint t4 = -2 * (x * x + ysqr) + FixedPoint.One;
+                var ysqr = y * y;
+                var t0 = -2 * (ysqr + z * z) + FixedPoint.One;
+                var t1 = +2 * (x * y - w * z);
+                var t2 = -2 * (x * z + w * y);
+                var t3 = +2 * (y * z - w * x);
+                var t4 = -2 * (x * x + ysqr) + FixedPoint.One;
 
                 t2 = t2 > FixedPoint.One ? FixedPoint.One : t2;
                 t2 = t2 < -1 ? -1 : t2;
@@ -94,14 +94,12 @@ namespace vFrame.Lockstep.Core
         }
 
         public static FixedPoint Angle(TSQuaternion a, TSQuaternion b) {
-            TSQuaternion aInv = TSQuaternion.Inverse(a);
-            TSQuaternion f = b * aInv;
+            var aInv = Inverse(a);
+            var f = b * aInv;
 
-            FixedPoint angle = FixedPoint.Acos(f.w) * 2 * FixedPoint.Rad2Deg;
+            var angle = FixedPoint.Acos(f.w) * 2 * FixedPoint.Rad2Deg;
 
-            if (angle > 180) {
-                angle = 360 - angle;
-            }
+            if (angle > 180) angle = 360 - angle;
 
             return angle;
         }
@@ -117,7 +115,7 @@ namespace vFrame.Lockstep.Core
 
         public static TSQuaternion Add(TSQuaternion quaternion1, TSQuaternion quaternion2) {
             TSQuaternion result;
-            TSQuaternion.Add(ref quaternion1, ref quaternion2, out result);
+            Add(ref quaternion1, ref quaternion2, out result);
             return result;
         }
 
@@ -132,42 +130,40 @@ namespace vFrame.Lockstep.Core
         public static TSQuaternion Slerp(TSQuaternion from, TSQuaternion to, FixedPoint t) {
             t = TSMath.Clamp(t, 0, 1);
 
-            FixedPoint dot = Dot(from, to);
+            var dot = Dot(from, to);
 
             if (dot < FixedPoint.Zero) {
                 to = Multiply(to, -1);
                 dot = -dot;
             }
 
-            FixedPoint halfTheta = FixedPoint.Acos(dot);
+            var halfTheta = FixedPoint.Acos(dot);
 
             return Multiply(
-                Multiply(from, FixedPoint.Sin((1 - t) * halfTheta)) + Multiply(to, FixedPoint.Sin(t * halfTheta)),
-                1 / FixedPoint.Sin(halfTheta));
+                Multiply(from, FixedPoint.FastSin((1 - t) * halfTheta)) + Multiply(to, FixedPoint.FastSin(t * halfTheta)),
+                1 / FixedPoint.FastSin(halfTheta));
         }
 
         public static TSQuaternion RotateTowards(TSQuaternion from, TSQuaternion to, FixedPoint maxDegreesDelta) {
-            FixedPoint dot = Dot(from, to);
+            var dot = Dot(from, to);
 
             if (dot < FixedPoint.Zero) {
                 to = Multiply(to, -1);
                 dot = -dot;
             }
 
-            FixedPoint halfTheta = FixedPoint.Acos(dot);
-            FixedPoint theta = halfTheta * 2;
+            var halfTheta = FixedPoint.Acos(dot);
+            var theta = halfTheta * 2;
 
             maxDegreesDelta *= FixedPoint.Deg2Rad;
 
-            if (maxDegreesDelta >= theta) {
-                return to;
-            }
+            if (maxDegreesDelta >= theta) return to;
 
             maxDegreesDelta /= theta;
 
             return Multiply(
-                Multiply(from, FixedPoint.Sin((1 - maxDegreesDelta) * halfTheta)) +
-                Multiply(to, FixedPoint.Sin(maxDegreesDelta * halfTheta)), 1 / FixedPoint.Sin(halfTheta));
+                Multiply(from, FixedPoint.FastSin((1 - maxDegreesDelta) * halfTheta)) +
+                Multiply(to, FixedPoint.FastSin(maxDegreesDelta * halfTheta)), 1 / FixedPoint.FastSin(halfTheta));
         }
 
         public static TSQuaternion Euler(FixedPoint x, FixedPoint y, FixedPoint z) {
@@ -176,7 +172,7 @@ namespace vFrame.Lockstep.Core
             z *= FixedPoint.Deg2Rad;
 
             TSQuaternion rotation;
-            TSQuaternion.CreateFromYawPitchRoll(y, x, z, out rotation);
+            CreateFromYawPitchRoll(y, x, z, out rotation);
 
             return rotation;
         }
@@ -189,34 +185,34 @@ namespace vFrame.Lockstep.Core
             axis = axis * FixedPoint.Deg2Rad;
             axis.Normalize();
 
-            FixedPoint halfAngle = angle * FixedPoint.Deg2Rad * FixedPoint.Half;
+            var halfAngle = angle * FixedPoint.Deg2Rad * FixedPoint.Half;
 
             TSQuaternion rotation;
-            FixedPoint sin = FixedPoint.Sin(halfAngle);
+            var sin = FixedPoint.FastSin(halfAngle);
 
             rotation.x = axis.x * sin;
             rotation.y = axis.y * sin;
             rotation.z = axis.z * sin;
-            rotation.w = FixedPoint.Cos(halfAngle);
+            rotation.w = FixedPoint.FastCos(halfAngle);
 
             return rotation;
         }
 
         public static void CreateFromYawPitchRoll(FixedPoint yaw, FixedPoint pitch, FixedPoint roll,
             out TSQuaternion result) {
-            FixedPoint num9 = roll * FixedPoint.Half;
-            FixedPoint num6 = FixedPoint.Sin(num9);
-            FixedPoint num5 = FixedPoint.Cos(num9);
-            FixedPoint num8 = pitch * FixedPoint.Half;
-            FixedPoint num4 = FixedPoint.Sin(num8);
-            FixedPoint num3 = FixedPoint.Cos(num8);
-            FixedPoint num7 = yaw * FixedPoint.Half;
-            FixedPoint num2 = FixedPoint.Sin(num7);
-            FixedPoint num = FixedPoint.Cos(num7);
-            result.x = ((num * num4) * num5) + ((num2 * num3) * num6);
-            result.y = ((num2 * num3) * num5) - ((num * num4) * num6);
-            result.z = ((num * num3) * num6) - ((num2 * num4) * num5);
-            result.w = ((num * num3) * num5) + ((num2 * num4) * num6);
+            var num9 = roll * FixedPoint.Half;
+            var num6 = FixedPoint.FastSin(num9);
+            var num5 = FixedPoint.FastCos(num9);
+            var num8 = pitch * FixedPoint.Half;
+            var num4 = FixedPoint.FastSin(num8);
+            var num3 = FixedPoint.FastCos(num8);
+            var num7 = yaw * FixedPoint.Half;
+            var num2 = FixedPoint.FastSin(num7);
+            var num = FixedPoint.FastCos(num7);
+            result.x = num * num4 * num5 + num2 * num3 * num6;
+            result.y = num2 * num3 * num5 - num * num4 * num6;
+            result.z = num * num3 * num6 - num2 * num4 * num5;
+            result.w = num * num3 * num5 + num2 * num4 * num6;
         }
 
         /// <summary>
@@ -248,14 +244,14 @@ namespace vFrame.Lockstep.Core
         }
 
         public static TSQuaternion Inverse(TSQuaternion rotation) {
-            FixedPoint invNorm = FixedPoint.One / ((rotation.x * rotation.x) + (rotation.y * rotation.y) +
-                                                   (rotation.z * rotation.z) + (rotation.w * rotation.w));
-            return TSQuaternion.Multiply(TSQuaternion.Conjugate(rotation), invNorm);
+            var invNorm = FixedPoint.One / (rotation.x * rotation.x + rotation.y * rotation.y +
+                                            rotation.z * rotation.z + rotation.w * rotation.w);
+            return Multiply(Conjugate(rotation), invNorm);
         }
 
         public static TSQuaternion FromToRotation(TSVector fromVector, TSVector toVector) {
-            TSVector w = TSVector.Cross(fromVector, toVector);
-            TSQuaternion q = new TSQuaternion(w.x, w.y, w.z, TSVector.Dot(fromVector, toVector));
+            var w = TSVector.Cross(fromVector, toVector);
+            var q = new TSQuaternion(w.x, w.y, w.z, TSVector.Dot(fromVector, toVector));
             q.w += FixedPoint.Sqrt(fromVector.sqrMagnitude * toVector.sqrMagnitude);
             q.Normalize();
 
@@ -269,10 +265,29 @@ namespace vFrame.Lockstep.Core
         }
 
         public static TSQuaternion LerpUnclamped(TSQuaternion a, TSQuaternion b, FixedPoint t) {
-            TSQuaternion result = TSQuaternion.Multiply(a, (1 - t)) + TSQuaternion.Multiply(b, t);
+            var result = Multiply(a, 1 - t) + Multiply(b, t);
             result.Normalize();
 
             return result;
+        }
+
+        public void ToAngleAxis(out FixedPoint angle, out TSVector axis)
+        {
+            ToAxisAngleRad(this, out axis, out angle);
+            angle *= TSMath.Rad2Deg;
+        }
+
+        private static void ToAxisAngleRad(TSQuaternion q, out TSVector axis, out FixedPoint angle) {
+            if (TSMath.Abs(q.w) > 1.0f)
+                q.Normalize();
+            angle = 2.0f * TSMath.Acos(q.w); // angle
+            var den = TSMath.Sqrt(1.0f - q.w * q.w);
+            if (den > 0.0001f)
+                axis = new TSVector(q.x, q.y, q.z) / den;
+            else
+                // This occurs when the angle is zero.
+                // Not a problem: just set an arbitrary normalized axis.
+                axis = new TSVector(1, 0, 0);
         }
 
         /// <summary>
@@ -286,7 +301,7 @@ namespace vFrame.Lockstep.Core
 
         public static TSQuaternion Subtract(TSQuaternion quaternion1, TSQuaternion quaternion2) {
             TSQuaternion result;
-            TSQuaternion.Subtract(ref quaternion1, ref quaternion2, out result);
+            Subtract(ref quaternion1, ref quaternion2, out result);
             return result;
         }
 
@@ -317,7 +332,7 @@ namespace vFrame.Lockstep.Core
 
         public static TSQuaternion Multiply(TSQuaternion quaternion1, TSQuaternion quaternion2) {
             TSQuaternion result;
-            TSQuaternion.Multiply(ref quaternion1, ref quaternion2, out result);
+            Multiply(ref quaternion1, ref quaternion2, out result);
             return result;
         }
 
@@ -329,22 +344,22 @@ namespace vFrame.Lockstep.Core
         /// <param name="result">The product of both quaternions.</param>
         public static void Multiply(ref TSQuaternion quaternion1, ref TSQuaternion quaternion2,
             out TSQuaternion result) {
-            FixedPoint x = quaternion1.x;
-            FixedPoint y = quaternion1.y;
-            FixedPoint z = quaternion1.z;
-            FixedPoint w = quaternion1.w;
-            FixedPoint num4 = quaternion2.x;
-            FixedPoint num3 = quaternion2.y;
-            FixedPoint num2 = quaternion2.z;
-            FixedPoint num = quaternion2.w;
-            FixedPoint num12 = (y * num2) - (z * num3);
-            FixedPoint num11 = (z * num4) - (x * num2);
-            FixedPoint num10 = (x * num3) - (y * num4);
-            FixedPoint num9 = ((x * num4) + (y * num3)) + (z * num2);
-            result.x = ((x * num) + (num4 * w)) + num12;
-            result.y = ((y * num) + (num3 * w)) + num11;
-            result.z = ((z * num) + (num2 * w)) + num10;
-            result.w = (w * num) - num9;
+            var x = quaternion1.x;
+            var y = quaternion1.y;
+            var z = quaternion1.z;
+            var w = quaternion1.w;
+            var num4 = quaternion2.x;
+            var num3 = quaternion2.y;
+            var num2 = quaternion2.z;
+            var num = quaternion2.w;
+            var num12 = y * num2 - z * num3;
+            var num11 = z * num4 - x * num2;
+            var num10 = x * num3 - y * num4;
+            var num9 = x * num4 + y * num3 + z * num2;
+            result.x = x * num + num4 * w + num12;
+            result.y = y * num + num3 * w + num11;
+            result.z = z * num + num2 * w + num10;
+            result.w = w * num - num9;
         }
 
         #endregion
@@ -360,7 +375,7 @@ namespace vFrame.Lockstep.Core
 
         public static TSQuaternion Multiply(TSQuaternion quaternion1, FixedPoint scaleFactor) {
             TSQuaternion result;
-            TSQuaternion.Multiply(ref quaternion1, scaleFactor, out result);
+            Multiply(ref quaternion1, scaleFactor, out result);
             return result;
         }
 
@@ -386,12 +401,12 @@ namespace vFrame.Lockstep.Core
         #region public void Normalize()
 
         public void Normalize() {
-            FixedPoint num2 = (((this.x * this.x) + (this.y * this.y)) + (this.z * this.z)) + (this.w * this.w);
-            FixedPoint num = 1 / (FixedPoint.Sqrt(num2));
-            this.x *= num;
-            this.y *= num;
-            this.z *= num;
-            this.w *= num;
+            var num2 = x * x + y * y + z * z + w * w;
+            var num = 1 / FixedPoint.Sqrt(num2);
+            x *= num;
+            y *= num;
+            z *= num;
+            w *= num;
         }
 
         #endregion
@@ -406,7 +421,7 @@ namespace vFrame.Lockstep.Core
 
         public static TSQuaternion CreateFromMatrix(TSMatrix matrix) {
             TSQuaternion result;
-            TSQuaternion.CreateFromMatrix(ref matrix, out result);
+            CreateFromMatrix(ref matrix, out result);
             return result;
         }
 
@@ -416,34 +431,34 @@ namespace vFrame.Lockstep.Core
         /// <param name="matrix">A matrix representing an orientation.</param>
         /// <param name="result">JQuaternion representing an orientation.</param>
         public static void CreateFromMatrix(ref TSMatrix matrix, out TSQuaternion result) {
-            FixedPoint num8 = (matrix.M11 + matrix.M22) + matrix.M33;
+            var num8 = matrix.M11 + matrix.M22 + matrix.M33;
             if (num8 > FixedPoint.Zero) {
-                FixedPoint num = FixedPoint.Sqrt((num8 + FixedPoint.One));
+                var num = FixedPoint.Sqrt(num8 + FixedPoint.One);
                 result.w = num * FixedPoint.Half;
                 num = FixedPoint.Half / num;
                 result.x = (matrix.M23 - matrix.M32) * num;
                 result.y = (matrix.M31 - matrix.M13) * num;
                 result.z = (matrix.M12 - matrix.M21) * num;
             }
-            else if ((matrix.M11 >= matrix.M22) && (matrix.M11 >= matrix.M33)) {
-                FixedPoint num7 = FixedPoint.Sqrt((((FixedPoint.One + matrix.M11) - matrix.M22) - matrix.M33));
-                FixedPoint num4 = FixedPoint.Half / num7;
+            else if (matrix.M11 >= matrix.M22 && matrix.M11 >= matrix.M33) {
+                var num7 = FixedPoint.Sqrt(FixedPoint.One + matrix.M11 - matrix.M22 - matrix.M33);
+                var num4 = FixedPoint.Half / num7;
                 result.x = FixedPoint.Half * num7;
                 result.y = (matrix.M12 + matrix.M21) * num4;
                 result.z = (matrix.M13 + matrix.M31) * num4;
                 result.w = (matrix.M23 - matrix.M32) * num4;
             }
             else if (matrix.M22 > matrix.M33) {
-                FixedPoint num6 = FixedPoint.Sqrt((((FixedPoint.One + matrix.M22) - matrix.M11) - matrix.M33));
-                FixedPoint num3 = FixedPoint.Half / num6;
+                var num6 = FixedPoint.Sqrt(FixedPoint.One + matrix.M22 - matrix.M11 - matrix.M33);
+                var num3 = FixedPoint.Half / num6;
                 result.x = (matrix.M21 + matrix.M12) * num3;
                 result.y = FixedPoint.Half * num6;
                 result.z = (matrix.M32 + matrix.M23) * num3;
                 result.w = (matrix.M31 - matrix.M13) * num3;
             }
             else {
-                FixedPoint num5 = FixedPoint.Sqrt((((FixedPoint.One + matrix.M33) - matrix.M11) - matrix.M22));
-                FixedPoint num2 = FixedPoint.Half / num5;
+                var num5 = FixedPoint.Sqrt(FixedPoint.One + matrix.M33 - matrix.M11 - matrix.M22);
+                var num2 = FixedPoint.Half / num5;
                 result.x = (matrix.M31 + matrix.M13) * num2;
                 result.y = (matrix.M32 + matrix.M23) * num2;
                 result.z = FixedPoint.Half * num5;
@@ -464,7 +479,7 @@ namespace vFrame.Lockstep.Core
 
         public static TSQuaternion operator *(TSQuaternion value1, TSQuaternion value2) {
             TSQuaternion result;
-            TSQuaternion.Multiply(ref value1, ref value2, out result);
+            Multiply(ref value1, ref value2, out result);
             return result;
         }
 
@@ -481,7 +496,7 @@ namespace vFrame.Lockstep.Core
 
         public static TSQuaternion operator +(TSQuaternion value1, TSQuaternion value2) {
             TSQuaternion result;
-            TSQuaternion.Add(ref value1, ref value2, out result);
+            Add(ref value1, ref value2, out result);
             return result;
         }
 
@@ -498,7 +513,7 @@ namespace vFrame.Lockstep.Core
 
         public static TSQuaternion operator -(TSQuaternion value1, TSQuaternion value2) {
             TSQuaternion result;
-            TSQuaternion.Subtract(ref value1, ref value2, out result);
+            Subtract(ref value1, ref value2, out result);
             return result;
         }
 
@@ -508,18 +523,18 @@ namespace vFrame.Lockstep.Core
          *  @brief Rotates a {@link TSVector} by the {@link TSQuanternion}.
          **/
         public static TSVector operator *(TSQuaternion quat, TSVector vec) {
-            FixedPoint num = quat.x * 2;
-            FixedPoint num2 = quat.y * 2;
-            FixedPoint num3 = quat.z * 2;
-            FixedPoint num4 = quat.x * num;
-            FixedPoint num5 = quat.y * num2;
-            FixedPoint num6 = quat.z * num3;
-            FixedPoint num7 = quat.x * num2;
-            FixedPoint num8 = quat.x * num3;
-            FixedPoint num9 = quat.y * num3;
-            FixedPoint num10 = quat.w * num;
-            FixedPoint num11 = quat.w * num2;
-            FixedPoint num12 = quat.w * num3;
+            var num = quat.x * 2;
+            var num2 = quat.y * 2;
+            var num3 = quat.z * 2;
+            var num4 = quat.x * num;
+            var num5 = quat.y * num2;
+            var num6 = quat.z * num3;
+            var num7 = quat.x * num2;
+            var num8 = quat.x * num3;
+            var num9 = quat.y * num3;
+            var num10 = quat.w * num;
+            var num11 = quat.w * num2;
+            var num12 = quat.w * num3;
 
             TSVector result;
             result.x = (FixedPoint.One - (num5 + num6)) * vec.x + (num7 - num12) * vec.y + (num8 + num11) * vec.z;

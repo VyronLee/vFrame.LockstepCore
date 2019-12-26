@@ -185,14 +185,14 @@ namespace vFrame.Lockstep.Core
         /// Returns the sine of value.
         /// </summary>
         public static FixedPoint Sin(FixedPoint value) {
-            return FixedPoint.Sin(value);
+            return FixedPoint.FastSin(value);
         }
 
         /// <summary>
         /// Returns the cosine of value.
         /// </summary>
         public static FixedPoint Cos(FixedPoint value) {
-            return FixedPoint.Cos(value);
+            return FixedPoint.FastCos(value);
         }
 
         /// <summary>
