@@ -42,42 +42,55 @@
     <ImplicitlyExpandNETStandardFacades>false</ImplicitlyExpandNETStandardFacades>
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(OS)' != 'Unix' ">
+    <UnityPath>$(UnityPath)/</UnityPath>
+    <CopyCommand>copy /Y</CopyCommand>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(OS)' == 'Unix' ">
+    <UnityPath>/Applications/Unity.app/Contents/</UnityPath>
+    <CopyCommand>cp -rf</CopyCommand>
+  </PropertyGroup>
+<!--
+  <PropertyGroup>
+    <CscToolExe>$(UnityPath)/MonoBleedingEdge/lib/mono/4.5/mcs.exe</CscToolExe>
+  </PropertyGroup>
+-->
   <ItemGroup>
-    <Reference Include="vFrame.Core, Version=1.0.1.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\Libraries\vFrame.Core\Runtime\vFrame.Core.dll</HintPath>
-    </Reference>
     <Reference Include="mscorlib">
-      <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>
+      <HintPath>$(UnityPath)/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>
     </Reference>
     <Reference Include="System">
-      <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/System.dll</HintPath>
+      <HintPath>$(UnityPath)/MonoBleedingEdge/lib/mono/4.7.1-api/System.dll</HintPath>
     </Reference>
     <Reference Include="System.Core">
-      <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/System.Core.dll</HintPath>
+      <HintPath>$(UnityPath)/MonoBleedingEdge/lib/mono/4.7.1-api/System.Core.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
-      <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/Facades/netstandard.dll</HintPath>
+      <HintPath>$(UnityPath)/MonoBleedingEdge/lib/mono/4.7.1-api/Facades/netstandard.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml">
-      <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/System.Xml.dll</HintPath>
+      <HintPath>$(UnityPath)/MonoBleedingEdge/lib/mono/4.7.1-api/System.Xml.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.ReaderWriter">
-      <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/Facades/System.Xml.ReaderWriter.dll</HintPath>
+      <HintPath>$(UnityPath)/MonoBleedingEdge/lib/mono/4.7.1-api/Facades/System.Xml.ReaderWriter.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.XDocument">
-      <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/Facades/System.Xml.XDocument.dll</HintPath>
+      <HintPath>$(UnityPath)/MonoBleedingEdge/lib/mono/4.7.1-api/Facades/System.Xml.XDocument.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.XmlDocument">
-      <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/Facades/System.Xml.XmlDocument.dll</HintPath>
+      <HintPath>$(UnityPath)/MonoBleedingEdge/lib/mono/4.7.1-api/Facades/System.Xml.XmlDocument.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.XmlSerializer">
-      <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/Facades/System.Xml.XmlSerializer.dll</HintPath>
+      <HintPath>$(UnityPath)/MonoBleedingEdge/lib/mono/4.7.1-api/Facades/System.Xml.XmlSerializer.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.XPath">
-      <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/Facades/System.Xml.XPath.dll</HintPath>
+      <HintPath>$(UnityPath)/MonoBleedingEdge/lib/mono/4.7.1-api/Facades/System.Xml.XPath.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.XPath.XDocument">
-      <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/Facades/System.Xml.XPath.XDocument.dll</HintPath>
+      <HintPath>$(UnityPath)/MonoBleedingEdge/lib/mono/4.7.1-api/Facades/System.Xml.XPath.XDocument.dll</HintPath>
+    </Reference>
+    <Reference Include="vFrame.Core.Lite, Version=1.0.1.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\Libraries\vFrame.Core\Runtime\vFrame.Core.Lite.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

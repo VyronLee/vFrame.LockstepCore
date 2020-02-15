@@ -1,111 +1,112 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-    <PropertyGroup>
-        <LangVersion>latest</LangVersion>
-        <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-        <_TargetFrameworkDirectories>non_empty_path_generated_by_rider_editor_plugin</_TargetFrameworkDirectories>
-        <_FullFrameworkReferenceAssemblyPaths>non_empty_path_generated_by_rider_editor_plugin</_FullFrameworkReferenceAssemblyPaths>
-        <DisableHandlePackageFileConflicts>true</DisableHandlePackageFileConflicts>
-    </PropertyGroup>
-    <PropertyGroup>
-        <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-        <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-        <ProductVersion>10.0.20506</ProductVersion>
-        <SchemaVersion>2.0</SchemaVersion>
-        <RootNamespace>vFrame.Lockstep.Editor</RootNamespace>
-        <ProjectGuid>{ED00D69B-14DC-56F3-FB90-057D40F89F3F}</ProjectGuid>
-        <OutputType>Library</OutputType>
-        <AppDesignerFolder>Properties</AppDesignerFolder>
-        <AssemblyName>vFrame.Lockstep.Editor</AssemblyName>
-        <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-        <FileAlignment>512</FileAlignment>
-        <BaseDirectory>.</BaseDirectory>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-        <DebugSymbols>true</DebugSymbols>
-        <DebugType>full</DebugType>
-        <Optimize>false</Optimize>
-        <OutputPath>..\Build\vFrame.Lockstep.Editor\Debug\</OutputPath>
-        <DefineConstants>DEBUG;TRACE;UNITY_EDITOR</DefineConstants>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-        <NoWarn>0169</NoWarn>
-        <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
-    </PropertyGroup>
-    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-        <DebugType>pdbonly</DebugType>
-        <Optimize>true</Optimize>
-        <OutputPath>..\Build\vFrame.Lockstep.Editor\Release\</OutputPath>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-        <NoWarn>0169</NoWarn>
-        <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
-        <DefineConstants>TRACE;UNITY_EDITOR</DefineConstants>
-    </PropertyGroup>
-    <PropertyGroup>
-        <NoConfig>true</NoConfig>
-        <NoStdLib>true</NoStdLib>
-        <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
-        <ImplicitlyExpandNETStandardFacades>false</ImplicitlyExpandNETStandardFacades>
-        <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
-    </PropertyGroup>
-    <ItemGroup>
-        <Reference Include="UnityEngine">
-            <HintPath>C:\Program Files\Unity\Editor\Data\Managed/UnityEngine/UnityEngine.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEditor">
-            <HintPath>C:\Program Files\Unity\Editor\Data\Managed/UnityEditor.dll</HintPath>
-        </Reference>
-        <Reference Include="vFrame.Core, Version=1.0.1.0, Culture=neutral, PublicKeyToken=null">
-            <HintPath>..\Libraries\vFrame.Core\Runtime\vFrame.Core.dll</HintPath>
-        </Reference>
-    </ItemGroup>
-    <ItemGroup>
-        <Reference Include="UnityEngine.CoreModule">
-            <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEngine/UnityEngine.CoreModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.AIModule">
-            <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
-        </Reference>
-        <Reference Include="UnityEngine.IMGUIModule">
-            <HintPath>C:/Program Files/Unity/Editor/Data/Managed/UnityEngine/UnityEngine.IMGUIModule.dll</HintPath>
-        </Reference>
-        <Reference Include="mscorlib">
-            <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>
-        </Reference>
-        <Reference Include="System">
-            <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/System.dll</HintPath>
-        </Reference>
-        <Reference Include="System.Core">
-            <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/System.Core.dll</HintPath>
-        </Reference>
-        <Reference Include="netstandard">
-            <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/Facades/netstandard.dll</HintPath>
-        </Reference>
-        <Reference Include="System.IO">
-            <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/4.7.1-api/Facades/System.IO.dll</HintPath>
-        </Reference>
-    </ItemGroup>
-    <ItemGroup>
-        <Compile Include="Editor\EditorFixedPoint.cs" />
-        <Compile Include="Editor\EditorGUILayoutExt.cs" />
-        <Compile Include="Editor\EditorNavMeshTool.cs" />
-        <Compile Include="Editor\EditorTSVector.cs" />
-        <Compile Include="Editor\EditorTSVector2.cs" />
-        <Compile Include="Editor\EditorTSVectorDrawTool.cs" />
-        <Compile Include="NavMeshTool.cs" />
-        <Compile Include="TSMathExtension.cs" />
-        <Compile Include="TSVectorExtension.cs" />
-    </ItemGroup>
-    <ItemGroup>
-      <ProjectReference Include="..\vFrame.Lockstep.Core\vFrame.Lockstep.Core.csproj">
-        <Project>{a2711064-b77a-47d1-bd1d-581be4ed1fce}</Project>
-        <Name>vFrame.Lockstep.Core</Name>
-      </ProjectReference>
-    </ItemGroup>
-    <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-    <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <_TargetFrameworkDirectories>non_empty_path_generated_by_rider_editor_plugin</_TargetFrameworkDirectories>
+    <_FullFrameworkReferenceAssemblyPaths>non_empty_path_generated_by_rider_editor_plugin</_FullFrameworkReferenceAssemblyPaths>
+    <DisableHandlePackageFileConflicts>true</DisableHandlePackageFileConflicts>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.20506</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <RootNamespace>vFrame.Lockstep.Editor</RootNamespace>
+    <ProjectGuid>{ED00D69B-14DC-56F3-FB90-057D40F89F3F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <AssemblyName>vFrame.Lockstep.Editor</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <BaseDirectory>.</BaseDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Build\vFrame.Lockstep.Editor\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;UNITY_EDITOR</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>0169</NoWarn>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\Build\vFrame.Lockstep.Editor\Release\</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>0169</NoWarn>
+    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
+    <DefineConstants>TRACE;UNITY_EDITOR</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup>
+    <NoConfig>true</NoConfig>
+    <NoStdLib>true</NoStdLib>
+    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
+    <ImplicitlyExpandNETStandardFacades>false</ImplicitlyExpandNETStandardFacades>
+    <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(OS)' != 'Unix' ">
+    <UnityPath>C:/Program Files/Unity/Editor/Data/</UnityPath>
+    <CopyCommand>copy /Y</CopyCommand>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(OS)' == 'Unix' ">
+    <UnityPath>/Applications/Unity.app/Contents/</UnityPath>
+    <CopyCommand>cp -rf</CopyCommand>
+  </PropertyGroup>
+<!--
+  <PropertyGroup>
+    <CscToolExe>$(UnityPath)/MonoBleedingEdge/lib/mono/4.5/mcs.exe</CscToolExe>
+  </PropertyGroup>
+-->
+  <ItemGroup>
+    <Reference Include="UnityEngine">
+      <HintPath>$(UnityPath)/Managed/UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor">
+      <HintPath>$(UnityPath)/Managed/UnityEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="mscorlib">
+      <HintPath>$(UnityPath)/MonoBleedingEdge/lib/mono/4.7.1-api/mscorlib.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <HintPath>$(UnityPath)/MonoBleedingEdge/lib/mono/4.7.1-api/System.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core">
+      <HintPath>$(UnityPath)/MonoBleedingEdge/lib/mono/4.7.1-api/System.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="netstandard">
+      <HintPath>$(UnityPath)/MonoBleedingEdge/lib/mono/4.7.1-api/Facades/netstandard.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO">
+      <HintPath>$(UnityPath)/MonoBleedingEdge/lib/mono/4.7.1-api/Facades/System.IO.dll</HintPath>
+    </Reference>
+    <Reference Include="vFrame.Core.Lite, Version=1.0.1.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\Libraries\vFrame.Core\Runtime\vFrame.Core.Lite.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Editor\EditorFixedPoint.cs" />
+    <Compile Include="Editor\EditorGUILayoutExt.cs" />
+    <Compile Include="Editor\EditorNavMeshTool.cs" />
+    <Compile Include="Editor\EditorTSVector.cs" />
+    <Compile Include="Editor\EditorTSVector2.cs" />
+    <Compile Include="Editor\EditorTSVectorDrawTool.cs" />
+    <Compile Include="NavMeshTool.cs" />
+    <Compile Include="TSMathExtension.cs" />
+    <Compile Include="TSVectorExtension.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\vFrame.Lockstep.Core\vFrame.Lockstep.Core.csproj">
+      <Project>{a2711064-b77a-47d1-bd1d-581be4ed1fce}</Project>
+      <Name>vFrame.Lockstep.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
