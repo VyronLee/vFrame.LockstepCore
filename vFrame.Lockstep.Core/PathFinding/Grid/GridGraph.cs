@@ -85,7 +85,7 @@ namespace vFrame.Lockstep.Core.PathFinding.Grid
                     if (x > 0 && (_nodes[x-1][y].flag & _mask) > 0) {
                         connections.Add(new GridConnection(curNode, _nodes[x-1][y])); // 左
                     }
-                    if (x < _data.rows - 1 && (_nodes[x+1][y].flag & _mask) > 0) {
+                    if (x < _data.cols - 1 && (_nodes[x+1][y].flag & _mask) > 0) {
                         connections.Add(new GridConnection(curNode, _nodes[x+1][y])); // 右
                     }
                     _connections[x].Add(y, connections);
