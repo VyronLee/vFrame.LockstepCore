@@ -17,7 +17,7 @@ namespace vFrame.Lockstep.Core.PathFinding.Grid
             _connections = new Dictionary<int, Dictionary<int, List<IConnection<GridNode>>>>(_data.cols);
             _mask = mask;
 
-            BuildGraph();
+            InitGraph();
         }
 
         public List<IConnection<GridNode>> GetConnections(GridNode fromNode) {
@@ -48,14 +48,19 @@ namespace vFrame.Lockstep.Core.PathFinding.Grid
             return _data.grids.Length;
         }
 
-        private void BuildGraph() {
+        private void InitGraph() {
+            InitNodes();
+            RebuildConnections();
+        }
+
+        private void InitNodes() {
             Debug.Assert(_data.grids.Length == _data.rows * _data.cols);
 
             // 构建所有结点
             for (var x = 0; x < _data.cols; x++) {
                 _nodes.Add(x, new Dictionary<int, GridNode>(_data.rows));
                 for (var y = 0; y < _data.rows; y++) {
-                    var index = x * _data.cols + y;
+                    var index = y * _data.cols + x;
                     var node = new GridNode {
                         flag = _data.grids[index],
                         index = index,
@@ -68,6 +73,10 @@ namespace vFrame.Lockstep.Core.PathFinding.Grid
                     _nodes[x].Add(y, node);
                 }
             }
+        }
+
+        public void RebuildConnections() {
+            _connections.Clear();
 
             // 构建所有连接
             for (var x = 0; x < _data.cols; x++) {
