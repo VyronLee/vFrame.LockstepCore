@@ -1,38 +1,43 @@
-﻿namespace vFrame.Lockstep.Core.PathFinding.NavMesh.NavMesh
+﻿namespace vFrame.Lockstep.Core.PathFinding.NavMesh.NavMesh;
+
+public abstract class NavMesh
 {
-    public abstract class NavMesh
-    {
-        /** 地图宽x轴 */
-        protected FixedPoint width;
+    /**
+     * 地图高y轴
+     */
+    protected FixedPoint height;
 
-        /** 地图高y轴 */
-        protected FixedPoint height;
+    /**
+     * 配置id
+     */
+    protected int mapId;
 
-        /** 配置id */
-        protected int mapId;
+    /**
+     * 地图宽x轴
+     */
+    protected FixedPoint width;
 
-        public FixedPoint getWidth() {
-            return width;
-        }
+    public FixedPoint getWidth() {
+        return width;
+    }
 
-        public void setWidth(FixedPoint width) {
-            this.width = width;
-        }
+    public void setWidth(FixedPoint width) {
+        this.width = width;
+    }
 
-        public FixedPoint getHeight() {
-            return height;
-        }
+    public FixedPoint getHeight() {
+        return height;
+    }
 
-        public void setHeight(FixedPoint height) {
-            this.height = height;
-        }
+    public void setHeight(FixedPoint height) {
+        this.height = height;
+    }
 
-        public int getMapId() {
-            return mapId;
-        }
+    public int getMapId() {
+        return mapId;
+    }
 
-        public void setMapId(int mapId) {
-            this.mapId = mapId;
-        }
+    public void setMapId(int mapId) {
+        this.mapId = mapId;
     }
 }

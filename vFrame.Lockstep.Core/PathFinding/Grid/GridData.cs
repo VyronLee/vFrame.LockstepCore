@@ -1,11 +1,10 @@
-﻿namespace vFrame.Lockstep.Core.PathFinding.Grid
+﻿namespace vFrame.Lockstep.Core.PathFinding.Grid;
+
+public class GridData
 {
-    public class GridData
-    {
-        public int rows;
-        public int cols;
-        public TSVector2 start;
-        public FixedPoint width;
-        public int[] grids;
-    }
+    public int cols;
+    public int[] grids;
+    public int rows;
+    public TSVector2 start;
+    public FixedPoint width;
 }

@@ -18,8 +18,8 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\Build\vFrame.Lockstep.Core\Debug</OutputPath>
-    <DefineConstants>DEBUG;TRACE;</DefineConstants>
+    <OutputPath>..\Build\Debug\Runtime</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -27,7 +27,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\Build\vFrame.Lockstep.Core\Release</OutputPath>
+    <OutputPath>..\Build\\Release\Runtime</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -43,7 +43,7 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(OS)' != 'Unix' ">
-    <UnityPath>$(UnityPath)/</UnityPath>
+    <UnityPath>C:/Program Files/Unity/Editor/Data/</UnityPath>
     <CopyCommand>copy /Y</CopyCommand>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(OS)' == 'Unix' ">
@@ -91,6 +91,9 @@
     </Reference>
     <Reference Include="vFrame.Core.Lite, Version=1.0.1.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\Libraries\vFrame.Core\Runtime\vFrame.Core.Lite.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine" Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+      <HintPath>$(UnityPath)/Managed/UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

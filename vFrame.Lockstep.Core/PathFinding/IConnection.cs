@@ -1,18 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace vFrame.Lockstep.Core.PathFinding;
 
-
-namespace vFrame.Lockstep.Core.PathFinding
+public interface IConnection<out TNode>
 {
-    public interface IConnection<N>
-    {
-        /** Returns the non-negative cost of this connection */
-        FixedPoint GetCost();
+    /**
+     * Returns the non-negative cost of this connection
+     */
+    FixedPoint GetCost();
 
-        /** Returns the node that this connection came from */
-        N GetFromNode();
+    /**
+     * Returns the node that this connection came from
+     */
+    TNode GetFromNode();
 
-        /** Returns the node that this connection leads to */
-        N GetToNode();
-    }
+    /**
+     * Returns the node that this connection leads to
+     */
+    TNode GetToNode();
 }

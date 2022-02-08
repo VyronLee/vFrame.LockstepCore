@@ -1,6 +1,5 @@
-﻿namespace vFrame.Lockstep.Core.PathFinding.Grid
+﻿namespace vFrame.Lockstep.Core.PathFinding.Grid;
+
+public class GridGraphPath : DefaultGraphPath<IConnection<GridNode>>
 {
-    public class GridGraphPath : DefaultGraphPath<IConnection<GridNode>>
-    {
-    }
 }

@@ -5,7 +5,7 @@ namespace vFrame.Lockstep.Core
     public class TSTime
     {
         private DateTime _initTime;
-        private DateTime lastFrameTime;
+        private DateTime _lastFrameTime;
 
         /// The total number of frames that have passed (Read Only).
         public int frameCount { get; private set; }
@@ -29,10 +29,10 @@ namespace vFrame.Lockstep.Core
 
         public void Update() {
             var now = DateTime.Now;
-            deltaTime = (now - lastFrameTime).TotalSeconds;
+            deltaTime = (now - _lastFrameTime).TotalSeconds;
             timeSinceLevelLoad = (now - _initTime).TotalSeconds;
             frameCount++;
-            lastFrameTime = now;
+            _lastFrameTime = now;
         }
     }
 }

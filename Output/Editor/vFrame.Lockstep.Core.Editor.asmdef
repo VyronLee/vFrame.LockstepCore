@@ -1,0 +1,16 @@
+{
+    "name": "vFrame.Lockstep.Core.Editor",
+    "references": [
+        "vFrame.Lockstep.Unity"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
+}
