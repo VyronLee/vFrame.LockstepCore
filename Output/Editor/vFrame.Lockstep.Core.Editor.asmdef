@@ -9,8 +9,11 @@
     ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
-    "overrideReferences": false,
-    "precompiledReferences": [],
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "vFrame.Lockstep.Core.dll",
+        "vFrame.Core.Lite.dll"
+    ],
     "autoReferenced": true,
     "defineConstraints": []
 }
