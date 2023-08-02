@@ -1,6 +1,6 @@
 {
   "name": "com.vyronlee.vframe.lockstep.core",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "displayName": "vFrame Lockstep Core",
   "description": "vFrame Lockstep Core Libraries.",
   "unity": "2018.4",
