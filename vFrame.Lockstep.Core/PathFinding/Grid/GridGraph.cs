@@ -86,28 +86,12 @@ public class GridGraph : IIndexedGraph<GridNode>
                 // 遍历上下左右节点，构造连接
                 if (y < _data.rows - 1 && (_nodes[x][y + 1].flag & _mask) > 0)
                     connections.Add(new GridConnection(curNode, _nodes[x][y + 1])); // 上
-                
                 if (y > 0 && (_nodes[x][y - 1].flag & _mask) > 0)
                     connections.Add(new GridConnection(curNode, _nodes[x][y - 1])); // 下
-                
                 if (x > 0 && (_nodes[x - 1][y].flag & _mask) > 0)
                     connections.Add(new GridConnection(curNode, _nodes[x - 1][y])); // 左
-                
                 if (x < _data.cols - 1 && (_nodes[x + 1][y].flag & _mask) > 0)
                     connections.Add(new GridConnection(curNode, _nodes[x + 1][y])); // 右
-                
-                if (x > 0 && y < _data.rows - 1 && (_nodes[x - 1][y + 1].flag & _mask) > 0)
-                    connections.Add(new GridConnection(curNode, _nodes[x - 1][y + 1])); // 左上
-                
-                if (x > 0 && y > 0 && (_nodes[x - 1][y - 1].flag & _mask) > 0)
-                    connections.Add(new GridConnection(curNode, _nodes[x - 1][y - 1])); // 左下
-                
-                if (x < _data.cols - 1 && y < _data.rows - 1 && (_nodes[x + 1][y + 1].flag & _mask) > 0)
-                    connections.Add(new GridConnection(curNode, _nodes[x + 1][y + 1])); // 右上
-                
-                if (x < _data.cols - 1 && y > 0 && (_nodes[x + 1][y - 1].flag & _mask) > 0)
-                    connections.Add(new GridConnection(curNode, _nodes[x + 1][y - 1])); // 右下
-                
                 _connections[x].Add(y, connections);
             }
         }
