@@ -84,16 +84,50 @@ public class GridGraph : IIndexedGraph<GridNode>
                 var curNode = _nodes[x][y];
                 var connections = new List<IConnection<GridNode>>();
                 // 遍历上下左右节点，构造连接
-                if (y < _data.rows - 1 && (_nodes[x][y + 1].flag & _mask) > 0)
+                if (IsConnectable(x, y + 1))
                     connections.Add(new GridConnection(curNode, _nodes[x][y + 1])); // 上
-                if (y > 0 && (_nodes[x][y - 1].flag & _mask) > 0)
+                
+                if (IsConnectable(x, y - 1))
                     connections.Add(new GridConnection(curNode, _nodes[x][y - 1])); // 下
-                if (x > 0 && (_nodes[x - 1][y].flag & _mask) > 0)
+                
+                if (IsConnectable(x - 1, y))
                     connections.Add(new GridConnection(curNode, _nodes[x - 1][y])); // 左
-                if (x < _data.cols - 1 && (_nodes[x + 1][y].flag & _mask) > 0)
+                
+                if (IsConnectable(x + 1, y))
                     connections.Add(new GridConnection(curNode, _nodes[x + 1][y])); // 右
+                
+                if (IsConnectable(x - 1, y + 1) && (IsConnectable(x - 1, y) || IsConnectable(x, y + 1)))
+                    connections.Add(new GridConnection(curNode, _nodes[x - 1][y + 1])); // 左上
+                
+                if (IsConnectable(x - 1, y - 1) && (IsConnectable(x - 1, y) || IsConnectable(x, y - 1)))
+                    connections.Add(new GridConnection(curNode, _nodes[x - 1][y - 1])); // 左下
+                
+                if (IsConnectable(x + 1, y + 1) && (IsConnectable(x + 1, y) || IsConnectable(x, y + 1)))
+                    connections.Add(new GridConnection(curNode, _nodes[x + 1][y + 1])); // 右上
+                
+                if (IsConnectable(x + 1, y - 1) && (IsConnectable(x + 1, y) || IsConnectable(x, y - 1)))
+                    connections.Add(new GridConnection(curNode, _nodes[x + 1][y - 1])); // 右下
+                
                 _connections[x].Add(y, connections);
             }
         }
+    }
+
+    private int SafeGetNodeFlag(int x, int y) {
+        if (x < 0 || x >= _data.cols) {
+            return 0;
+        }
+        if (y < 0 || y >= _data.rows) {
+            return 0;
+        }
+        return _nodes[x][y].flag;
+    }
+
+    private bool IsConnectable(int x, int y) {
+        var flag = SafeGetNodeFlag(x, y);
+        if ((flag & _mask) > 0) {
+            return true;
+        }
+        return false;
     }
 }
