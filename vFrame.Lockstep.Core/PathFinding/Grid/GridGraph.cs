@@ -10,12 +10,14 @@ public class GridGraph : IIndexedGraph<GridNode>
     private readonly GridData _data;
     private readonly int _mask;
     private readonly Dictionary<int, Dictionary<int, GridNode>> _nodes;
+    private bool _hypotenuseConnectionEnabled;
 
     public GridGraph(GridData data, int mask) {
         _data = data;
         _nodes = new Dictionary<int, Dictionary<int, GridNode>>(_data.cols);
         _connections = new Dictionary<int, Dictionary<int, List<IConnection<GridNode>>>>(_data.cols);
         _mask = mask;
+        _hypotenuseConnectionEnabled = false;
 
         InitGraph();
     }
@@ -24,6 +26,10 @@ public class GridGraph : IIndexedGraph<GridNode>
         return _connections[fromNode.xIndex][fromNode.yIndex];
     }
 
+    public void SetHypotenuseConnectionEnabled(bool value) {
+        _hypotenuseConnectionEnabled = value;
+    }
+    
     public int GetIndex(GridNode node) {
         return node.index;
     }
@@ -96,16 +102,16 @@ public class GridGraph : IIndexedGraph<GridNode>
                 if (IsConnectable(x + 1, y))
                     connections.Add(new GridConnection(curNode, _nodes[x + 1][y])); // 右
                 
-                if (IsConnectable(x - 1, y + 1) && (IsConnectable(x - 1, y) || IsConnectable(x, y + 1)))
+                if (_hypotenuseConnectionEnabled && IsConnectable(x - 1, y + 1) && (IsConnectable(x - 1, y) || IsConnectable(x, y + 1)))
                     connections.Add(new GridConnection(curNode, _nodes[x - 1][y + 1])); // 左上
                 
-                if (IsConnectable(x - 1, y - 1) && (IsConnectable(x - 1, y) || IsConnectable(x, y - 1)))
+                if (_hypotenuseConnectionEnabled && IsConnectable(x - 1, y - 1) && (IsConnectable(x - 1, y) || IsConnectable(x, y - 1)))
                     connections.Add(new GridConnection(curNode, _nodes[x - 1][y - 1])); // 左下
                 
-                if (IsConnectable(x + 1, y + 1) && (IsConnectable(x + 1, y) || IsConnectable(x, y + 1)))
+                if (_hypotenuseConnectionEnabled && IsConnectable(x + 1, y + 1) && (IsConnectable(x + 1, y) || IsConnectable(x, y + 1)))
                     connections.Add(new GridConnection(curNode, _nodes[x + 1][y + 1])); // 右上
                 
-                if (IsConnectable(x + 1, y - 1) && (IsConnectable(x + 1, y) || IsConnectable(x, y - 1)))
+                if (_hypotenuseConnectionEnabled && IsConnectable(x + 1, y - 1) && (IsConnectable(x + 1, y) || IsConnectable(x, y - 1)))
                     connections.Add(new GridConnection(curNode, _nodes[x + 1][y - 1])); // 右下
                 
                 _connections[x].Add(y, connections);
