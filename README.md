@@ -4,6 +4,15 @@
 
 A lockstep runtime for deterministic multiplayer simulation, providing fixed-point math, 2D physics, pathfinding, and RVO-based local avoidance.
 
+## Scope
+
+`vFrame.LockstepCore` bundles two cohesive layers:
+
+1. **Fixed-point math** (`Math/`): deterministic `FixedPoint` arithmetic plus `TSVector`/`TSVector2`/`TSVector4`/`TSQuaternion`/`TSMatrix`. Usable **independently** of lockstep — any code needing deterministic floating-point math can depend on just this layer.
+2. **Lockstep + simulation primitives**: 2D physics (Farseer), A* pathfinding (grid + NavMesh), and RVO2 local avoidance.
+
+Most users consume both together, so they ship as one package. If you only need the deterministic math, reference the package and use the `Math/` types directly.
+
 ## Features
 
 - Deterministic `FixedPoint` arithmetic based on Q31.32 representation.
