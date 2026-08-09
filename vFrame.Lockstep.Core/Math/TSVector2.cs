@@ -303,10 +303,10 @@ namespace vFrame.Lockstep.Core
         }
 
         public FixedPoint magnitude {
-            get { return FixedPoint.Sqrt(sqrtMagnitude); }
+            get { return FixedPoint.Sqrt(sqrMagnitude); }
         }
 
-        public FixedPoint sqrtMagnitude {
+        public FixedPoint sqrMagnitude {
             get {
                 FixedPoint result = x * x + y * y;
                 return result;
@@ -314,7 +314,7 @@ namespace vFrame.Lockstep.Core
         }
 
         public FixedPoint LengthSquared() {
-            return sqrtMagnitude;
+            return sqrMagnitude;
         }
 
         public static TSVector2 ClampMagnitude(TSVector2 vector, FixedPoint maxLength) {

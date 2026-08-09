@@ -11,7 +11,7 @@ public class GridConnection : IConnection<GridNode>
     }
 
     public FixedPoint GetCost() {
-        return (_to.center - _from.center).sqrtMagnitude;
+        return (_to.center - _from.center).sqrMagnitude;
     }
 
     public GridNode GetFromNode() {
