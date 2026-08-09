@@ -148,6 +148,7 @@ Produces `Build/Release/Runtime/vFrame.Lockstep.Core.dll`, copied to `Output/Run
 - `GridGraph` treats a cell as traversable when `(flag & mask) > 0` — the `grids` array flag values must match the constructor `mask`
 - `Simulator.addAgent(TSVector2 position)` requires `setAgentDefaults(...)` to be called first, otherwise returns `-1`
 - `World` exposes a static `Instance` — but at gameplay level, treat each `World` instance as explicitly owned simulation state
+- **Implicit `float`/`double` → `FixedPoint` conversion is intentional (audit finding U1, declined 2026-08-09).** All numeric→`FixedPoint` operators are `implicit` (`int`/`long`/`float`/`double`; `decimal` is the only `explicit` one). Making `float`/`double` explicit was tested and broke ~854 compile sites in the vendored Farseer/RVO2 engines that rely on bare-literal conversion. **Convention:** new gameplay/simulation code should still prefer `FixedPoint.FromFloat(value)` at call sites for clarity, but the implicit operator is preserved by design — do not re-propose tightening it without auditing the full physics-engine blast radius first.
 
 ### Package Layout
 
