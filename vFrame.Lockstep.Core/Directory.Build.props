@@ -1,16 +1,21 @@
 <Project>
   <!--
-    Redirect the NuGet restore outputs (project.assets.json, *.nuget.g.props/targets,
-    project.nuget.cache) for the net8 server project away from the default
-    vFrame.Lockstep.Core/obj folder, which the Unity 4.7.1 MSBuild project shares and
-    depends on. MSBuildProjectExtensionsPath must be set before Microsoft.Common.props
-    is imported (MSB3540 forbids setting it later), so it lives here in Directory.Build.props
-    rather than in the net8 csproj body.
+    Redirect all net8 build artifacts away from the default vFrame.Lockstep.Core/obj|bin
+    folders, which the Unity 4.7.1 MSBuild project (vFrame.Lockstep.Core.csproj) shares
+    and depends on, so a dotnet build here must not disturb `make`:
+      - BaseIntermediateOutputPath / BaseOutputPath  -> obj/ and bin/ (the compiled output)
+      - MSBuildProjectExtensionsPath                 -> NuGet restore files
+        (project.assets.json, *.nuget.g.props/targets, project.nuget.cache)
+    All three must be set before Microsoft.Common.props is imported, otherwise MSBuild
+    emits MSB3539 ("value modified after MSBuild already used it") — hence they live
+    here in Directory.Build.props, the canonical early hook, not in the net8 csproj body.
 
     The condition scopes this to the net8 project only: the Unity 4.7.1 project
     (vFrame.Lockstep.Core.csproj) is left completely unaffected by this file.
   -->
   <PropertyGroup Condition="'$(MSBuildProjectName)' == 'vFrame.Lockstep.Core.net8'">
+    <BaseIntermediateOutputPath>Build\Release\net8\obj\</BaseIntermediateOutputPath>
+    <BaseOutputPath>Build\Release\net8\bin\</BaseOutputPath>
     <MSBuildProjectExtensionsPath>Build\Release\net8\obj\</MSBuildProjectExtensionsPath>
   </PropertyGroup>
 </Project>
