@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>vFrame.Lockstep.Core</RootNamespace>
+    <AssemblyName>vFrame.Lockstep.Core</AssemblyName>
+    <NoWarn>$(NoWarn);CS0618;CS0672</NoWarn>
+    <!-- This project lives in the same tree as the Unity 4.7.1 project; the SDK default
+         glob (**/*.cs) would pull Properties/AssemblyInfo.cs and the vendored ThirdParty
+         sources in unintentionally. Explicit globs keep the server assembly exact. -->
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <!-- Redirect net8 build artifacts (obj/, bin/) away from the default
+         vFrame.Lockstep.Core/obj|bin folders, which the Unity 4.7.1 MSBuild project
+         shares and depends on. A dotnet build here must not disturb `make`. The NuGet
+         restore outputs are redirected via MSBuildProjectExtensionsPath in the
+         sibling Directory.Build.props (it must be set before Microsoft.Common.props). -->
+    <BaseIntermediateOutputPath>Build\Release\net8\obj\</BaseIntermediateOutputPath>
+    <BaseOutputPath>Build\Release\net8\bin\</BaseOutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="FarseerPhysics/**/*.cs" />
+    <Compile Include="Math/**/*.cs" />
+    <Compile Include="PathFinding/**/*.cs" />
+    <Compile Include="RVO2/**/*.cs" />
+    <Compile Include="TSTime.cs" />
+    <Compile Include="ThirdParty/LitJson/**/*.cs" />
+  </ItemGroup>
+</Project>
