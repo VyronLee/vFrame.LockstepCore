@@ -358,3 +358,4 @@ MigrationBackup/
 ### Custom settings
 .SpaceVim.d/
 .idea/
+.codegraph/
