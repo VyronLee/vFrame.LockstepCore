@@ -1,3 +1,6 @@
+# Repository Agent Guidance
+
+The workspace-level guidance in `../AGENTS.md` applies to this repository. Read its referenced rules when their trigger matches the task.
 # vFrame.LockstepCore
 
 Deterministic lockstep networking core (Unity-free) for multiplayer simulation. Provides fixed-point math, 2D physics (Farseer), grid/NavMesh pathfinding (A*), and RVO2 local avoidance.
@@ -6,7 +9,7 @@ Deterministic lockstep networking core (Unity-free) for multiplayer simulation. 
 
 | Topic | Location |
 |-------|----------|
-| [Workspace conventions](../../../CLAUDE.md) | Multi-package layout, Unity version, shared gotchas |
+| [Workspace conventions](../../../AGENTS.md) | Multi-package layout, Unity version, shared gotchas |
 | README.md | Feature overview, quick start, usage examples |
 
 ## Package Structure
